@@ -1,15 +1,11 @@
 package co.akoot.plugins.edulis.util.brewery
 
-import co.akoot.plugins.edulis.util.loaders.ItemLoader.Companion.foodKey
+import co.akoot.plugins.edulis.util.CreateItem.getItemPDC
 import com.dre.brewery.recipe.PluginItem
 import org.bukkit.inventory.ItemStack
-import org.bukkit.persistence.PersistentDataType
 
 class BrewItems : PluginItem() {
     override fun matches(item: ItemStack): Boolean {
-        val itemMeta = item.itemMeta ?: return false
-        // match pdc
-        val itemId = itemMeta.persistentDataContainer.get(foodKey, PersistentDataType.STRING)?: return false
-        return itemId == getItemId()
+        return getItemPDC(item) == itemId // lol
     }
 }

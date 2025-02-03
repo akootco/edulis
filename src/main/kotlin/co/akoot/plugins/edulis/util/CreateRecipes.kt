@@ -29,29 +29,26 @@ object CreateRecipes {
             recipeName,
             // set the output item or material
             ItemStack(config.getConfigurationSection("result")?.let { createItem(it, recipeName) }
-                ?: return error("output", recipeName))
+                ?: return null)
         ).shape(*shape.toTypedArray()) // set the shape of the recipe
             .apply { // add ingredients from the config
                 config.getConfigurationSection("ingredients")?.getKeys(false)?.forEach { key ->
                     ingredient(
                         key[0],
-                        config.getString("ingredients.$key.material")?.let { getInput(it) } ?: return error(
-                            "input",
-                            recipeName
-                        ))
+                        config.getString("ingredients.$key.material")?.let { getInput(it, recipeName) } ?: return null)
                 }
             }.shaped("edulis") // add recipe
     }
 
-    fun shapelessCraftingRecipes(config: ConfigurationSection, recipeName: String): Recipe? {
+    private fun shapelessCraftingRecipes(config: ConfigurationSection, recipeName: String): Recipe? {
         return CraftRecipe.builder(
             recipeName,
             // set the output item or material
             ItemStack(config.getConfigurationSection("result")?.let { createItem(it, recipeName) }
-                ?: return error("output", recipeName))
+                ?: return null)
         ).apply { // add ingredients from the config
             config.getStringList("ingredients").forEach { ingredientMaterial ->
-                ingredient(getInput(ingredientMaterial) ?: return error("input", recipeName))
+                ingredient(getInput(ingredientMaterial, recipeName) ?: return null)
             }
         }.shapeless("edulis") // add recipe
     }
@@ -59,22 +56,11 @@ object CreateRecipes {
     fun cookRecipes(config: ConfigurationSection, recipeName: String): CookRecipe? {
         return CookRecipe.builder(
             recipeName,
-            config.getString("input.material")?.let { getInput(it) } ?: return cookError("input", recipeName),
+            config.getString("input.material")?.let { getInput(it, recipeName) } ?: return null,
             ItemStack(config.getConfigurationSection("result")?.let { createItem(it, recipeName) }
-                ?: return cookError("output", recipeName)),
+                ?: return null),
             config.getInt("cookTime"),
             config.getDouble("xp").toFloat()
         ).smoke("edulis") // add recipes
-    }
-
-    // erm
-    fun error(type: String, recipeName: String): Recipe? {
-        log.error("Invalid $type material for crafting recipe: $recipeName")
-        return null
-    }
-
-    fun cookError(type: String, recipeName: String): CookRecipe? {
-        log.error("Invalid $type material for smelting recipe: $recipeName")
-        return null
     }
 }

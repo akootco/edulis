@@ -2,24 +2,36 @@ package co.akoot.plugins.edulis.util
 
 import co.akoot.plugins.bluefox.util.Txt
 import co.akoot.plugins.edulis.Edulis.Companion.log
-import co.akoot.plugins.edulis.util.loaders.ItemLoader.Companion.foodKey
+import co.akoot.plugins.edulis.Edulis.Companion.pluginEnabled
 import co.akoot.plugins.plushies.util.builders.FoodBuilder
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
 import com.dre.brewery.api.BreweryApi
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.Tag
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.RecipeChoice
+import org.bukkit.persistence.PersistentDataType
 import java.util.*
+import kotlin.collections.HashMap
 
 object CreateItem {
 
     val resolvedResults: MutableMap<String, ItemStack> = HashMap()
+    val pendingRecipes: MutableSet<String> = mutableSetOf()
+
+    val foodKey = NamespacedKey("edulis", "food")
+
+    fun getItemPDC(item: ItemStack): String? {
+        val meta = item.itemMeta
+        val id = meta.persistentDataContainer.get(foodKey, PersistentDataType.STRING) ?: return null
+        return id
+    }
 
     // get recipe input items
-    fun getInput(item: String): RecipeChoice? {
+    fun getInput(item: String, recipeName: String): RecipeChoice? {
         return when {
             // items created by flugin™
             item.startsWith("edulis:") ->
@@ -29,11 +41,17 @@ object CreateItem {
 
             // brewery items
             item.startsWith("brewery:") -> {
-                BreweryApi.createBrewItem(
-                    BreweryApi.getRecipe(item.removePrefix("brewery:").replace("_", " ")),
-                    10
-                )?.let {
-                    RecipeChoice.ExactChoice(it)
+                // Check if the Brewery plugin is enabled
+                if (pluginEnabled("Brewery")) {
+                    BreweryApi.createBrewItem(BreweryApi.getRecipe(item.removePrefix("brewery:")
+                            .replace("_", " ")), 10
+                    )?.let { brewItem ->
+                        RecipeChoice.ExactChoice(brewItem)
+                    }
+                } else {
+                    pendingRecipes.add(recipeName.lowercase())
+                    log.info("recipe pending: $recipeName")
+                    return null
                 }
             }
 

@@ -11,14 +11,9 @@ import co.akoot.plugins.edulis.util.loaders.ConfigLoader.ingredientsConfig
 import co.akoot.plugins.edulis.util.loaders.ConfigLoader.itemsConfig
 import co.akoot.plugins.edulis.util.loaders.ConfigLoader.mobDropsConfig
 import co.akoot.plugins.edulis.util.loaders.ConfigLoader.smokerRecipesConfig
-import org.bukkit.NamespacedKey
 import org.bukkit.configuration.file.FileConfiguration
 
 class ItemLoader {
-
-    companion object {
-        val foodKey = NamespacedKey("edulis", "food")
-    }
 
     fun loadItems() {
         loadItem(itemsConfig, "items")

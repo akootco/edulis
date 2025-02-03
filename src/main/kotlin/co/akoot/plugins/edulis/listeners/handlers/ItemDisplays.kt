@@ -11,20 +11,20 @@ import org.bukkit.inventory.ItemStack
 object ItemDisplays {
     fun createDisplay(location: Location, age: Int, id: String) {
         val world = location.world ?: return
-        var itemDisplay: ItemDisplay? = null
 
-        for (entity in world.entities) {
-            if (entity is ItemDisplay && entity.location.distanceSquared(location) < 0.5) {
-                itemDisplay = entity
-                break
-            }
-        }
-        if (itemDisplay == null) {
-            itemDisplay = world.spawnEntity(location.clone().add(0.5, 0.5, 0.5), EntityType.ITEM_DISPLAY) as ItemDisplay
-        }
+        val itemDisplay = world.spawnEntity(location.clone().add(0.5, 0.5, 0.5),
+            EntityType.ITEM_DISPLAY) as ItemDisplay
 
         val cmd = cropsConfig.getInt("overlays.$id.$age", 0)
 
         itemDisplay.setItemStack(ItemBuilder.builder(ItemStack(Material.BARRIER)).customModelData(cmd).build())
+    }
+
+    fun removeDisplay(location: Location) {
+        for (entity in location.world.entities) {
+            if (entity is ItemDisplay && entity.location.distanceSquared(location) < 0.5) {
+                entity.remove()
+            }
+        }
     }
 }

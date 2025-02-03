@@ -1,29 +1,30 @@
 package co.akoot.plugins.edulis
 
-import org.bukkit.Bukkit
 import co.akoot.plugins.bluefox.api.FoxPlugin
-
 import co.akoot.plugins.edulis.commands.CovidCommand
 import co.akoot.plugins.edulis.commands.CureCommand
 import co.akoot.plugins.edulis.commands.FoodCommand
 import co.akoot.plugins.edulis.commands.ImmuneCommand
-import co.akoot.plugins.edulis.listeners.Block
-
+import co.akoot.plugins.edulis.listeners.BlockEvent
 import co.akoot.plugins.edulis.listeners.MobDrops
-import co.akoot.plugins.edulis.listeners.Player
-
-import co.akoot.plugins.edulis.util.loaders.ConfigLoader
+import co.akoot.plugins.edulis.listeners.PlayerEvent
+import co.akoot.plugins.edulis.listeners.PluginEvent
 import co.akoot.plugins.edulis.util.brewery.BrewItems
-import co.akoot.plugins.edulis.util.brewery.BrewRecipes
-
+import co.akoot.plugins.edulis.util.loaders.ConfigLoader
 import com.dre.brewery.recipe.PluginItem
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger.logger
+import org.bukkit.Bukkit
 
 
 class Edulis : FoxPlugin("edulis") {
 
     companion object {
         val log = logger("Edulis")
+
+        fun pluginEnabled(name: String): Boolean {
+            val plugin = Bukkit.getPluginManager().getPlugin(name)
+            return plugin != null && plugin.isEnabled
+        }
     }
 
     override fun load() {
@@ -50,8 +51,8 @@ class Edulis : FoxPlugin("edulis") {
 
     override fun registerEvents() {
         registerEventListener(MobDrops())
-        registerEventListener(Player(this))
-        registerEventListener(BrewRecipes())
-        registerEventListener(Block())
+        registerEventListener(PlayerEvent(this))
+        registerEventListener(PluginEvent())
+        registerEventListener(BlockEvent())
     }
 }
