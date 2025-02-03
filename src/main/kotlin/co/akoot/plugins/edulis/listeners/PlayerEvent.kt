@@ -3,7 +3,7 @@ package co.akoot.plugins.edulis.listeners
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.giveCovid
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.resumeCovid
-import co.akoot.plugins.edulis.util.CreateItem.foodKey
+import co.akoot.plugins.edulis.util.CreateItem.getItemPDC
 import co.akoot.plugins.edulis.util.CreateItem.resolvedResults
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -17,7 +17,6 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerRespawnEvent
-import org.bukkit.persistence.PersistentDataType
 
 class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
@@ -37,21 +36,19 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
         val player = event.player
 
         if (block?.type == Material.STONECUTTER && event.action == Action.RIGHT_CLICK_BLOCK) {
-            val itemMeta = player.inventory.itemInMainHand.itemMeta?: return
-            val id = itemMeta.persistentDataContainer.get(foodKey, PersistentDataType.STRING)
-            giveSlice(event, id?: return, block, event.player)
+            val id = getItemPDC(player.inventory.itemInMainHand)?: return
+            giveSlice(event, id, block, event.player)
         }
     }
 
     @EventHandler
     fun itemConsume(event: PlayerItemConsumeEvent) {
         val player = event.player
-        val pdc = event.item.itemMeta.persistentDataContainer
         // is it a flugin item?
-        val itemId = pdc.get(foodKey, PersistentDataType.STRING)
+        val itemId = getItemPDC(player.inventory.itemInMainHand)?: return
 
         // more importantly, is it a bat wing
-        if (itemId != null && itemId.contains("bat_wing")) {
+        if (itemId.contains("bat_wing")) {
             giveCovid(player, plugin)
         }
     }

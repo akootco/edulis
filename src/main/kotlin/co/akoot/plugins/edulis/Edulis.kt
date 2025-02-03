@@ -15,7 +15,6 @@ import com.dre.brewery.recipe.PluginItem
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger.logger
 import org.bukkit.Bukkit
 
-
 class Edulis : FoxPlugin("edulis") {
 
     companion object {
