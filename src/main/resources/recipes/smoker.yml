@@ -1,0 +1,156 @@
+recipes:
+  chimichanga:
+    input:
+      material: edulis:burrito
+    xp: 0.35
+    cookTime: 200
+    result:
+      material: ROTTEN_FLESH
+      customModelData: 9
+      amount: 1
+      itemName: "Chimichanga"
+      food:
+        saturation: 0.8
+        hunger: 12
+        eatTime: 2
+        isSnack: true
+
+  cooked_pufferfish:
+    input:
+      material: PUFFERFISH
+    xp: 0.35
+    cookTime: 200
+    result:
+      material: PUFFERFISH
+      customModelData: 1
+      amount: 1
+      itemName: "Cooked Pufferfish"
+      food:
+        saturation: 0.8
+        hunger: 12
+        eatTime: 2
+        isSnack: false
+
+  pork_rinds:
+    input:
+      material: COOKED_PORKCHOP
+    xp: 0.35
+    cookTime: 80
+    result:
+      material: PRISMARINE_CRYSTALS
+      customModelData: 11
+      amount: 8
+      itemName: "Pork Rinds"
+      food:
+        saturation: 0.8
+        hunger: 3
+        eatTime: 1
+        isSnack: true
+
+  cooked_goat:
+    input:
+      material: edulis:raw_goat
+    xp: 0.35
+    cookTime: 200
+    result:
+      material: COOKED_MUTTON
+      customModelData: 1
+      amount: 1
+      itemName: "Cooked Goat Meat"
+      food:
+        saturation: 0.8
+        hunger: 3
+        eatTime: 1
+        isSnack: true
+
+  cooked_frog_leg_warm:
+    input:
+      material: edulis:frog_leg_warm
+    xp: 0.35
+    cookTime: 200
+    result:
+      material: ROTTEN_FLESH
+      customModelData: 4
+      amount: 1
+      itemName: "Cooked Frog Leg"
+      food:
+        saturation: 0.8
+        hunger: 4
+        eatTime: 1
+        isSnack: false
+      effects:
+        - JUMP_BOOST/94/10/0.5/true
+      lore:
+        - "Jump!"
+
+  cooked_frog_leg_temperate:
+    input:
+      material: edulis:frog_leg_temperate
+    xp: 0.35
+    cookTime: 200
+    result:
+      material: ROTTEN_FLESH
+      customModelData: 4
+      amount: 1
+      itemName: "Cooked Frog Leg"
+      food:
+        saturation: 0.8
+        hunger: 4
+        eatTime: 1
+        isSnack: false
+      effects:
+        - JUMP_BOOST/94/10/0.5/true
+      lore:
+        - "Jump!"
+
+  cooked_frog_leg_cold:
+    input:
+      material: edulis:frog_leg_cold
+    xp: 0.35
+    cookTime: 200
+    result:
+      material: ROTTEN_FLESH
+      customModelData: 4
+      amount: 1
+      itemName: "Cooked Frog Leg"
+      food:
+        saturation: 0.8
+        hunger: 4
+        eatTime: 1
+        isSnack: false
+      effects:
+        - JUMP_BOOST/94/10/0.5/true
+      lore:
+        - "Jump!"
+
+  cooked_veal:
+    input:
+      material: edulis:raw_veal
+    xp: 0.35
+    cookTime: 200
+    result:
+      material: COOKED_BEEF
+      customModelData: 1
+      amount: 1
+      itemName: "Cooked Veal"
+      food:
+        saturation: 0.8
+        hunger: 3
+        eatTime: 1
+        isSnack: true
+
+  pizza:
+    input:
+      material: edulis:raw_pizza
+    xp: 0.50
+    cookTime: 200
+    result:
+      material: SUGAR
+      customModelData: 12
+      amount: 1
+      itemName: "Pizza"
+      food:
+        saturation: 0.8
+        hunger: 3
+        eatTime: 1
+        isSnack: true

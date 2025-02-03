@@ -1,0 +1,25 @@
+items:
+  netherite_cleaver:
+    material: NETHERITE_AXE
+    customModelData: 1
+    itemName: "Netherite Cleaver"
+
+  lemons:
+    material: PLAYER_HEAD
+    textures: "957fd56ca15978779324df519354b6639a8d9bc1192c7c3de925a329baef6c"
+    itemName: "Lemon"
+
+  peach:
+    material: PLAYER_HEAD
+    textures: "b008e7a99d224f678d67bb54d6eadea76b33798a19ae292265183feaa22901c7"
+    itemName: "Peach"
+
+  orange:
+    material: PLAYER_HEAD
+    textures: "9fd0e330a688d8bb9519befe1bfc34337b371ac75150216fdd03959eb7b44"
+    itemName: "Orange"
+
+  stove:
+    itemName: "Stove"
+    material: STRUCTURE_VOID
+    customModelData: 1

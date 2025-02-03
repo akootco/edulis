@@ -1,0 +1,88 @@
+drops:
+
+  tentacle:
+    mob: SQUID
+    material: INK_SAC
+    max_amount: 6
+    itemName: "Tentacle"
+    customModelData: 1
+    food:
+      saturation: 1
+      hunger: 1
+      eatTime: 1
+      isSnack: true
+
+  glow_tentacle:
+    mob: GLOW_SQUID
+    material: edulis:tentacle
+    max_amount: 6
+
+  raw_goat:
+    mob: GOAT
+    material: MUTTON
+    max_amount: 5
+    itemName: "Raw Goat"
+    cooked_item: cooked_goat
+    customModelData: 1
+
+  bat_wing:
+    mob: BAT
+    material: FEATHER
+    max_amount: 2
+    itemName: "Bat Wing"
+    customModelData: 1
+    food:
+      saturation: 1
+      hunger: 1
+      eatTime: 1
+      isSnack: true
+
+
+  frog_leg_warm:
+    mob: FROG.WARM
+    material: ROTTEN_FLESH
+    cooked_item: cooked_frog_leg_warm
+    itemName: "Raw Frog Leg"
+    customModelData: 1
+    max_amount: 4
+    food:
+      saturation: 1
+      hunger: 1
+      eatTime: 1
+      isSnack: true
+
+
+  frog_leg_temperate:
+    mob: FROG.TEMPERATE
+    material: ROTTEN_FLESH
+    cooked_item: cooked_frog_leg_warm
+    itemName: "Raw Frog Leg"
+    customModelData: 2
+    max_amount: 4
+    food:
+      saturation: 1
+      hunger: 1
+      eatTime: 1
+      isSnack: true
+
+
+  frog_leg_cold:
+    mob: FROG.COLD
+    material: ROTTEN_FLESH
+    cooked_item: cooked_frog_leg_warm
+    itemName: "Raw Frog Leg"
+    customModelData: 3
+    max_amount: 4
+    food:
+      saturation: 1
+      hunger: 1
+      eatTime: 1
+      isSnack: true
+
+  raw_veal:
+    mob: COW.baby
+    material: BEEF
+    max_amount: 4
+    cooked_item: cooked_veal
+    itemName: "Raw Veal"
+    customModelData: 1

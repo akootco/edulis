@@ -1,0 +1,1203 @@
+recipes:
+
+  loaded_baked_potato:
+    result:
+      material: BAKED_POTATO
+      customModelData: 1
+      food:
+        tp: 5
+        sound:
+          burp: entity.ambient.goat
+          eat: entity.wolf.ambient
+    shape:
+      - "BBB"
+      - "BAB"
+      - "BBB"
+    ingredients:
+      A:
+        material: APPLE
+      B:
+        material: GOLD_BLOCK
+
+  birthday_cake:
+    result:
+      itemName: "Birthday Cake"
+      lore:
+        - "Happy Birthday!"
+      glint: true
+      material: CAKE
+      customModelData: 10
+      amount: 1
+    shape:
+      - "DDD"
+      - "ECE"
+      - "AFA"
+    ingredients:
+      A:
+        material: WHEAT
+      C:
+        material: edulis:strawberries
+      D:
+        material: MILK_BUCKET
+      E:
+        material: SUGAR
+      F:
+        material: DIAMOND
+
+  enchanted_golden_apple:
+    result:
+      material: ENCHANTED_GOLDEN_APPLE
+    shape:
+      - "BBB"
+      - "BAB"
+      - "BBB"
+    ingredients:
+      A:
+        material: APPLE
+      B:
+        material: GOLD_BLOCK
+
+  purple_carrot_on_a_stick:
+    result:
+      material: CARROT_ON_A_STICK
+      customModelData: 1
+      itemName: "Purple Carrot on a Stick"
+    shape:
+      - "   "
+      - "B  "
+      - " A "
+    ingredients:
+      A:
+        material: edulis:purple_carrot
+      B:
+        material: FISHING_ROD
+
+  potato_on_a_stick:
+    result:
+      material: CARROT_ON_A_STICK
+      customModelData: 2
+      itemName: "Potato on a Stick"
+    shape:
+      - "   "
+      - "B  "
+      - " A "
+    ingredients:
+      A:
+        material: POTATO
+      B:
+        material: FISHING_ROD
+
+  iron_cleaver:
+    result:
+      material: IRON_AXE
+      customModelData: 1
+      itemName: "Iron Cleaver"
+    shape:
+      - "   "
+      - " A "
+      - "B  "
+    ingredients:
+      A:
+        material: IRON_INGOT
+      B:
+        material: STICK
+
+  diamond_cleaver:
+    result:
+      material: DIAMOND_AXE
+      customModelData: 1
+      itemName: "Diamond Cleaver"
+    shape:
+      - "   "
+      - " A "
+      - "B  "
+    ingredients:
+      A:
+        material: DIAMOND
+      B:
+        material: STICK
+
+  picnic_basket:
+    result:
+      material: PLAYER_HEAD
+      textures: "aeb46410a135b2026368d2fbbaa62e7642efb3c4bb0f62dd9f5530d1846ce0d6"
+      itemName: "Picnic Basket"
+    shape:
+      - "   "
+      - " CA"
+      - " BB"
+    ingredients:
+      A:
+        material: tag.WOOL
+      B:
+        material: tag.PLANKS
+      C:
+        material: ENDER_EYE
+
+  charcoal_block:
+    result:
+      itemName: "Block of Charcoal"
+      material: COAL_BLOCK
+    shape:
+      - "AAA"
+      - "AAA"
+      - "AAA"
+    ingredients:
+      A:
+        material: CHARCOAL
+
+  charcoal:
+    result:
+      material: CHARCOAL
+      amount: 9
+    ingredients:
+      - edulis:charcoal_block
+
+  cookie_stack:
+    result:
+      material: PLAYER_HEAD
+      textures: "2755644ee5a7608e1765963a3199b6b27724fd4b40301156010a581cdd8faafe"
+      itemName: "Cookies"
+      food:
+        saturation: 14
+        hunger: 10
+        eatTime: 2
+        isSnack: true
+    shape:
+      - "AAA"
+      - "AAA"
+      - "AAA"
+    ingredients:
+      A:
+        material: COOKIE
+
+  cookie:
+    result:
+      material: COOKIE
+      amount: 9
+    ingredients:
+      - edulis:cookie_stack
+      - edulis:cookie_stack
+      - edulis:cookie_stack
+      - edulis:cookie_stack
+
+  bread_basket:
+    result:
+      material: PLAYER_HEAD
+      textures: "e008c50f7fc3fb589995252ec8fd02020816e44b0525647041365a5399fc8719"
+      itemName: "Bread Basket"
+      food:
+        saturation: 14
+        hunger: 10
+        eatTime: 2
+        isSnack: true
+    shape:
+      - "   "
+      - "AAA"
+      - " A "
+    ingredients:
+      A:
+        material: BREAD
+
+  burger:
+    result:
+      material: PLAYER_HEAD
+      textures: "58bad2c2d483741ae0a7b4a4bf43421270b0e5deb464d4f85fd7688b1a60b4e9"
+      itemName: "Big Mac"
+      food:
+        saturation: 14
+        hunger: 10
+        eatTime: 2
+        isSnack: true
+        crumbs: false
+      attributes:
+        - GENERIC_SCALE/-0.5
+    shape:
+      - "   "
+      - " AB"
+      - "   "
+    ingredients:
+      A:
+        material: BROWN_MUSHROOM
+      B:
+        material: DIAMOND
+
+  chocolate:
+    result:
+      material: BRICK
+      customModelData: 1
+      itemName: "Chocolate"
+    shape:
+      - "   "
+      - "AAA"
+      - "   "
+    ingredients:
+      A:
+        material: COCOA_BEANS
+
+  magic_brown_mushroom:
+    result:
+      material: APPLE
+      customModelData: 999
+      itemName: "Magic Mushroom"
+      glint: true
+      lore:
+        - hi
+      food:
+        saturation: 14
+        hunger: 10
+        eatTime: 2
+        isSnack: true
+        return: STONE
+      attributes:
+        - GENERIC_SCALE/-0.5
+    shape:
+      - "   "
+      - " AB"
+      - "   "
+    ingredients:
+      A:
+        material: BROWN_MUSHROOM
+      B:
+        material: DIAMOND
+
+  magic_red_mushroom:
+    result:
+      material: APPLE
+      customModelData: 998
+      itemName: "Magic Mushroom"
+      glint: true
+      food:
+        saturation: 14
+        hunger: 10
+        eatTime: 2
+        isSnack: true
+      attributes:
+        - GENERIC_SCALE/+0.5
+    shape:
+      - "   "
+      - " AB"
+      - "   "
+    ingredients:
+      A:
+        material: RED_MUSHROOM
+      B:
+        material: DIAMOND
+
+
+
+  burrito:
+    result:
+      material: ROTTEN_FLESH
+      customModelData: 5
+      itemName: "Burrito"
+      glint: true
+      food:
+        saturation: 14
+        hunger: 10
+        eatTime: 2
+        isSnack: false
+      effect:
+        type: STRENGTH
+        level: 2
+        duration: 180
+        chance: .2
+        particles: true
+    shape:
+      - "ABA"
+      - "DCE"
+      - "FFF"
+    ingredients:
+      A:
+        material: edulis:cheese
+      B:
+        material: edulis:lettuce
+      C:
+        material: COOKED_PORKCHOP
+      D:
+        material: edulis:rice
+      E:
+        material: edulis:red_beans
+      F:
+        material: WHEAT
+
+  hotdog:
+    result:
+      material: ROTTEN_FLESH
+      customModelData: 6
+      itemName: "Hot Dog"
+      food:
+        saturation: 14
+        hunger: 10
+        eatTime: 2
+        isSnack: false
+    shape:
+      - "*B*"
+      - "*A*"
+      - "*B*"
+    ingredients:
+      A:
+        material: COOKED_PORKCHOP
+      B:
+        material: BREAD
+
+  kebab:
+    result:
+      material: BONE
+      customModelData: 1
+      itemName: "Kebab"
+      food:
+        saturation: 14
+        hunger: 10
+        eatTime: 2
+        isSnack: false
+    shape:
+      - "**B"
+      - "*C*"
+      - "A**"
+    ingredients:
+      A:
+        material: STICK
+      B:
+        material: COOKED_BEEF
+      C:
+        material: POTATO
+
+  mustard_hotdog:
+    result:
+      material: ROTTEN_FLESH
+      customModelData: 7
+      itemName: "Mustard Hot Dog"
+      food:
+        saturation: 14
+        hunger: 10
+        eatTime: 2
+        isSnack: false
+    shape:
+      - "*B*"
+      - "CAC"
+      - "*B*"
+    ingredients:
+      A:
+        material: COOKED_PORKCHOP
+      B:
+        material: BREAD
+      C:
+        material: edulis:mustard_seeds
+
+  pesto_pasta:
+    result:
+      material: BEETROOT_SOUP
+      customModelData: 1
+      itemName: "Pesto Pasta"
+      food:
+        saturation: 8
+        hunger: 8
+        eatTime: 2
+        isSnack: false
+    shape:
+      - "*A*"
+      - "*B*"
+      - "*C*"
+    ingredients:
+      A:
+        material: edulis:basil
+      B:
+        material: edulis:dough
+      C:
+        material: BOWL
+
+  bat_wing_soup:
+    result:
+      material: BEETROOT_SOUP
+      customModelData: 3
+      itemName: "Bat Wing Soup"
+      food:
+        saturation: 8
+        hunger: 8
+        eatTime: 2
+        isSnack: false
+    shape:
+      - "***"
+      - "*B*"
+      - "*C*"
+    ingredients:
+      B:
+        material: edulis:bat_wing
+      C:
+        material: BOWL
+
+  squid_pasta:
+    result:
+      material: BEETROOT_SOUP
+      customModelData: 4
+      itemName: "Squid Ink Pasta"
+      food:
+        saturation: 8
+        hunger: 8
+        eatTime: 2
+        isSnack: false
+    shape:
+      - "*A*"
+      - "*B*"
+      - "*C*"
+    ingredients:
+      A:
+        material: edulis:tentacle
+      B:
+        material: edulis:dough
+      C:
+        material: BOWL
+
+
+
+  strawberry_short_cake:
+    result:
+      material: CAKE
+      stackSize: 1
+      customModelData: 1
+      itemName: "Strawberry Shortcake"
+      lore:
+        - "The first item created for food plugin"
+      amount: 1
+    shape:
+      - "DDD"
+      - "ECE"
+      - "AAA"
+    ingredients:
+      A:
+        material: WHEAT
+      C:
+        material: edulis:strawberries
+      D:
+        material: MILK_BUCKET
+      E:
+        material: SUGAR
+
+  blueberry_cake:
+    result:
+      material: CAKE
+      stackSize: 1
+      customModelData: 2
+      itemName: "Blueberry Cake"
+      lore:
+        - "I miss Blueberry"
+    shape:
+      - "DDD"
+      - "ECE"
+      - "AAA"
+    ingredients:
+      A:
+        material: WHEAT
+      C:
+        material: edulis:blueberries
+      D:
+        material: MILK_BUCKET
+      E:
+        material: SUGAR
+
+  carrot_cake:
+    result:
+      material: CAKE
+      stackSize: 1
+      customModelData: 3
+      itemName: "Carrot Cake"
+    shape:
+      - "DDD"
+      - "ECE"
+      - "AAA"
+    ingredients:
+      A:
+        material: WHEAT
+      C:
+        material: CARROT
+      D:
+        material: MILK_BUCKET
+      E:
+        material: SUGAR
+
+  red_velvet_cake:
+    result:
+      material: CAKE
+      stackSize: 1
+      customModelData: 4
+      itemName: "Red Velvet Cake"
+    shape:
+      - "DDD"
+      - "ECE"
+      - "AAA"
+    ingredients:
+      A:
+        material: WHEAT
+      C:
+        material: RED_DYE
+      D:
+        material: MILK_BUCKET
+      E:
+        material: SUGAR
+
+  fruit_cake:
+    result:
+      material: CAKE
+      stackSize: 1
+      customModelData: 5
+      itemName: "Fruit Cake"
+    shape:
+      - "DBD"
+      - "ECE"
+      - "AAA"
+    ingredients:
+      A:
+        material: WHEAT
+      B:
+        material: GOLDEN_APPLE
+      C:
+        material: APPLE
+      D:
+        material: MILK_BUCKET
+      E:
+        material: SUGAR
+
+  chocolate_cake:
+    result:
+      material: CAKE
+      stackSize: 1
+      customModelData: 6
+      itemName: "Chocolate Cake"
+      lore:
+        - "Made of pure chocolate happiness"
+    shape:
+      - "DDD"
+      - "ECE"
+      - "AAA"
+    ingredients:
+      A:
+        material: WHEAT
+      C:
+        material: edulis:chocolate
+      D:
+        material: MILK_BUCKET
+      E:
+        material: SUGAR
+
+  german_chocolate_cake:
+    result:
+      material: CAKE
+      stackSize: 1
+      customModelData: 7
+      itemName: "German Chocolate Cake"
+    shape:
+      - "DBD"
+      - "ECE"
+      - "AAA"
+    ingredients:
+      A:
+        material: WHEAT
+      B:
+        material: edulis:almonds
+      C:
+        material: edulis:chocolate
+      D:
+        material: MILK_BUCKET
+      E:
+        material: SUGAR
+
+  yoyle_cake:
+    result:
+      material: CAKE
+      stackSize: 1
+      customModelData: 8
+      itemName: "Yoylecake"
+      lore:
+        - "Â§7Made from Yoyleberries!"
+    shape:
+      - "DDD"
+      - "ECF"
+      - "AAA"
+    ingredients:
+      A:
+        material: WHEAT
+      C:
+        material: edulis:yoyleberry
+      D:
+        material: MILK_BUCKET
+      E:
+        material: LIME_DYE
+      F:
+        material: ORANGE_DYE
+
+
+  lemon_cake:
+    result:
+      material: CAKE
+      stackSize: 1
+      customModelData: 9
+      itemName: "Lemon Cake"
+    shape:
+      - "DDD"
+      - "ECE"
+      - "AAA"
+    ingredients:
+      A:
+        material: WHEAT
+      C:
+        material: edulis:lemons_fruit
+      D:
+        material: MILK_BUCKET
+      E:
+        material: SUGAR
+
+  keylime_pie:
+    result:
+      material: PUMPKIN_PIE
+      stackSize: 1
+      customModelData: 1
+      itemName: "Key Lime Pie"
+      food:
+        saturation: 8
+        hunger: 8
+        eatTime: 2
+        isSnack: false
+        particles:
+    shape:
+      - "DA*"
+      - "*C*"
+      - "***"
+    ingredients:
+      A:
+        material: EGG
+      C:
+        material: SUGAR
+      D:
+        material: edulis:limes
+
+  cheese_cake:
+    result:
+      material: PUMPKIN_PIE
+      stackSize: 1
+      customModelData: 2
+      itemName: "Cheesecake"
+      lore:
+        - "Don't let the rats get to it"
+    shape:
+      - "DA*"
+      - "*C*"
+      - "***"
+    ingredients:
+      A:
+        material: EGG
+      C:
+        material: SUGAR
+      D:
+        material: edulis:cheese
+
+  greentea_mochi:
+    result:
+      material: PRISMARINE_CRYSTALS
+      customModelData: 1
+      itemName: "Green Tea Mochi Ice Cream"
+      food:
+        saturation: 0.8
+        hunger: 4
+        eatTime: 1
+        isSnack: true
+    shape:
+      - "*A*"
+      - "ADA"
+      - "*A*"
+    ingredients:
+      A:
+        material: edulis:rice
+      D:
+        material: edulis:green_tea_leaves
+
+  cherry_mochi:
+    result:
+      material: PRISMARINE_CRYSTALS
+      customModelData: 2
+      itemName: "Cherry Mochi Ice Cream"
+      food:
+        saturation: 0.8
+        hunger: 4
+        eatTime: 1
+        isSnack: true
+    shape:
+      - "*A*"
+      - "ADA"
+      - "*A*"
+    ingredients:
+      A:
+        material: edulis:rice
+      D:
+        material: PINK_PETALS
+
+  redbean_mochi:
+    result:
+      material: PRISMARINE_CRYSTALS
+      customModelData: 3
+      itemName: "Red Bean Mochi Ice Cream"
+      food:
+        saturation: 0.8
+        hunger: 4
+        eatTime: 1
+        isSnack: true
+    shape:
+      - "*A*"
+      - "ADA"
+      - "*A*"
+    ingredients:
+      A:
+        material: edulis:rice
+      D:
+        material: edulis:red_beans
+
+  white_choc_cookie:
+    result:
+      material: COOKIE
+      customModelData: 1
+      itemName: "White Chocolate Chip Cookie"
+      lore:
+        - "Super sweet"
+      food:
+        saturation: 0.6
+        hunger: 3
+        eatTime: 1
+        isSnack: true
+    shape:
+      - "***"
+      - "ADA"
+      - "***"
+    ingredients:
+      A:
+        material: WHEAT
+      D:
+        material: edulis:white_chocolate
+
+  dark_white_choc_cookie:
+    result:
+      material: COOKIE
+      customModelData: 2
+      itemName: "Dark Chocolate White Chocolate Chip Cookie"
+      lore:
+        - "Juxtaposition"
+      food:
+        saturation: 0.6
+        hunger: 3
+        eatTime: 1
+        isSnack: true
+    shape:
+      - "***"
+      - "ADC"
+      - "***"
+    ingredients:
+      A:
+        material: WHEAT
+      D:
+        material: edulis:dark_chocolate
+      C:
+        material: edulis:chocolate
+
+  double_chunk_cookie:
+    result:
+      material: COOKIE
+      customModelData: 3
+      itemName: "Double Chocolate Chip Cookie"
+      lore:
+        - "Redundant"
+      food:
+        saturation: 0.6
+        hunger: 3
+        eatTime: 1
+        isSnack: true
+    shape:
+      - "***"
+      - "ABC"
+      - "***"
+    ingredients:
+      A:
+        material: WHEAT
+      B:
+        material: edulis:chocolate
+      C:
+        material: edulis:dark_chocolate
+
+  mm_cookie:
+    result:
+      material: COOKIE
+      customModelData: 4
+      itemName: "M&M Cookie"
+      lore:
+        - "Colorful and flavorful!"
+      food:
+        saturation: 0.6
+        hunger: 3
+        eatTime: 1
+        isSnack: true
+    shape:
+      - "BDE"
+      - "ACA"
+      - "FGH"
+    ingredients:
+      A:
+        material: WHEAT
+      B:
+        material: RED_DYE
+      C:
+        material: edulis:chocolate
+      D:
+        material: BLUE_DYE
+      E:
+        material: PURPLE_DYE
+      F:
+        material: GREEN_DYE
+      G:
+        material: BROWN_DYE
+      H:
+        material: YELLOW_DYE
+
+  sugar_cookie:
+    result:
+      material: COOKIE
+      customModelData: 5
+      itemName: "Sugar Cookie"
+      food:
+        saturation: 0.6
+        hunger: 3
+        eatTime: 1
+        isSnack: true
+    shape:
+      - "***"
+      - "ACA"
+      - "***"
+    ingredients:
+      A:
+        material: WHEAT
+      C:
+        material: SUGAR
+
+  strawberry_macaron:
+    result:
+      material: COOKIE
+      customModelData: 6
+      itemName: "Strawberry Macaron"
+      food:
+        saturation: 0.8
+        hunger: 4
+        eatTime: 1
+        isSnack: true
+    shape:
+      - "***"
+      - "ACA"
+      - "***"
+    ingredients:
+      A:
+        material: WHEAT
+      C:
+        material: edulis:strawberries
+
+  blueberry_macaron:
+    result:
+      material: COOKIE
+      customModelData: 7
+      itemName: "Blueberry Macaron"
+      lore:
+        - "Blue and beautiful"
+      food:
+        saturation: 0.8
+        hunger: 4
+        eatTime: 1
+        isSnack: true
+    shape:
+      - "***"
+      - "ACA"
+      - "***"
+    ingredients:
+      A:
+        material: WHEAT
+      C:
+        material: edulis:blueberries
+
+  linzer_cookie:
+    result:
+      material: COOKIE
+      customModelData: 8
+      itemName: "Linzer Cookie"
+      lore:
+        - "Isn't it romantic?"
+      food:
+        saturation: 0.6
+        hunger: 3
+        eatTime: 1
+        isSnack: true
+    shape:
+      - "***"
+      - "ACA"
+      - "***"
+    ingredients:
+      A:
+        material: WHEAT
+      C:
+        material: SWEET_BERRIES
+
+  glow_berry_muffin:
+    result:
+      material: COOKIE
+      customModelData: 9
+      itemName: "Glowberry Muffin"
+      lore:
+        - "Are you glowing yet?"
+      food:
+        saturation: 1
+        hunger: 5
+        eatTime: 1
+        isSnack: true
+      effects:
+        - GLOWING/1/10/1/false
+    shape:
+      - "*B*"
+      - "ACA"
+      - "*D*"
+    ingredients:
+      A:
+        material: GLOW_BERRIES
+      B:
+        material: MILK_BUCKET
+      C:
+        material: WHEAT
+      D:
+        material: EGG
+
+  croissant:
+    result:
+      material: COOKIE
+      customModelData: 10
+      itemName: "Croissant"
+      lore:
+        - "EPIC"
+      food:
+        saturation: 1
+        hunger: 5
+        eatTime: 1
+        isSnack: true
+    shape:
+      - "*A*"
+      - "BCB"
+      - "*A*"
+    ingredients:
+      A:
+        material: WHEAT
+      B:
+        material: edulis:butter
+      C:
+        material: BREAD
+
+  marshmallow:
+    result:
+      material: BONE
+      customModelData: 2
+      itemName: "Marshmallows"
+      lore:
+        - "Golden browned"
+      food:
+        saturation: 0.6
+        hunger: 1
+        eatTime: 1
+        isSnack: true
+    shape:
+      - "**C"
+      - "*C*"
+      - "A**"
+    ingredients:
+      A:
+        material: STICK
+      C:
+        material: SUGAR
+
+  scallops:
+    result:
+      material: COD
+      customModelData: 1
+      itemName: "Scallops"
+      lore:
+        - "Seared to perfection"
+      food:
+        saturation: 7
+        hunger: 6
+        eatTime: 2
+        isSnack: true
+    shape:
+      - "***"
+      - "DDD"
+      - "***"
+    ingredients:
+      D:
+        material: COOKED_COD
+
+  beef_wellington:
+    result:
+      material: ROTTEN_FLESH
+      customModelData: 8
+      itemName: "Beef Wellington"
+      glint: true
+      food:
+        saturation: 14
+        hunger: 10
+        eatTime: 2
+        isSnack: false
+      commands:
+        - temp_tall
+      effect:
+        type: SLOWNESS
+        level: 3
+        duration: 15
+        chance: .1
+        particles: false
+    shape:
+      - "***"
+      - "BAB"
+      - "***"
+    ingredients:
+      A:
+        material: COOKED_BEEF
+      B:
+        material: BREAD
+
+  gumbo:
+    result:
+      material: BEETROOT_SOUP
+      customModelData: 2
+      itemName: "Gumbo"
+      glint: true
+      lore:
+        - "You gotta watch your gums on this"
+        - "But it's, it's very good, it's very healthy"
+      food:
+        saturation: 8
+        hunger: 6.5
+        eatTime: 3
+        isSnack: false
+        convertTo: BOWL
+      stackSize: 12
+      effects:
+        - REGENERATION/5/20/1
+        - SLOWNESS/2/20/1
+    shape:
+      - "ABC"
+      - "DEF"
+      - "GHI"
+    ingredients:
+      A:
+        material: PORKCHOP
+      B:
+        material: MANGROVE_LEAVES
+      C:
+        material: CHICKEN
+      D:
+        material: SWEET_BERRIES
+      E:
+        material: WATER_BUCKET
+      F:
+        material: BLAZE_POWDER
+      G:
+        material: WHEAT
+      H:
+        material: SUGAR
+      I:
+        material: ALLIUM
+
+  raw_pizza:
+    result:
+      material: PUMPKIN_PIE
+      stackSize: 1
+      customModelData: 3
+      itemName: "Raw Pizza"
+      glint: true
+      lore:
+        - "Fresh sliced peep-eroni"
+      food:
+        saturation: 20
+        hunger: 20
+        eatTime: 5
+        isSnack: false
+      effect:
+        type: GLOWING
+        duration: 30
+        chance: 1
+    shape:
+      - "CBC"
+      - "AAA"
+      - "DDD"
+    ingredients:
+      A:
+        material: edulis:tomato
+      B:
+        material: PORKCHOP
+      C:
+        material: edulis:cheese
+      D:
+        material: edulis:dough
+
+  whipped_cream_pie:
+    result:
+      material: PUMPKIN_PIE
+      stackSize: 1
+      customModelData: 4
+      itemName: "Whipped Cream Pie"
+      food:
+        saturation: 20
+        hunger: 20
+        eatTime: 5
+        isSnack: false
+    shape:
+      - "DA*"
+      - "*C*"
+      - "***"
+    ingredients:
+      A:
+        material: EGG
+      C:
+        material: SUGAR
+      D:
+        material: edulis:creamer
+
+  mre:
+    result:
+      material: BRICK
+      customModelData: 10
+      itemName: "MRE"
+      food:
+        saturation: 20
+        hunger: 20
+        eatTime: 5
+        isSnack: false
+    shape:
+      - "*A*"
+      - "D*B"
+      - "*C*"
+    ingredients:
+      A:
+        material: POTATO
+      B:
+        material: COOKIE
+      C:
+        material: CARROT
+      D:
+        material: COOKED_BEEF
+
+  super_burrito:
+    result:
+      material: ROTTEN_FLESH
+      customModelData: 10
+      itemName: "Super Burrito"
+      food:
+        saturation: 20
+        hunger: 20
+        eatTime: 5
+        isSnack: false
+    shape:
+      - "AAA"
+      - "AAA"
+      - "AAA"
+    ingredients:
+      A:
+        material: edulis:burrito

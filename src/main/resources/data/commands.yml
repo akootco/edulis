@@ -1,0 +1,14 @@
+commands:
+  sheriff_visc:
+    - command: 'tellraw @a {"text":"Sherrif Viscalis joined the game","color":"yellow"}'
+    - command: 'npc create Viscalis --nameplate false --temporaryticks 40 --at $LOCATION'
+    - command: 'npc setequipment HAND netherite_sword'
+    - command: 'npc attribute GENERIC_ATTACK_DAMAGE 100'
+    - command: 'npc target $PLAYER -a'
+    - command: 'tellraw @a {"text":"Sherrif Viscalis left the game","color":"yellow"}'
+      delay: 2
+
+  fakeban:
+    - command: 'ban $PLAYER it had to be done...'
+    - command: 'pardon $PLAYER'
+      delay: 3

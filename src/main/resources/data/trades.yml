@@ -1,0 +1,82 @@
+trades:
+  trade3:
+    buy:
+      type: EMERALD
+      amount: 1
+    sell:
+      type: edulis:lettuce
+      amount: 3
+
+  trade4:
+    buy:
+      type: EMERALD
+      amount: 8
+    sell:
+      type: edulis:lemons
+      amount: 2
+
+  trade5:
+    buy:
+      type: EMERALD
+      amount: 8
+    sell:
+      type: edulis:limes
+      amount: 2
+
+  trade6:
+    buy:
+      type: MILK_BUCKET
+      amount: 1
+    sell:
+      type: edulis:cheese
+      amount: 3
+
+  trade7:
+    buy:
+      type: EMERALD
+      amount: 6
+    sell:
+      type: edulis:rice
+      amount: 8
+
+  trade8:
+    buy:
+      type: COCOA_BEANS
+      amount: 16
+    sell:
+      type: edulis:red_beans
+      amount: 8
+
+  trade15:
+    buy:
+      type: STONE_AXE
+      amount: 1
+    sell:
+      type: edulis:butcher_knife
+      amount: 1
+
+  trade16:
+    buy:
+      type: EMERALD
+      amount: 1
+    sell:
+      type: edulis:garlic
+      amount: 1
+
+  trade17:
+    buy:
+      type: EMERALD
+      amount: 4
+    sell:
+      type: edulis:coffee_beans
+      amount: 2
+
+
+wandering:
+  trade1:
+    buy:
+      type: EMERALD
+      amount: 3
+    sell:
+      type: edulis:yoyleberry
+      amount: 4

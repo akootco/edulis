@@ -1,0 +1,173 @@
+ingredients:
+
+
+  purple_carrot:
+    material: CARROT
+    customModelData: 1
+    itemName: "Purple Carrot"
+
+  red_grapes:
+    material: SWEET_BERRIES
+    customModelData: 7
+    itemName: "Red Grapes"
+
+  white_grapes:
+    material: SWEET_BERRIES
+    customModelData: 8
+    itemName: "White Grapes"
+
+  chili_pepper:
+    material: CARROT
+    customModelData: 2
+    itemName: "Chili Pepper"
+
+  cherries:
+    material: GLOW_BERRIES
+    customModelData: 1
+    itemName: "Cherries"
+
+  strawberries:
+    material: SWEET_BERRIES
+    customModelData: 1
+    itemName: "Strawberries"
+
+  blueberries:
+    material: SWEET_BERRIES
+    customModelData: 2
+    itemName: "Blueberries"
+
+  peas:
+    material: SWEET_BERRIES
+    customModelData: 3
+    itemName: "Peas"
+
+  lemons_fruit:
+    material: SWEET_BERRIES
+    customModelData: 4
+    itemName: "Lemons"
+
+  goat_milk:
+    material: MILK_BUCKET
+    itemName: "Goat Milk"
+    food:
+      animation: DRINK
+      sound:
+        burp: entity.ambient.goat
+
+  limes:
+    material: SWEET_BERRIES
+    customModelData: 5
+    itemName: "Limes"
+
+
+  cheese:
+    material: BRICK
+    customModelData: 5
+    itemName: "Cheese"
+    food:
+      saturation: 2
+      hunger: 4
+      eatTime: 1
+      isSnack: false
+
+  creamer:
+    material: BRICK
+    customModelData: 6
+    itemName: "Creamer"
+    food:
+      saturation: 2
+      hunger: 4
+      eatTime: 1
+      isSnack: false
+
+  tomato:
+    material: SNOWBALL
+    customModelData: 1
+    itemName: "Tomato"
+    lore:
+      - "Is it a fruit?"
+
+
+  butter:
+    material: BRICK
+    customModelData: 4
+    itemName: "Butter"
+
+
+  basil:
+    material: KELP
+    customModelData: 3
+    itemName: "Basil"
+
+  dough:
+    material: SLIME_BALL
+    customModelData: 1
+    itemName: "Dough"
+
+  white_chocolate:
+    material: BRICK
+    customModelData: 2
+    itemName: "White Chocolate"
+
+
+  dark_chocolate:
+    material: BRICK
+    customModelData: 3
+    itemName: "Dark Chocolate"
+    lore:
+      - "Bitter"
+
+
+  lettuce:
+    material: KELP
+    customModelData: 2
+    itemName: "Lettuce"
+    saturation: 1
+    hunger: 1
+    eatTime: 1
+    isSnack: true
+
+
+  rice:
+    material: PRISMARINE_CRYSTALS
+    customModelData: 4
+    itemName: "Rice"
+
+  green_tea_leaves:
+    material: KELP
+    customModelData: 1
+    itemName: "Green Tea Leaves"
+
+
+  mustard_seeds:
+    material: PRISMARINE_CRYSTALS
+    customModelData: 5
+    itemName: "Mustard Seeds"
+
+
+  almonds:
+    material: PRISMARINE_CRYSTALS
+    customModelData: 6
+    itemName: "Almonds"
+
+
+  red_beans:
+    material: PRISMARINE_CRYSTALS
+    customModelData: 7
+    itemName: "Red Beans"
+
+
+  yoyleberry:
+    material: SWEET_BERRIES
+    itemName: "Yoyleberry"
+    customModelData: 6
+
+  garlic:
+    material: PRISMARINE_CRYSTALS
+    customModelData: 10
+    itemName: "Garlic"
+
+  coffee_beans:
+    material: BRICK
+    customModelData: 8
+    itemName: "Coffee Beans"
