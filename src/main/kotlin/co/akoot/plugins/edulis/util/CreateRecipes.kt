@@ -56,7 +56,7 @@ object CreateRecipes {
     fun cookRecipes(config: ConfigurationSection, recipeName: String): CookRecipe? {
         return CookRecipe.builder(
             recipeName,
-            config.getString("input.material")?.let { getInput(it, recipeName) } ?: return null,
+            config.getString("input")?.let { getInput(it, recipeName) } ?: return null,
             ItemStack(config.getConfigurationSection("result")?.let { createItem(it, recipeName) }
                 ?: return null),
             config.getInt("cookTime"),

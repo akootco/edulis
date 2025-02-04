@@ -129,16 +129,15 @@ object CreateItem {
         if (config.contains("food")) {
             val foodItem = FoodBuilder.builder(item).apply {
                 hunger(
-                    config.getInt("food.hunger", 4),
-                    config.getDouble("food.saturation", 4.5).toFloat(),
+                    config.getInt("food.hunger", 2),
+                    config.getDouble("food.saturation", 2.0).toFloat(),
                     config.getDouble("food.eatTime", 1.6).toFloat()
                 )
 
-                if (config.getBoolean("food.isSnack", false)) isSnack()
+                if (config.getBoolean("food.isSnack")) isSnack()
                 config.getDouble("food.tp").takeIf { it != 0.0 }?.let { range -> tp(range.toFloat()) }
-                config.getString("food.sound.burp", "entity.player.burp")
-                    ?.let { sound -> afterEatSound(sound.lowercase()) }
-                config.getString("food.sound.eat", "entity.generic.eat")?.let { sound -> eatSound(sound.lowercase()) }
+                config.getString("food.sound.burp")?.let { afterEatSound(it.lowercase()) }
+                config.getString("food.sound.eat")?.let { eatSound(it.lowercase()) }
             }.build()
 
             // Add the food item to resolvedResults

@@ -1,6 +1,0 @@
-recipes:
-  command_block:
-    input:
-      material: edulis:burrito
-    result:
-      material: COMMAND_BLOCK

@@ -1,7 +1,6 @@
 recipes:
   chimichanga:
-    input:
-      material: edulis:burrito
+    input: edulis:burrito
     xp: 0.35
     cookTime: 200
     result:
@@ -16,8 +15,7 @@ recipes:
         isSnack: true
 
   cooked_pufferfish:
-    input:
-      material: PUFFERFISH
+    input: PUFFERFISH
     xp: 0.35
     cookTime: 200
     result:
@@ -32,8 +30,7 @@ recipes:
         isSnack: false
 
   pork_rinds:
-    input:
-      material: COOKED_PORKCHOP
+    input: COOKED_PORKCHOP
     xp: 0.35
     cookTime: 80
     result:
@@ -48,8 +45,7 @@ recipes:
         isSnack: true
 
   cooked_goat:
-    input:
-      material: edulis:raw_goat
+    input: edulis:raw_goat
     xp: 0.35
     cookTime: 200
     result:
@@ -64,8 +60,7 @@ recipes:
         isSnack: true
 
   cooked_frog_leg_warm:
-    input:
-      material: edulis:frog_leg_warm
+    input: edulis:frog_leg_warm
     xp: 0.35
     cookTime: 200
     result:
@@ -84,8 +79,7 @@ recipes:
         - "Jump!"
 
   cooked_frog_leg_temperate:
-    input:
-      material: edulis:frog_leg_temperate
+    input: edulis:frog_leg_temperate
     xp: 0.35
     cookTime: 200
     result:
@@ -104,8 +98,7 @@ recipes:
         - "Jump!"
 
   cooked_frog_leg_cold:
-    input:
-      material: edulis:frog_leg_cold
+    input: edulis:frog_leg_cold
     xp: 0.35
     cookTime: 200
     result:
@@ -124,8 +117,7 @@ recipes:
         - "Jump!"
 
   cooked_veal:
-    input:
-      material: edulis:raw_veal
+    input: edulis:raw_veal
     xp: 0.35
     cookTime: 200
     result:
@@ -140,8 +132,7 @@ recipes:
         isSnack: true
 
   pizza:
-    input:
-      material: edulis:raw_pizza
+    input: edulis:raw_pizza
     xp: 0.50
     cookTime: 200
     result:

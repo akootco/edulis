@@ -23,3 +23,11 @@ items:
     itemName: "Stove"
     material: STRUCTURE_VOID
     customModelData: 1
+
+  bird_spit:
+    itemName: "Bird Spit"
+    material: MILK_BUCKET
+    customModelData: 1
+    food:
+      sound:
+        burp: edulis:block.stove.place # good idea, lets make sounds
