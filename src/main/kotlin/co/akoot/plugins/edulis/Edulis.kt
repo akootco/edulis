@@ -1,10 +1,7 @@
 package co.akoot.plugins.edulis
 
 import co.akoot.plugins.bluefox.api.FoxPlugin
-import co.akoot.plugins.edulis.commands.CovidCommand
-import co.akoot.plugins.edulis.commands.CureCommand
-import co.akoot.plugins.edulis.commands.FoodCommand
-import co.akoot.plugins.edulis.commands.ImmuneCommand
+import co.akoot.plugins.edulis.commands.*
 import co.akoot.plugins.edulis.listeners.BlockEvent
 import co.akoot.plugins.edulis.listeners.MobDrops
 import co.akoot.plugins.edulis.listeners.PlayerEvent
@@ -46,6 +43,7 @@ class Edulis : FoxPlugin("edulis") {
         registerCommand(CovidCommand(this))
         registerCommand(CureCommand(this))
         registerCommand(ImmuneCommand(this))
+        registerCommand(ReloadCommand(this))
     }
 
     override fun registerEvents() {
