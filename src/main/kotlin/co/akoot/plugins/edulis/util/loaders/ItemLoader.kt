@@ -7,7 +7,6 @@ import co.akoot.plugins.edulis.util.CreateRecipes.cookRecipes
 import co.akoot.plugins.edulis.util.CreateRecipes.craftingRecipes
 import co.akoot.plugins.edulis.util.loaders.ConfigLoader.cakesConfig
 import co.akoot.plugins.edulis.util.loaders.ConfigLoader.craftRecipesConfig
-import co.akoot.plugins.edulis.util.loaders.ConfigLoader.ingredientsConfig
 import co.akoot.plugins.edulis.util.loaders.ConfigLoader.itemsConfig
 import co.akoot.plugins.edulis.util.loaders.ConfigLoader.mobDropsConfig
 import co.akoot.plugins.edulis.util.loaders.ConfigLoader.smokerRecipesConfig
@@ -17,7 +16,6 @@ class ItemLoader {
 
     fun loadItems() {
         loadItem(itemsConfig, "items")
-        loadItem(ingredientsConfig, "ingredients")
         loadItem(mobDropsConfig, "drops")
         loadItem(cakesConfig, "cakes")
 

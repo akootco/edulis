@@ -31,12 +31,12 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
     }
 
     @EventHandler
-    fun sliceEvent(event: PlayerInteractEvent) {
+    fun playerInteract(event: PlayerInteractEvent) {
         val block = event.clickedBlock
         val player = event.player
 
         if (block?.type == Material.STONECUTTER && event.action == Action.RIGHT_CLICK_BLOCK) {
-            val id = getItemPDC(player.inventory.itemInMainHand)?: return
+            val id = getItemPDC(player.inventory.itemInMainHand) ?: return
             giveSlice(event, id, block, event.player)
         }
     }
@@ -45,7 +45,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
     fun itemConsume(event: PlayerItemConsumeEvent) {
         val player = event.player
         // is it a flugin item?
-        val itemId = getItemPDC(player.inventory.itemInMainHand)?: return
+        val itemId = getItemPDC(player.inventory.itemInMainHand) ?: return
 
         // more importantly, is it a bat wing
         if (itemId.contains("bat_wing")) {

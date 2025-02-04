@@ -22,7 +22,7 @@ object CreateItem {
     val resolvedResults: MutableMap<String, ItemStack> = HashMap()
     val pendingRecipes: MutableSet<String> = mutableSetOf()
 
-    val foodKey = NamespacedKey("edulis", "food")
+    private val foodKey = NamespacedKey("edulis", "food")
 
     fun getItemPDC(item: ItemStack): String? {
         val meta = item.itemMeta
@@ -90,6 +90,7 @@ object CreateItem {
 
         if (material == null) {
             log.error("Invalid material at $path: $materialName")
+            return null
         }
         return material
     }

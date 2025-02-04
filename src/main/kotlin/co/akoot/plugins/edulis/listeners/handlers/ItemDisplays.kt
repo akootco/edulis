@@ -1,6 +1,6 @@
 package co.akoot.plugins.edulis.listeners.handlers
 
-import co.akoot.plugins.edulis.util.loaders.ConfigLoader.cropsConfig
+import co.akoot.plugins.edulis.util.loaders.ConfigLoader.overlayConfig
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
 import org.bukkit.Location
 import org.bukkit.Material
@@ -15,7 +15,7 @@ object ItemDisplays {
         val itemDisplay = world.spawnEntity(location.clone().add(0.5, 0.5, 0.5),
             EntityType.ITEM_DISPLAY) as ItemDisplay
 
-        val cmd = cropsConfig.getInt("overlays.$id.$age", 0)
+        val cmd = overlayConfig.getInt("overlays.$id.$age", 0)
 
         itemDisplay.setItemStack(ItemBuilder.builder(ItemStack(Material.BARRIER)).customModelData(cmd).build())
     }

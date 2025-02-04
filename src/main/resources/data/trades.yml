@@ -1,4 +1,4 @@
-trades:
+villager:
   trade3:
     buy:
       type: EMERALD
@@ -12,7 +12,7 @@ trades:
       type: EMERALD
       amount: 8
     sell:
-      type: edulis:lemons
+      type: edulis:lemons_fruit
       amount: 2
 
   trade5:

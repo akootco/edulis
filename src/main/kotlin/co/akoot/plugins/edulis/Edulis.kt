@@ -2,10 +2,7 @@ package co.akoot.plugins.edulis
 
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.edulis.commands.*
-import co.akoot.plugins.edulis.listeners.BlockEvent
-import co.akoot.plugins.edulis.listeners.MobDrops
-import co.akoot.plugins.edulis.listeners.PlayerEvent
-import co.akoot.plugins.edulis.listeners.PluginEvent
+import co.akoot.plugins.edulis.listeners.*
 import co.akoot.plugins.edulis.util.brewery.BrewItems
 import co.akoot.plugins.edulis.util.loaders.ConfigLoader
 import com.dre.brewery.recipe.PluginItem
@@ -51,5 +48,6 @@ class Edulis : FoxPlugin("edulis") {
         registerEventListener(PlayerEvent(this))
         registerEventListener(PluginEvent())
         registerEventListener(BlockEvent())
+        registerEventListener(EntityEvent())
     }
 }
