@@ -18,9 +18,7 @@ class ImmuneCommand(plugin: FoxPlugin) : FoxCommand(plugin, "immune") {
         val isImmune = pdc.has(immuneKey)
 
         // i DONT even want to add immunity but i know people will cry!
-        p.sendMessage("You are ${if (isImmune) "no longer" else "now"} immune to covid!")
         if (isImmune) pdc.remove(immuneKey) else pdc.set(immuneKey, PersistentDataType.BOOLEAN, true)
-
-        return true
+        return sendMessage(p, "You are ${if (isImmune) "no longer" else "now"} immune to covid!")
     }
 }

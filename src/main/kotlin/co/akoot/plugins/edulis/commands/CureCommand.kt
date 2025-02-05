@@ -17,22 +17,31 @@ class CureCommand(plugin: FoxPlugin) : FoxCommand(plugin, "cure") {
 
     override fun onCommand(sender: CommandSender, alias: String, args: Array<out String>): Boolean {
         if (args.isEmpty()) {
-            if (sender is Player) {
-                sender.persistentDataContainer.remove(endKey)
-                return true
-            } else {
-                sender.sendMessage("Please specify a player")
-                return false
+
+            if (sender !is Player) {
+                return sendError(sender, "Please specify a player")
             }
+
+            val pdc = sender.persistentDataContainer
+
+            if (pdc.has(endKey)) {
+                pdc.remove(endKey)
+                return true
+            }
+
+            return sendError(sender, "You are not sick.")
         }
 
         val target = plugin.server.getPlayer(args[0]) ?: run {
-            sender.sendMessage("Player not found!")
-            return false
+            return sendError(sender, "Player not found")
         }
 
-        target.persistentDataContainer.remove(endKey)
-        sender.sendMessage("${target.name} is no longer sick!")
-        return true
+        val targPdc = target.persistentDataContainer
+        if (targPdc.has(endKey)) {
+            targPdc.remove(endKey)
+            return sendMessage(sender, "${target.name} is no longer sick!")
+        }
+
+        return sendError(sender, "${target.name} is not sick.")
     }
 }

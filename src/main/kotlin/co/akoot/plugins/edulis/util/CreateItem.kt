@@ -1,12 +1,11 @@
 package co.akoot.plugins.edulis.util
 
-import co.akoot.plugins.bluefox.util.Txt
+import co.akoot.plugins.bluefox.util.Text
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.pluginEnabled
 import co.akoot.plugins.plushies.util.builders.FoodBuilder
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
 import com.dre.brewery.api.BreweryApi
-import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Tag
@@ -102,7 +101,7 @@ object CreateItem {
         // need to set pdc first, or else nothing else gets set.
         val item = ItemBuilder.builder(itemStack).pdc(foodKey, recipeName).apply {
             config.getString("itemName")?.let { name ->
-                itemName(Txt(name).c)
+                itemName(Text(name).component)
             }
 
             val amount = config.getInt("amount", 1)
@@ -118,7 +117,7 @@ object CreateItem {
                 customModelData(it)
             }
 
-            lore(config.getStringList("lore").map { Component.text(it) })
+            lore(config.getStringList("lore").map { Text(it).component })
 
             // stackSize needs to be 1-99 or else the server will explode (real)
             config.getInt("stackSize").takeIf { it in 1..99 }?.let {

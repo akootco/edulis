@@ -15,15 +15,12 @@ class ReloadCommand(plugin: FoxPlugin) : FoxCommand(plugin, "loadfood") {
     }
 
     override fun onCommand(sender: CommandSender, alias: String, args: Array<out String>): Boolean {
-
         // reload config and brewery
         ConfigLoader.loadConfigs(plugin)
         pluginEnabled("Brewery").let {
             P.p.reload(sender)
             loadBrewRecipes()
         }
-
-        sender.sendMessage("Reloaded food.")
-        return true
+        return sendMessage(sender, "Food configs reloaded")
     }
 }

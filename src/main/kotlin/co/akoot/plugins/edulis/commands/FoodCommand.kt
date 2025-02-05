@@ -17,11 +17,10 @@ class FoodCommand(plugin: FoxPlugin) : FoxCommand(plugin, "food") {
     override fun onCommand(sender: CommandSender, alias: String, args: Array<out String>): Boolean {
         val p = playerCheck(sender) ?: return false
 
-        if (args.isEmpty()) return sendError(sender, "Please specify the food item.")
+        if (args.isEmpty()) return sendError(sender, "Please specify an item.")
 
         val outputItem = resolvedResults[args[0]] ?: run {
-            sender.sendMessage("Invalid food item.")
-            return false
+            return sendError(sender,"Invalid food item.")
         }
 
         val item = outputItem.clone().apply { amount = args.getOrNull(1)?.toIntOrNull() ?: 1 }

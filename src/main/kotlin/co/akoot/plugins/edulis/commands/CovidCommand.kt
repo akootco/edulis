@@ -3,7 +3,6 @@ package co.akoot.plugins.edulis.commands
 import co.akoot.plugins.bluefox.api.FoxCommand
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.giveCovid
-import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -22,18 +21,15 @@ class CovidCommand(plugin: FoxPlugin) : FoxCommand(plugin, "covid") {
                 giveCovid(sender, plugin)
                 return true
             } else {
-                sender.sendMessage("Please specify a player")
-                return false
+                return sendError(sender, "Please specify a player")
             }
         }
 
-        val target = Bukkit.getPlayer(args[0]) ?: run {
-            sender.sendMessage("Player not found!")
-            return false
+        val target = plugin.server.getPlayer(args[0]) ?: run {
+            return sendError(sender, "Player not found")
         }
 
         giveCovid(target, plugin)
-        sender.sendMessage("${target.name} has been infected!")
-        return true
+        return sendMessage(sender,"${target.name} has been infected!")
     }
 }

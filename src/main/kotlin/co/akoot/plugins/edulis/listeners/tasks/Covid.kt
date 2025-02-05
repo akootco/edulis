@@ -1,6 +1,7 @@
 package co.akoot.plugins.edulis.listeners.tasks
 
 import co.akoot.plugins.bluefox.api.FoxPlugin
+import co.akoot.plugins.bluefox.util.Text
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import com.dre.brewery.BPlayer
 import org.bukkit.Bukkit
@@ -39,7 +40,7 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
         if (endTime == null || currentTime > endTime) {
             player.apply {
                 sendMessage("You are no longer contagious.")
-                activePotionEffects.clear()
+                clearActivePotionEffects()
             }
             pdc.apply {
                 set(caughtKey, PersistentDataType.BOOLEAN, true) // this will give the player access to /immune
@@ -70,7 +71,9 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
             }
         }
 
-        player.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, 200, 10))
+        player.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, -1, 10))
+        // gonna change unluck in the texture pack
+        player.addPotionEffect(PotionEffect(PotionEffectType.UNLUCK, -1, 0))
     }
 
     companion object {
@@ -86,11 +89,8 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
             if (player.persistentDataContainer.get(immuneKey, PersistentDataType.BOOLEAN) == true) return
 
             player.apply {
-
-                sendMessage(
-                    if (wasCaught) "You have been infected by $spreader!"
-                    else "You have been infected!"
-                )
+                sendMessage((Text("You have been infected", "error_accent")
+                        + (Text(if (wasCaught) " by $spreader!" else "!", "error_accent"))).component)
 
                 persistentDataContainer.set(
                     endKey, PersistentDataType.LONG,
