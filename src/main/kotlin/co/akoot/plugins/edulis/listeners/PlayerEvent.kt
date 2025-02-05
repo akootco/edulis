@@ -32,12 +32,41 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
     @EventHandler
     fun playerInteract(event: PlayerInteractEvent) {
-        val block = event.clickedBlock
+        val block = event.clickedBlock ?: return
         val player = event.player
+        val item = player.inventory.itemInMainHand
 
-        if (block?.type == Material.STONECUTTER && event.action == Action.RIGHT_CLICK_BLOCK) {
-            val id = getItemPDC(player.inventory.itemInMainHand) ?: return
-            giveSlice(event, id, block, event.player)
+        if (event.action == Action.RIGHT_CLICK_BLOCK) {
+            val basil = resolvedResults["basil"] ?: return
+
+            when (block.type) {
+                Material.STONECUTTER -> {
+                    val id = getItemPDC(item) ?: return
+                    giveSlice(event, id, block, event.player)
+                }
+
+                Material.POTTED_FERN -> {
+                    if (item.type == Material.SHEARS) {
+                        block.world.apply {
+                            dropItemNaturally(block.location.add(0.5, 1.0, 0.5), basil)
+                            playSound(block.location, Sound.ENTITY_BOGGED_SHEAR, 1.0f, 2.0f)
+                        }
+                    } else {
+                        player.give(basil)
+                        block.type = Material.FLOWER_POT
+                    }
+                    event.isCancelled = true
+                }
+
+                Material.FLOWER_POT -> {
+                    if (item.isSimilar(basil)) {
+                        block.type = Material.POTTED_FERN
+                        item.amount -= 1
+                    }
+                }
+
+                else -> return
+            }
         }
     }
 
