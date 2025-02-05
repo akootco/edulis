@@ -34,9 +34,6 @@ items:
     itemName: "Bird Spit"
     material: MILK_BUCKET
     customModelData: 1
-    food:
-      sound:
-        burp: edulis:block.stove.place # good idea, lets make sounds
 
   purple_carrot:
     material: CARROT
@@ -86,10 +83,6 @@ items:
   goat_milk:
     material: MILK_BUCKET
     itemName: "Goat Milk"
-    food:
-      animation: DRINK
-      sound:
-        burp: entity.ambient.goat
 
   limes:
     material: SWEET_BERRIES
