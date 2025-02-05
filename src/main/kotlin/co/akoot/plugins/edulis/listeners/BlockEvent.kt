@@ -1,6 +1,8 @@
 package co.akoot.plugins.edulis.listeners
 
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.dropItems
+import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.isLeaf
+import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.leafDrops
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.setBlockPDC
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.createDisplay
 import co.akoot.plugins.edulis.util.CreateItem.getItemPDC
@@ -32,18 +34,23 @@ class BlockEvent : Listener {
     @EventHandler
     fun onBreak(event: BlockBreakEvent) {
         if (event.isCancelled) return
+
+        if (isLeaf(event.block)) return leafDrops(event.block)
         event.isDropItems = !dropItems(event.block)
 
     }
 
     @EventHandler
     fun blockBreakBlock(event: BlockBreakBlockEvent) {
+        if (isLeaf(event.block)) return leafDrops(event.block)
         if (dropItems(event.block)) event.drops.clear()
     }
 
     @EventHandler
     fun onDestroy(event: BlockDestroyEvent) {
         if (event.isCancelled) return
+
+        if (isLeaf(event.block)) return leafDrops(event.block)
         event.setWillDrop(!dropItems(event.block))
 
     }
@@ -52,6 +59,7 @@ class BlockEvent : Listener {
     fun onExplosion(event: EntityExplodeEvent) {
         if (event.isCancelled) return
         for (block in event.blockList()) {
+            if (isLeaf(block)) leafDrops(block)
             if (dropItems(block)) block.type = Material.AIR
         }
     }
@@ -70,5 +78,10 @@ class BlockEvent : Listener {
 
             block.blockData = ageableBlockData
         }
+    }
+
+    @EventHandler
+    fun onLeafDecay(event: LeavesDecayEvent) {
+        leafDrops(event.block)
     }
 }

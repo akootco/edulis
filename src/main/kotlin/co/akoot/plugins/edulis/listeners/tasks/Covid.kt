@@ -3,8 +3,8 @@ package co.akoot.plugins.edulis.listeners.tasks
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.bluefox.util.Text
 import co.akoot.plugins.edulis.Edulis.Companion.log
+import co.akoot.plugins.edulis.Edulis.Companion.pluginEnabled
 import com.dre.brewery.BPlayer
-import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.persistence.PersistentDataType
@@ -56,7 +56,7 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
 
             // 50% chance on which effect to give
             if (Random.nextDouble() < 0.5) {
-                if (Bukkit.getPluginManager().isPluginEnabled("brewery")) {
+                if (pluginEnabled("brewery")) {
                     BPlayer.addPuke(player, 64)
                 } else player.apply {
                     addPotionEffect(PotionEffect(PotionEffectType.DARKNESS, 200, 10))

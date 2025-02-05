@@ -3,21 +3,22 @@ package co.akoot.plugins.edulis
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.edulis.commands.*
 import co.akoot.plugins.edulis.listeners.*
+import co.akoot.plugins.edulis.util.Schematics.registerSchematics
 import co.akoot.plugins.edulis.util.brewery.BrewItems
 import co.akoot.plugins.edulis.util.loaders.ConfigLoader
 import com.dre.brewery.recipe.PluginItem
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger.logger
 import org.bukkit.Bukkit
+import org.bukkit.plugin.Plugin
 
 class Edulis : FoxPlugin("edulis") {
 
     companion object {
         val log = logger("Edulis")
 
-        fun pluginEnabled(name: String): Boolean {
-            val plugin = Bukkit.getPluginManager().getPlugin(name)
-            return plugin != null && plugin.isEnabled
-        }
+        fun checkPlugin(name: String): Plugin? = Bukkit.getPluginManager().getPlugin(name)
+
+        fun pluginEnabled(name: String): Boolean = checkPlugin(name)?.isEnabled == true
     }
 
     override fun load() {
@@ -25,7 +26,7 @@ class Edulis : FoxPlugin("edulis") {
 
         ConfigLoader.loadConfigs(this)
 
-        Bukkit.getPluginManager().getPlugin("Brewery")?.let {
+        if (checkPlugin("Brewery") != null) {
             PluginItem.registerForConfig("edulis") { BrewItems() }
             logger.info("Items are now compatible with Brewery.")
         }
