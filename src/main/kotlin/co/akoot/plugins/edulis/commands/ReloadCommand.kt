@@ -3,6 +3,7 @@ package co.akoot.plugins.edulis.commands
 import co.akoot.plugins.bluefox.api.FoxCommand
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.edulis.Edulis.Companion.pluginEnabled
+import co.akoot.plugins.edulis.util.Schematics.registerSchematics
 import co.akoot.plugins.edulis.util.brewery.BrewRecipes.loadBrewRecipes
 import co.akoot.plugins.edulis.util.loaders.ConfigLoader
 import com.dre.brewery.P
@@ -15,12 +16,16 @@ class ReloadCommand(plugin: FoxPlugin) : FoxCommand(plugin, "loadfood") {
     }
 
     override fun onCommand(sender: CommandSender, alias: String, args: Array<out String>): Boolean {
-        // reload config and brewery
+
+        registerSchematics(plugin) // load structures
+
         ConfigLoader.loadConfigs(plugin)
+
         pluginEnabled("Brewery").let {
-            P.p.reload(sender)
+            P.p.reload(sender) // reload brew config
             loadBrewRecipes()
         }
+
         return sendMessage(sender, "Food configs reloaded")
     }
 }

@@ -26,6 +26,8 @@ class Edulis : FoxPlugin("edulis") {
 
         ConfigLoader.loadConfigs(this)
 
+        registerSchematics(this)
+
         if (checkPlugin("Brewery") != null) {
             PluginItem.registerForConfig("edulis") { BrewItems() }
             logger.info("Items are now compatible with Brewery.")
