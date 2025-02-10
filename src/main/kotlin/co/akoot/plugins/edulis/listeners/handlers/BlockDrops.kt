@@ -14,7 +14,7 @@ object BlockDrops {
         pdc.set(getBlockPDC(block.location), PersistentDataType.STRING, id)
     }
 
-    private fun getBlockPDC(location: Location): NamespacedKey {
+    fun getBlockPDC(location: Location): NamespacedKey {
         val key = "${location.world.name}.${location.blockX}.${location.blockY}.${location.blockZ}"
         return NamespacedKey("edulis", key)
     }
