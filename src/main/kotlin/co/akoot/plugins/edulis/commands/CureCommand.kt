@@ -8,7 +8,7 @@ import org.bukkit.entity.Player
 
 class CureCommand(plugin: FoxPlugin) : FoxCommand(plugin, "cure") {
 
-    override fun onTabComplete(sender: CommandSender, args: Array<out String>): MutableList<String> {
+    override fun onTabComplete(sender: CommandSender, alias: String, args: Array<out String>): MutableList<String> {
         if (args.size == 1) {
             return getOnlinePlayerSuggestions(exclude = setOf(sender.name))
         }

@@ -8,7 +8,7 @@ import org.bukkit.persistence.PersistentDataType
 
 class ImmuneCommand(plugin: FoxPlugin) : FoxCommand(plugin, "immune") {
 
-    override fun onTabComplete(sender: CommandSender, args: Array<out String>): MutableList<String> {
+    override fun onTabComplete(sender: CommandSender, alias: String, args: Array<out String>): MutableList<String> {
         return mutableListOf()
     }
 
