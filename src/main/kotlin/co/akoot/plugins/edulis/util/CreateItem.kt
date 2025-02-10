@@ -24,7 +24,7 @@ object CreateItem {
     private val foodKey = NamespacedKey("edulis", "food")
 
     fun getItemPDC(item: ItemStack): String? {
-        val meta = item.itemMeta
+        val meta = item.itemMeta?: return null
         val id = meta.persistentDataContainer.get(foodKey, PersistentDataType.STRING) ?: return null
         return id
     }
