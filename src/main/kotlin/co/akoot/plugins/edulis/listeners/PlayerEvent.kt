@@ -6,6 +6,7 @@ import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.getBlockPDC
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.createDisplay
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.giveCovid
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.resumeCovid
+import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
 import co.akoot.plugins.edulis.util.CreateItem.getItemPDC
 import co.akoot.plugins.edulis.util.CreateItem.resolvedResults
 import org.bukkit.Material
@@ -22,7 +23,6 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerRespawnEvent
-import org.bukkit.scheduler.BukkitRunnable
 
 class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
@@ -83,22 +83,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
                 in Tag.CROPS.values -> {
                     if (item.type == Material.BONE_MEAL) {
-                        object : BukkitRunnable() {
-                            override fun run() {
-                                // Refresh the block
-                                val updatedState = block.state
-                                val updatedBlockData = updatedState.blockData
-
-                                // Check if Ageable
-                                if (updatedBlockData !is Ageable) return
-
-                                // Get the new age
-                                val newAge = updatedBlockData.age
-
-                                val id = block.location.chunk.getPDC<String>(getBlockPDC(block.location)) ?: return
-                                createDisplay(block.location, newAge, id)
-                            }
-                        }.runTaskLater(plugin, 1)
+                        CropDisplay(block).runTaskLater(plugin, 1)
                     }
                 }
 

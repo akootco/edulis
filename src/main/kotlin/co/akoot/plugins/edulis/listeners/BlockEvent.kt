@@ -10,6 +10,7 @@ import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.isLeaf
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.leafDrops
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.createDisplay
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.removeDisplay
+import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
 import co.akoot.plugins.edulis.util.CreateItem.getItemPDC
 import co.akoot.plugins.edulis.util.Schematics.paste
 import com.destroystokyo.paper.event.block.BlockDestroyEvent
@@ -18,6 +19,7 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.TreeType
 import org.bukkit.block.data.Ageable
+import org.bukkit.block.data.Directional
 import org.bukkit.block.data.type.Cake
 import org.bukkit.entity.Fox
 import org.bukkit.entity.Player
@@ -29,7 +31,6 @@ import org.bukkit.event.entity.EntityChangeBlockEvent
 import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.event.player.PlayerHarvestBlockEvent
 import org.bukkit.event.world.StructureGrowEvent
-import org.bukkit.scheduler.BukkitRunnable
 
 class BlockEvent(private val plugin: FoxPlugin) : Listener {
 
@@ -133,23 +134,7 @@ class BlockEvent(private val plugin: FoxPlugin) : Listener {
 
     @EventHandler
     fun cropGrow(event: BlockGrowEvent) {
-        object : BukkitRunnable() {
-            val block = event.block
-            override fun run() {
-                // Refresh the block
-                val updatedState = block.state
-                val updatedBlockData = updatedState.blockData
-
-                // Check if Ageable
-                if (updatedBlockData !is Ageable) return
-
-                // Get the new age
-                val newAge = updatedBlockData.age
-
-                val id = block.location.chunk.getPDC<String>(getBlockPDC(block.location)) ?: return
-                createDisplay(block.location, newAge, id)
-            }
-        }.runTaskLater(plugin, 1)
+        CropDisplay(event.block).runTaskLater(plugin, 1)
     }
 
     @EventHandler
@@ -172,5 +157,13 @@ class BlockEvent(private val plugin: FoxPlugin) : Listener {
             event.isCancelled = paste(key, location)
             chunk.removePDC(getBlockPDC(location))
         }
+    }
+
+    @EventHandler
+    fun dispenserUseItem(event: BlockDispenseEvent) {
+        if (event.block.type != Material.DISPENSER || event.item.type != Material.BONE_MEAL) return
+
+        val face = (event.block.blockData as? Directional)?.facing ?: return // where is it looking?
+        CropDisplay(event.block.location.add(face.direction).block).runTaskLater(plugin, 1)
     }
 }
