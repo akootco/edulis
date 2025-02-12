@@ -1,28 +1,37 @@
 package co.akoot.plugins.edulis.listeners
 
+import co.akoot.plugins.bluefox.api.FoxPlugin
+import co.akoot.plugins.bluefox.extensions.getPDC
+import co.akoot.plugins.bluefox.extensions.removePDC
+import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.dropItems
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.getBlockPDC
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.isLeaf
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.leafDrops
-import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.setBlockPDC
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.createDisplay
+import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.removeDisplay
 import co.akoot.plugins.edulis.util.CreateItem.getItemPDC
 import co.akoot.plugins.edulis.util.Schematics.paste
 import com.destroystokyo.paper.event.block.BlockDestroyEvent
 import io.papermc.paper.event.block.BlockBreakBlockEvent
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.TreeType
 import org.bukkit.block.data.Ageable
+import org.bukkit.block.data.type.Cake
 import org.bukkit.entity.Fox
+import org.bukkit.entity.Player
+import org.bukkit.entity.Villager
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.*
 import org.bukkit.event.entity.EntityChangeBlockEvent
 import org.bukkit.event.entity.EntityExplodeEvent
+import org.bukkit.event.player.PlayerHarvestBlockEvent
 import org.bukkit.event.world.StructureGrowEvent
-import org.bukkit.persistence.PersistentDataType
+import org.bukkit.scheduler.BukkitRunnable
 
-class BlockEvent : Listener {
+class BlockEvent(private val plugin: FoxPlugin) : Listener {
 
     @EventHandler
     fun onPlace(event: BlockPlaceEvent) {
@@ -33,7 +42,8 @@ class BlockEvent : Listener {
         if (block.type == Material.CAKE) {
             createDisplay(block.location, 0, id)
         }
-        setBlockPDC(block, id)
+
+        block.chunk.setPDC(getBlockPDC(block.location), id)
     }
 
     @EventHandler
@@ -41,6 +51,8 @@ class BlockEvent : Listener {
         if (event.isCancelled) return
 
         if (isLeaf(event.block)) return leafDrops(event.block)
+
+        removeDisplay(event.block.location)
         event.isDropItems = !dropItems(event.block)
 
     }
@@ -48,6 +60,8 @@ class BlockEvent : Listener {
     @EventHandler
     fun blockBreakBlock(event: BlockBreakBlockEvent) {
         if (isLeaf(event.block)) return leafDrops(event.block)
+
+        removeDisplay(event.block.location)
         if (dropItems(event.block)) event.drops.clear()
     }
 
@@ -56,6 +70,8 @@ class BlockEvent : Listener {
         if (event.isCancelled) return
 
         if (isLeaf(event.block)) return leafDrops(event.block)
+
+        removeDisplay(event.block.location)
         event.setWillDrop(!dropItems(event.block))
 
     }
@@ -65,24 +81,49 @@ class BlockEvent : Listener {
         if (event.isCancelled) return
         for (block in event.blockList()) {
             if (isLeaf(block)) leafDrops(block)
+
+            removeDisplay(block.location)
             if (dropItems(block)) block.type = Material.AIR
         }
     }
 
     @EventHandler
-    fun onFoxHarvest(event: EntityChangeBlockEvent) {
+    fun entityHarvest(event: EntityChangeBlockEvent) {
         if (event.isCancelled) return
         val block = event.block
 
-        if (event.entity is Fox && block.blockData is Ageable && block.type == Material.SWEET_BERRY_BUSH) {
-            event.isCancelled = dropItems(block)
+        when (event.entity) {
+            is Fox -> {
+                if (dropItems(block, 3, false)) {
+                    block.location.world.playSound(block.location, Sound.BLOCK_SWEET_BERRY_BUSH_PICK_BERRIES, 1f, 1f)
+                }
+            }
 
-            // set the berry bush age
-            val ageableBlockData = block.blockData as Ageable
-            ageableBlockData.age = 1
+            is Villager -> {
+                if (dropItems(block, 3, false)) {
+                    block.location.world.playSound(block.location, Sound.BLOCK_CROP_BREAK, 1f, 1f)
+                }
+            }
 
-            block.blockData = ageableBlockData
+            is Player -> {
+                if (block.type == Material.CAKE) {
+                    val cake = block.blockData as Cake
+                    val id = block.location.chunk.getPDC<String>(getBlockPDC(block.location))?: return
+
+                    createDisplay(block.location, cake.bites.plus(1), id)
+                    return
+                }
+            }
+
+            else -> return
         }
+
+        val ageableBlockData = block.blockData as Ageable
+
+        removeDisplay(event.block.location)
+        ageableBlockData.age = 1
+        block.blockData = ageableBlockData
+        event.isCancelled = true
     }
 
     @EventHandler
@@ -91,15 +132,45 @@ class BlockEvent : Listener {
     }
 
     @EventHandler
+    fun cropGrow(event: BlockGrowEvent) {
+        object : BukkitRunnable() {
+            val block = event.block
+            override fun run() {
+                // Refresh the block
+                val updatedState = block.state
+                val updatedBlockData = updatedState.blockData
+
+                // Check if Ageable
+                if (updatedBlockData !is Ageable) return
+
+                // Get the new age
+                val newAge = updatedBlockData.age
+
+                val id = block.location.chunk.getPDC<String>(getBlockPDC(block.location)) ?: return
+                createDisplay(block.location, newAge, id)
+            }
+        }.runTaskLater(plugin, 1)
+    }
+
+    @EventHandler
+    fun onPlayerHarvest(event: PlayerHarvestBlockEvent) {
+        val ageableBlockData = event.harvestedBlock.blockData as Ageable
+        if (dropItems(event.harvestedBlock, ageableBlockData.age, false)) {
+
+            removeDisplay(event.harvestedBlock.location)
+            event.itemsHarvested.clear()
+        }
+    }
+
+    @EventHandler
     fun treeGrow(event: StructureGrowEvent) {
         val location = event.location
-        val pdc = location.chunk.persistentDataContainer
-        val key = getBlockPDC(location)
-        val value = pdc.get(key, PersistentDataType.STRING) ?: return
+        val chunk = location.chunk
+        val key = chunk.getPDC<String>(getBlockPDC(location)) ?: return
 
         if (event.species in listOf(TreeType.TREE, TreeType.BIG_TREE)) {
-            event.isCancelled = paste(value, location)
-            pdc.remove(key)
+            event.isCancelled = paste(key, location)
+            chunk.removePDC(getBlockPDC(location))
         }
     }
 }

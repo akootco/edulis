@@ -1,13 +1,18 @@
 package co.akoot.plugins.edulis.listeners
 
 import co.akoot.plugins.bluefox.api.FoxPlugin
+import co.akoot.plugins.bluefox.extensions.getPDC
+import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.getBlockPDC
+import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.createDisplay
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.giveCovid
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.resumeCovid
 import co.akoot.plugins.edulis.util.CreateItem.getItemPDC
 import co.akoot.plugins.edulis.util.CreateItem.resolvedResults
 import org.bukkit.Material
 import org.bukkit.Sound
+import org.bukkit.Tag
 import org.bukkit.block.Block
+import org.bukkit.block.data.Ageable
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
@@ -17,6 +22,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerRespawnEvent
+import org.bukkit.scheduler.BukkitRunnable
 
 class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
@@ -37,7 +43,6 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
         val item = player.inventory.itemInMainHand
 
         if (event.action == Action.RIGHT_CLICK_BLOCK) {
-            val basil = resolvedResults["basil"] ?: return
 
             when (block.type) {
                 Material.STONECUTTER -> {
@@ -46,6 +51,8 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                 }
 
                 Material.POTTED_FERN -> {
+                    val basil = resolvedResults["basil"] ?: return
+
                     if (item.type == Material.SHEARS) {
                         block.world.apply {
                             dropItemNaturally(block.location.add(0.5, 1.0, 0.5), basil)
@@ -59,9 +66,39 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                 }
 
                 Material.FLOWER_POT -> {
-                    if (item.isSimilar(basil)) {
+                    if (item.isSimilar(resolvedResults["basil"] ?: return)) {
                         block.type = Material.POTTED_FERN
-                        item.amount -= 1
+                        item.amount.minus(1)
+                    }
+                }
+
+                Material.SWEET_BERRY_BUSH -> {
+                    if (item.type == Material.BONE_MEAL) {
+                        val ageable = block.blockData as Ageable
+
+                        val id = block.location.chunk.getPDC<String>(getBlockPDC(block.location)) ?: return
+                        createDisplay(block.location, ageable.age.plus(1), id)
+                    }
+                }
+
+                in Tag.CROPS.values -> {
+                    if (item.type == Material.BONE_MEAL) {
+                        object : BukkitRunnable() {
+                            override fun run() {
+                                // Refresh the block
+                                val updatedState = block.state
+                                val updatedBlockData = updatedState.blockData
+
+                                // Check if Ageable
+                                if (updatedBlockData !is Ageable) return
+
+                                // Get the new age
+                                val newAge = updatedBlockData.age
+
+                                val id = block.location.chunk.getPDC<String>(getBlockPDC(block.location)) ?: return
+                                createDisplay(block.location, newAge, id)
+                            }
+                        }.runTaskLater(plugin, 1)
                     }
                 }
 
