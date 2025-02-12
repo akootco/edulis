@@ -210,8 +210,6 @@ recipes:
         eatTime: 2
         isSnack: true
         crumbs: false
-      attributes:
-        - GENERIC_SCALE/-0.5
     shape:
       - "   "
       - " AB"
@@ -250,7 +248,7 @@ recipes:
         isSnack: true
         return: STONE
       attributes:
-        - GENERIC_SCALE/-0.5
+        - SCALE/-0.5
     shape:
       - "   "
       - " AB"
@@ -273,7 +271,7 @@ recipes:
         eatTime: 2
         isSnack: true
       attributes:
-        - GENERIC_SCALE/+0.5
+        - SCALE/+0.5
     shape:
       - "   "
       - " AB"

@@ -2,8 +2,7 @@ package co.akoot.plugins.edulis.listeners
 
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.bluefox.extensions.getPDC
-import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.getBlockPDC
-import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.createDisplay
+import co.akoot.plugins.edulis.listeners.handlers.FoodEffects.setAttributes
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.giveCovid
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.pauseCovid
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.resumeCovid
@@ -14,7 +13,6 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.Tag
 import org.bukkit.block.Block
-import org.bukkit.block.data.Ageable
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
@@ -86,16 +84,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                     }
                 }
 
-                Material.SWEET_BERRY_BUSH -> {
-                    if (item.type == Material.BONE_MEAL) {
-                        val ageable = block.blockData as Ageable
-
-                        val id = block.location.chunk.getPDC<String>(getBlockPDC(block.location)) ?: return
-                        createDisplay(block.location, ageable.age.plus(1), id)
-                    }
-                }
-
-                in Tag.CROPS.values -> {
+                in Tag.CROPS.values.plus(Material.SWEET_BERRY_BUSH) -> {
                     if (item.type == Material.BONE_MEAL) {
                         CropDisplay(block).runTaskLater(plugin, 1)
                     }
@@ -116,6 +105,8 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
         if (id.contains("bat_wing")) {
             giveCovid(player, plugin)
         }
+
+        setAttributes(event.item, player)
     }
 
     private fun giveSlice(event: PlayerInteractEvent, cake: String, cutter: Block, player: Player) {

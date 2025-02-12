@@ -92,32 +92,40 @@ object CreateItem {
         val itemStack = getMaterial(config, "material") ?: return null
 
         // need to set pdc first, or else nothing else gets set.
-        val item = ItemBuilder.builder(itemStack).pdc(foodKey, recipeName).apply {
-            config.getString("itemName")?.let { name ->
-                itemName(Text(name).component)
-            }
+        val itemWithPDC = ItemBuilder.builder(itemStack).apply {
+                pdc(foodKey, recipeName)
 
-            val amount = config.getInt("amount", 1)
-            amount.takeIf { it != 1 }?.let {
-                itemStack.amount = it
-            }
+                config.getStringList("attributes").joinToString(";").takeIf { it.isNotBlank() }
+                    ?.let { pdc(NamespacedKey("edulis", "attributes"), it) }
 
-            config.getString("textures")?.let { id ->
-                headTexture(id)
-            }
+            }.build()
 
-            config.getInt("customModelData").takeIf { it != 0 }?.let {
-                customModelData(it)
-            }
+        val item = ItemBuilder.builder(itemWithPDC).apply {
 
-            lore(config.getStringList("lore").map { Text(it).component })
+                config.getString("itemName")?.let { name ->
+                    itemName(Text(name).component)
+                }
 
-            // stackSize needs to be 1-99 or else the server will explode (real)
-            config.getInt("stackSize").takeIf { it in 1..99 }?.let {
-                stackSize(it)
-            }
+                val amount = config.getInt("amount", 1)
+                amount.takeIf { it != 1 }?.let {
+                    itemStack.amount = it
+                }
 
-        }.build()
+                config.getString("textures")?.let { id ->
+                    headTexture(id)
+                }
+
+                config.getInt("customModelData").takeIf { it != 0 }?.let {
+                    customModelData(it)
+                }
+
+                lore(config.getStringList("lore").map { Text(it).component })
+                // stackSize needs to be 1-99 or else the server will explode (real)
+                config.getInt("stackSize").takeIf { it in 1..99 }?.let {
+                    stackSize(it)
+                }
+
+            }.build()
 
         if (config.contains("food")) {
             val foodItem = FoodBuilder.builder(item).apply {
