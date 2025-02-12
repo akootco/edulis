@@ -12,7 +12,6 @@ import org.bukkit.Tag
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.RecipeChoice
-import org.bukkit.persistence.PersistentDataType
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -21,13 +20,7 @@ object CreateItem {
     val resolvedResults: MutableMap<String, ItemStack> = HashMap()
     val pendingRecipes: MutableSet<String> = mutableSetOf()
 
-    private val foodKey = NamespacedKey("edulis", "food")
-
-    fun getItemPDC(item: ItemStack): String? {
-        val meta = item.itemMeta?: return null
-        val id = meta.persistentDataContainer.get(foodKey, PersistentDataType.STRING) ?: return null
-        return id
-    }
+    val foodKey = NamespacedKey("edulis", "food")
 
     // get recipe input items
     fun getInput(item: String, recipeName: String): RecipeChoice? {

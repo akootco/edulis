@@ -11,7 +11,7 @@ import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.leafDrops
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.createDisplay
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.removeDisplay
 import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
-import co.akoot.plugins.edulis.util.CreateItem.getItemPDC
+import co.akoot.plugins.edulis.util.CreateItem.foodKey
 import co.akoot.plugins.edulis.util.Schematics.paste
 import com.destroystokyo.paper.event.block.BlockDestroyEvent
 import io.papermc.paper.event.block.BlockBreakBlockEvent
@@ -38,7 +38,8 @@ class BlockEvent(private val plugin: FoxPlugin) : Listener {
     fun onPlace(event: BlockPlaceEvent) {
         if (event.isCancelled) return
         val block = event.blockPlaced
-        val id = getItemPDC(event.itemInHand) ?: return
+
+        val id = event.itemInHand.itemMeta.getPDC<String>(foodKey) ?: return
 
         if (block.type == Material.CAKE) {
             createDisplay(block.location, 0, id)

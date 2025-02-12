@@ -2,9 +2,11 @@ package co.akoot.plugins.edulis.commands
 
 import co.akoot.plugins.bluefox.api.FoxCommand
 import co.akoot.plugins.bluefox.api.FoxPlugin
+import co.akoot.plugins.bluefox.extensions.getPDC
+import co.akoot.plugins.bluefox.extensions.removePDC
+import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.immuneKey
 import org.bukkit.command.CommandSender
-import org.bukkit.persistence.PersistentDataType
 
 class ImmuneCommand(plugin: FoxPlugin) : FoxCommand(plugin, "immune") {
 
@@ -14,11 +16,10 @@ class ImmuneCommand(plugin: FoxPlugin) : FoxCommand(plugin, "immune") {
 
     override fun onCommand(sender: CommandSender, alias: String, args: Array<out String>): Boolean {
         val p = playerCheck(sender) ?: return false
-        val pdc = p.persistentDataContainer
-        val isImmune = pdc.has(immuneKey)
+        val isImmune = p.getPDC<Byte>(immuneKey) != null
 
         // i DONT even want to add immunity but i know people will cry!
-        if (isImmune) pdc.remove(immuneKey) else pdc.set(immuneKey, PersistentDataType.BOOLEAN, true)
+        if (isImmune) p.removePDC(immuneKey) else p.setPDC<Byte>(immuneKey, 1)
         return sendMessage(p, "You are ${if (isImmune) "no longer" else "now"} immune to covid!")
     }
 }

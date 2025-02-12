@@ -2,6 +2,8 @@ package co.akoot.plugins.edulis.commands
 
 import co.akoot.plugins.bluefox.api.FoxCommand
 import co.akoot.plugins.bluefox.api.FoxPlugin
+import co.akoot.plugins.bluefox.extensions.getPDC
+import co.akoot.plugins.bluefox.extensions.removePDC
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.endKey
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -22,10 +24,8 @@ class CureCommand(plugin: FoxPlugin) : FoxCommand(plugin, "cure") {
                 return sendError(sender, "Please specify a player")
             }
 
-            val pdc = sender.persistentDataContainer
-
-            if (pdc.has(endKey)) {
-                pdc.remove(endKey)
+            if (sender.getPDC<Long>(endKey) != null) {
+                sender.removePDC(endKey)
                 return true
             }
 
@@ -36,9 +36,8 @@ class CureCommand(plugin: FoxPlugin) : FoxCommand(plugin, "cure") {
             return sendError(sender, "Player not found")
         }
 
-        val targPdc = target.persistentDataContainer
-        if (targPdc.has(endKey)) {
-            targPdc.remove(endKey)
+        if (target.getPDC<Long>(endKey) != null) {
+            target.removePDC(endKey)
             return sendMessage(sender, "${target.name} is no longer sick!")
         }
 

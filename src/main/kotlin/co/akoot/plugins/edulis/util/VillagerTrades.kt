@@ -1,5 +1,7 @@
 package co.akoot.plugins.edulis.util
 
+import co.akoot.plugins.bluefox.extensions.getPDC
+import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.util.CreateItem.getMaterial
 import co.akoot.plugins.edulis.util.loaders.ConfigLoader.tradeConfig
@@ -7,7 +9,6 @@ import org.bukkit.NamespacedKey
 import org.bukkit.entity.Villager
 import org.bukkit.entity.WanderingTrader
 import org.bukkit.inventory.MerchantRecipe
-import org.bukkit.persistence.PersistentDataType
 
 object VillagerTrades {
 
@@ -39,8 +40,7 @@ object VillagerTrades {
     }
 
     fun modifyTrader(trader: WanderingTrader) {
-        val pdc = trader.persistentDataContainer
-        if (pdc.has(modifiedKey)) return
+        if (trader.getPDC<Byte>(modifiedKey) != null) return
 
         val currentTrades = mutableSetOf<MerchantRecipe>()
         currentTrades.apply {
@@ -49,21 +49,20 @@ object VillagerTrades {
         }
 
         trader.recipes = currentTrades.toMutableList()
-        pdc.set(modifiedKey, PersistentDataType.BOOLEAN, true)
+        trader.setPDC<Byte>(modifiedKey, 1)
     }
 
-    fun modifyVillager(v: Villager) {
-        val pdc = v.persistentDataContainer
-        if (pdc.has(modifiedKey)) return
+    fun modifyVillager(villager: Villager) {
+        if (villager.getPDC<Byte>(modifiedKey) != null) return
 
-        v.apply {
+        villager.apply {
             villagerType = Villager.Type.SWAMP
             villagerLevel = 5
             profession = Villager.Profession.NITWIT
         }
 
-        v.recipes = getTrades("villager").toMutableList()
+        villager.recipes = getTrades("villager").toMutableList()
 
-        pdc.set(modifiedKey, PersistentDataType.BOOLEAN, true)
+        villager.setPDC<Byte>(modifiedKey, 1)
     }
 }

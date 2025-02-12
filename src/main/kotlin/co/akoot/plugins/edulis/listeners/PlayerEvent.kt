@@ -5,9 +5,10 @@ import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.getBlockPDC
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.createDisplay
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.giveCovid
+import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.pauseCovid
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.resumeCovid
 import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
-import co.akoot.plugins.edulis.util.CreateItem.getItemPDC
+import co.akoot.plugins.edulis.util.CreateItem.foodKey
 import co.akoot.plugins.edulis.util.CreateItem.resolvedResults
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -19,12 +20,25 @@ import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
+import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 
 class PlayerEvent(private val plugin: FoxPlugin) : Listener {
+
+
+    @EventHandler
+    fun onDeath(event: PlayerDeathEvent) {
+        pauseCovid(event.player)
+    }
+
+    @EventHandler
+    fun onLeave(event: PlayerQuitEvent) {
+        pauseCovid(event.player)
+    }
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
@@ -46,7 +60,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
             when (block.type) {
                 Material.STONECUTTER -> {
-                    val id = getItemPDC(item) ?: return
+                    val id = item.itemMeta.getPDC<String>(foodKey) ?: return
                     giveSlice(event, id, block, event.player)
                 }
 
@@ -96,10 +110,10 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
     fun itemConsume(event: PlayerItemConsumeEvent) {
         val player = event.player
         // is it a flugin item?
-        val itemId = getItemPDC(player.inventory.itemInMainHand) ?: return
+        val id = event.item.itemMeta.getPDC<String>(foodKey) ?: return
 
         // more importantly, is it a bat wing
-        if (itemId.contains("bat_wing")) {
+        if (id.contains("bat_wing")) {
             giveCovid(player, plugin)
         }
     }
