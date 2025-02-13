@@ -5,6 +5,8 @@ import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.removePDC
 import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.Text
+import co.akoot.plugins.bluefox.util.TimeUtil.getTimeString
+import co.akoot.plugins.bluefox.util.TimeUtil.parseTime
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.pluginEnabled
 import com.dre.brewery.BPlayer
@@ -81,7 +83,7 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
                             + (Text(if (wasCaught) " by $spreader!" else "!", "error_accent"))).component
                 )
 
-                setPDC(endKey, System.currentTimeMillis() + (30 * 60 * 1000L)) // set the end time to 30 minutes
+                setPDC(endKey, System.currentTimeMillis() + parseTime("30m")) // set the end time to 30 minutes
             }
             covidTask[player] = Covid(player, plugin).runTaskTimer(plugin, 1L, 100L)
         }
@@ -94,7 +96,7 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
                 setPDC(endKey, System.currentTimeMillis() + remainingTime)
             }
 
-            log.info("${player.name}'s contagion has been resumed, ${remainingTime / 60000} minutes remaining")
+            log.info("${player.name}'s contagion has been resumed, ${getTimeString(remainingTime)} remaining")
             giveCovid(player, plugin)
         }
 

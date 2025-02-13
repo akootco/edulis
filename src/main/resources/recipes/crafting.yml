@@ -136,15 +136,10 @@ recipes:
 
   charcoal_block:
     result:
-      itemName: "Block of Charcoal"
+      itemName: "Charcoal Block"
       material: COAL_BLOCK
-    shape:
-      - "AAA"
-      - "AAA"
-      - "AAA"
     ingredients:
-      A:
-        material: CHARCOAL
+      - CHARCOAL/9
 
   charcoal:
     result:
@@ -163,22 +158,14 @@ recipes:
         hunger: 10
         eatTime: 2
         isSnack: true
-    shape:
-      - "AAA"
-      - "AAA"
-      - "AAA"
     ingredients:
-      A:
-        material: COOKIE
+      - COOKIE/9
 
   cookie:
     result:
       material: COOKIE
       amount: 9
     ingredients:
-      - edulis:cookie_stack
-      - edulis:cookie_stack
-      - edulis:cookie_stack
       - edulis:cookie_stack
 
   bread_basket:
@@ -1087,7 +1074,7 @@ recipes:
       A:
         material: PORKCHOP
       B:
-        material: MANGROVE_LEAVES
+        material: Tag.LEAVES
       C:
         material: CHICKEN
       D:
@@ -1192,10 +1179,5 @@ recipes:
         hunger: 20
         eatTime: 5
         isSnack: false
-    shape:
-      - "AAA"
-      - "AAA"
-      - "AAA"
     ingredients:
-      A:
-        material: edulis:burrito
+      - edulis:burrito/9

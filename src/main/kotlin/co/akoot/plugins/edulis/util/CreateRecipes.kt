@@ -44,10 +44,15 @@ object CreateRecipes {
             ItemStack(config.getConfigurationSection("result")?.let
             { createItem(it, recipeName) } ?: return null)) // set the output item or material
 
-            .apply { config.getStringList("ingredients").forEach { ingredientMaterial ->
-                ingredient(getInput(ingredientMaterial, recipeName) ?: return null) }
+            .apply {
+                config.getStringList("ingredients").forEach { ingredientMaterial ->
+                    val (material, amount) = ingredientMaterial.split("/").let {
+                        it[0] to (it.getOrNull(1)?.toIntOrNull() ?: 1)
+                    }
 
-        }.shapeless("edulis") // add recipe
+                    getInput(material, recipeName)?.let { ingredient(it, amount) }
+                }
+            }.shapeless("edulis") // add recipe
     }
 
     fun cookRecipes(config: ConfigurationSection, recipeName: String): CookRecipe? {

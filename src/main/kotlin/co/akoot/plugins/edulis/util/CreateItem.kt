@@ -6,6 +6,7 @@ import co.akoot.plugins.edulis.Edulis.Companion.pluginEnabled
 import co.akoot.plugins.plushies.util.builders.FoodBuilder
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
 import com.dre.brewery.api.BreweryApi
+import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Tag
@@ -139,6 +140,14 @@ object CreateItem {
                 config.getDouble("food.tp").takeIf { it != 0.0 }?.let { range -> tp(range.toFloat()) }
                 config.getString("food.sound.burp")?.let { afterEatSound(it.lowercase()) }
                 config.getString("food.sound.eat")?.let { eatSound(it.lowercase()) }
+                config.getBoolean("food.crumbs").takeIf { !it }?.let { noCrumbs() }
+                config.getBoolean("food.isMilk").takeIf { !it }?.let { clearEffects() }
+
+                config.getString("food.animation")?.let { animationName ->
+                    val animation = enumValues<ItemUseAnimation>().firstOrNull { it.name.equals(animationName, ignoreCase = true) }
+                    animation?.let { animation(it) }
+                }
+
             }.build()
 
             // Add the food item to resolvedResults
