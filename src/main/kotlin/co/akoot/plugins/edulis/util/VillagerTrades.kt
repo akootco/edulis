@@ -2,9 +2,8 @@ package co.akoot.plugins.edulis.util
 
 import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.setPDC
-import co.akoot.plugins.edulis.Edulis.Companion.log
+import co.akoot.plugins.edulis.Edulis.Config.traderConfig
 import co.akoot.plugins.edulis.util.CreateItem.getMaterial
-import co.akoot.plugins.edulis.util.loaders.ConfigLoader.tradeConfig
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Villager
 import org.bukkit.entity.WanderingTrader
@@ -16,28 +15,23 @@ object VillagerTrades {
 
     private fun getTrades(type: String): MutableList<MerchantRecipe> {
         val trades: MutableList<MerchantRecipe> = mutableListOf()
-        val section = tradeConfig.getConfigurationSection(type) ?: run {
-            log.error("'$type' section missing from trades config")
-            return trades
-        }
 
-        for (key in section.getKeys(false)) {
-            val tradeSection = section.getConfigurationSection(key) ?: continue
+        for (key in traderConfig.getKeys(type)) {
+            val sell = traderConfig.getString("$type.$key.sell")?.split("/") ?: continue
+            val buy = traderConfig.getString("$type.$key.buy")?.split("/") ?: continue
 
-            val sellSec = tradeSection.getConfigurationSection("sell") ?: continue
-            val buySec = tradeSection.getConfigurationSection("buy") ?: continue
+            val sellMaterial = getMaterial(sell[0]) ?: continue
+            val buyMaterial = getMaterial(buy[0]) ?: continue
 
-            val sellItem = getMaterial(sellSec, "type") ?: continue
-            val buyItem = getMaterial(buySec, "type") ?: continue
+            sellMaterial.amount = sell.getOrNull(1)?.toIntOrNull() ?: 1
+            buyMaterial.amount = buy.getOrNull(1)?.toIntOrNull() ?: 1
 
-            sellItem.amount = sellSec.getInt("amount", 1)
-            buyItem.amount = buySec.getInt("amount", 1)
-
-            trades.add(MerchantRecipe(sellItem, Int.MAX_VALUE).apply { addIngredient(buyItem) })
+            trades.add(MerchantRecipe(sellMaterial, Int.MAX_VALUE).apply { addIngredient(buyMaterial) })
         }
 
         return trades
     }
+
 
     fun modifyTrader(trader: WanderingTrader) {
         if (trader.getPDC<Byte>(modifiedKey) != null) return
@@ -45,7 +39,7 @@ object VillagerTrades {
         val currentTrades = mutableSetOf<MerchantRecipe>()
         currentTrades.apply {
             addAll(trader.recipes)
-            addAll(getTrades("wandering"))
+            addAll(getTrades("wandering_trader"))
         }
 
         trader.recipes = currentTrades.toMutableList()

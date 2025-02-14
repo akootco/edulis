@@ -15,7 +15,6 @@ object ConfigLoader {
     lateinit var cakesConfig: FileConfiguration
     lateinit var brewRecipesConfig: FileConfiguration
     lateinit var overlayConfig: FileConfiguration
-    lateinit var tradeConfig: FileConfiguration
 
     fun loadConfigs(plugin: FoxPlugin) {
         itemsConfig = loadConfig(plugin, "items/items.yml")
@@ -25,7 +24,6 @@ object ConfigLoader {
         cakesConfig = loadConfig(plugin, "items/cakes.yml")
         brewRecipesConfig = loadConfig(plugin, "recipes/brew.yml")
         overlayConfig = loadConfig(plugin, "data/block_overlays.yml")
-        tradeConfig = loadConfig(plugin,"data/trades.yml" )
 
         ItemLoader().loadItems()
     }

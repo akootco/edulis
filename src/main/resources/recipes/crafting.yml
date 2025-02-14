@@ -1148,7 +1148,7 @@ recipes:
   mre:
     result:
       material: BRICK
-      customModelData: 10
+      customModelData: 7
       itemName: "MRE"
       food:
         saturation: 20

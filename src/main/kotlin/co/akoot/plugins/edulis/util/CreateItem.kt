@@ -71,23 +71,26 @@ object CreateItem {
     }
 
     // try to get material from config
-    fun getMaterial(config: ConfigurationSection, path: String): ItemStack? {
-        val materialName = config.getString(path)
-        if (materialName == null) {
-            log.error("Missing material at: $path")
-            return null
-        }
+    fun getMaterial(input: Any, path: String? = null): ItemStack? {
+        // if it's a string, try to get the material by name
+        // if it's a config section, try to get the material by path
+        val materialName = when (input) {
+            is String -> input
+            is ConfigurationSection -> path?.let { input.getString(it) }
+            else -> null
+        } ?: return null
 
+        // check if the item is a custom item, if not check for vanilla item
         val material = resolvedResults[materialName.removePrefix("edulis:")]
             ?: Material.getMaterial(materialName.uppercase(Locale.getDefault()))?.let { ItemStack(it) }
 
         if (material == null) {
-            log.error("Invalid material at $path: $materialName")
+            log.error("Invalid material: $materialName")
             return null
         }
+
         return material
     }
-
 
     fun createItem(config: ConfigurationSection, recipeName: String): ItemStack? {
         val itemStack = getMaterial(config, "material") ?: return null

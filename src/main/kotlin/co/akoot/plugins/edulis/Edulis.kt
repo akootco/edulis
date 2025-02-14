@@ -1,6 +1,8 @@
 package co.akoot.plugins.edulis
 
+import co.akoot.plugins.bluefox.api.FoxConfig
 import co.akoot.plugins.bluefox.api.FoxPlugin
+import co.akoot.plugins.edulis.Edulis.Config.traderConfig
 import co.akoot.plugins.edulis.commands.*
 import co.akoot.plugins.edulis.listeners.*
 import co.akoot.plugins.edulis.util.Schematics.registerSchematics
@@ -12,6 +14,10 @@ import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 
 class Edulis : FoxPlugin("edulis") {
+
+    object Config {
+        lateinit var traderConfig: FoxConfig
+    }
 
     companion object {
         val log = logger("Edulis")
@@ -44,6 +50,10 @@ class Edulis : FoxPlugin("edulis") {
         registerCommand(CureCommand(this))
         registerCommand(ImmuneCommand(this))
         registerCommand(ReloadCommand(this))
+    }
+
+    override fun registerConfigs() {
+        traderConfig = registerConfig("trades", "data/trades.conf")
     }
 
     override fun registerEvents() {
