@@ -1,5 +1,6 @@
 package co.akoot.plugins.edulis.util
 
+import co.akoot.plugins.bluefox.api.FoxConfig
 import co.akoot.plugins.bluefox.util.Text
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.pluginEnabled
@@ -10,7 +11,6 @@ import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Tag
-import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.RecipeChoice
 import java.util.*
@@ -43,7 +43,6 @@ object CreateItem {
                     }
                 } else {
                     pendingRecipes.add(recipeName.lowercase())
-                    log.info("recipe pending: $recipeName")
                     return null
                 }
             }
@@ -71,82 +70,96 @@ object CreateItem {
     }
 
     // try to get material from config
-    fun getMaterial(input: Any, path: String? = null): ItemStack? {
-        // if it's a string, try to get the material by name
-        // if it's a config section, try to get the material by path
-        val materialName = when (input) {
-            is String -> input
-            is ConfigurationSection -> path?.let { input.getString(it) }
-            else -> null
-        } ?: return null
+    fun getMaterial(input: String, amount: Int = 1, recipeName: String = "null"): ItemStack? {
 
-        // check if the item is a custom item, if not check for vanilla item
-        val material = resolvedResults[materialName.removePrefix("edulis:")]
-            ?: Material.getMaterial(materialName.uppercase(Locale.getDefault()))?.let { ItemStack(it) }
+        val material = when {
+            // Edulis items
+            input.startsWith("edulis:") -> resolvedResults[input.removePrefix("edulis:")]
+
+            // Brewery items
+            input.startsWith("brewery:") -> {
+                if (pluginEnabled("Brewery")) {
+                    BreweryApi.createBrewItem(
+                        BreweryApi.getRecipe(input.removePrefix("brewery:").replace("_", " ")),
+                        10
+                    )
+                } else {
+                    pendingRecipes.add(recipeName.lowercase())
+                    return null
+                }
+            }
+
+            // Vanilla items
+            else -> Material.getMaterial(input.uppercase(Locale.getDefault()))?.let { ItemStack(it) }
+        }
 
         if (material == null) {
-            log.error("Invalid material: $materialName")
+            log.error("Invalid material: $input")
             return null
         }
 
+        material.amount = amount
         return material
     }
 
-    fun createItem(config: ConfigurationSection, recipeName: String): ItemStack? {
-        val itemStack = getMaterial(config, "material") ?: return null
+
+    private fun createItem(config: FoxConfig, path: String): ItemStack? {
+        val itemStack = config.getString("$path.material")?.let { getMaterial(it, recipeName = path) } ?: return null
 
         // need to set pdc first, or else nothing else gets set.
         val itemWithPDC = ItemBuilder.builder(itemStack).apply {
-                pdc(foodKey, recipeName)
+            pdc(foodKey, path)
 
-                config.getStringList("attributes").joinToString(";").takeIf { it.isNotBlank() }
-                    ?.let { pdc(NamespacedKey("edulis", "attributes"), it) }
+            config.getStringList("$path.attributes").joinToString(";").takeIf { it.isNotBlank() }
+                ?.let { pdc(NamespacedKey("edulis", "attributes"), it) }
 
-            }.build()
+        }.build()
 
         val item = ItemBuilder.builder(itemWithPDC).apply {
 
-                config.getString("itemName")?.let { name ->
-                    itemName(Text(name).component)
-                }
+            config.getString("$path.itemName")?.let { name ->
+                itemName(Text(name).component)
+            }
 
-                val amount = config.getInt("amount", 1)
-                amount.takeIf { it != 1 }?.let {
-                    itemStack.amount = it
-                }
+            val amount = config.getInt("$path.amount")
+            amount.takeIf { it != 1 }?.let {
+                itemStack.amount = it
+            }
 
-                config.getString("textures")?.let { id ->
-                    headTexture(id)
-                }
+            config.getString("$path.textures")?.let { id ->
+                headTexture(id)
+            }
 
-                config.getInt("customModelData").takeIf { it != 0 }?.let {
-                    customModelData(it)
-                }
+            config.getInt("$path.customModelData").takeIf { it != 0 }?.let {
+                customModelData(it)
+            }
 
-                lore(config.getStringList("lore").map { Text(it).component })
-                // stackSize needs to be 1-99 or else the server will explode (real)
-                config.getInt("stackSize").takeIf { it in 1..99 }?.let {
-                    stackSize(it)
-                }
+            lore(config.getStringList("$path.lore").map { Text(it).component })
+            // stackSize needs to be 1-99 or else the server will explode (real)
+            config.getInt("$path.stackSize").takeIf { it in 1..99 }?.let {
+                stackSize(it)
+            }
 
-            }.build()
+        }.build()
 
-        if (config.contains("food")) {
+        if (config.getKeys(path).contains("food")) {
             val foodItem = FoodBuilder.builder(item).apply {
                 hunger(
-                    config.getInt("food.hunger", 2),
-                    config.getDouble("food.saturation", 2.0).toFloat(),
-                    config.getDouble("food.eatTime", 1.6).toFloat()
+                    config.getInt("$path.food.hunger") ?: 1,
+                    config.getDouble("$path.food.saturation")?.toFloat()?: 2.0f,
+                    config.getDouble("$path.food.eatTime")?.toFloat()
                 )
 
-                if (config.getBoolean("food.isSnack")) isSnack()
-                config.getDouble("food.tp").takeIf { it != 0.0 }?.let { range -> tp(range.toFloat()) }
-                config.getString("food.sound.burp")?.let { afterEatSound(it.lowercase()) }
-                config.getString("food.sound.eat")?.let { eatSound(it.lowercase()) }
-                config.getBoolean("food.crumbs").takeIf { !it }?.let { noCrumbs() }
-                config.getBoolean("food.isMilk").takeIf { !it }?.let { clearEffects() }
 
-                config.getString("food.animation")?.let { animationName ->
+                config.getBoolean("$path.food.isSnack")?.takeIf { it }?.let { isSnack() }
+                config.getDouble("$path.food.tp").takeIf { it != 0.0 }?.let { range -> tp(range.toFloat()) }
+                config.getString("$path.food.sound.burp")?.let { afterEatSound(it.lowercase()) }
+                config.getString("$path.food.sound.eat")?.let { eatSound(it.lowercase()) }
+                config.getBoolean("$path.food.crumbs")?.takeIf { !it }?.let { noCrumbs() }
+                config.getBoolean("$path.food.isMilk")?.takeIf { !it }?.let { clearEffects() }
+
+
+                config.getString("$path.food.animation")?.let { animationName ->
                     val animation = enumValues<ItemUseAnimation>().firstOrNull { it.name.equals(animationName, ignoreCase = true) }
                     animation?.let { animation(it) }
                 }
@@ -154,12 +167,18 @@ object CreateItem {
             }.build()
 
             // Add the food item to resolvedResults
-            resolvedResults[recipeName] = foodItem
+            resolvedResults[path] = foodItem
             return foodItem
         } else {
             // Add the non-food item to resolvedResults
-            resolvedResults[recipeName] = item
+            resolvedResults[path] = item
             return item
+        }
+    }
+
+    fun loadItems(config: FoxConfig) {
+        for (key in config.getKeys()) {
+            createItem(config, key)
         }
     }
 }

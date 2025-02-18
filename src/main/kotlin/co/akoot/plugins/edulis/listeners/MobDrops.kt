@@ -1,8 +1,10 @@
 package co.akoot.plugins.edulis.listeners
 
-import co.akoot.plugins.edulis.util.loaders.ConfigLoader
-import co.akoot.plugins.edulis.util.CreateItem.resolvedResults
+import co.akoot.plugins.edulis.Edulis.Companion.mobDropConfig
+import co.akoot.plugins.edulis.util.CreateItem.getMaterial
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.Ageable
+import org.bukkit.entity.Frog
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -14,17 +16,36 @@ class MobDrops : Listener {
     @EventHandler
     fun onEntityDeath(event: EntityDeathEvent) {
         val killer = event.entity.killer ?: return
+        val entity = event.entity
+        val keys = mobDropConfig.getKeys()
 
-        val dropsConfig = ConfigLoader.mobDropsConfig
+        when (entity) {
+            is Frog -> { // this should be okay to check first since baby frogs are tadpoles
+                val variant = "FROG_${entity.variant.key.key.uppercase()}"
+                if (keys.contains(variant)) {
+                    mobDropConfig.getStringList(variant).forEach {
+                        val dropItem = ItemStack(getMaterial(it) ?: return)
+                        handleLooting(event, dropItem, killer)
+                    }
+                    return
+                }
+            }
+        }
 
-        dropsConfig.getKeys(false).forEach { mobKey ->
-            // get the mob's config
-            val mobConfig = dropsConfig.getConfigurationSection(mobKey) ?: return
-            val name = mobConfig.getString("mob") ?: return
+        if (entity is Ageable && !entity.isAdult) {
+            val key = "${entity.type.name}_BABY"
+            if (keys.contains(key)) {
+                mobDropConfig.getStringList(key).forEach {
+                    val dropItem = ItemStack(getMaterial(it) ?: return)
+                    handleLooting(event, dropItem, killer)
+                }
+                return
+            }
+        }
 
-            // if mob matches, handle the drop
-            if (name == event.entityType.name) {
-                val dropItem: ItemStack = resolvedResults[mobKey] ?: return
+        if (keys.contains(event.entityType.name)) { // handle all other mobs
+            mobDropConfig.getStringList(event.entityType.name).forEach {
+                val dropItem = ItemStack(getMaterial(it) ?: return)
                 handleLooting(event, dropItem, killer)
             }
         }

@@ -1,7 +1,7 @@
 package co.akoot.plugins.edulis.util.brewery
 
+import co.akoot.plugins.edulis.Edulis.Companion.brewRecipesConfig
 import co.akoot.plugins.edulis.Edulis.Companion.log
-import co.akoot.plugins.edulis.util.loaders.ConfigLoader.brewRecipesConfig
 import com.dre.brewery.api.BreweryApi
 import com.dre.brewery.recipe.BCauldronRecipe
 import com.dre.brewery.recipe.BRecipe

@@ -1,70 +1,112 @@
 package co.akoot.plugins.edulis.util
 
-import co.akoot.plugins.edulis.Edulis.Companion.log
-import co.akoot.plugins.edulis.util.CreateItem.createItem
+import co.akoot.plugins.bluefox.util.TimeUtil.parseTime
+import co.akoot.plugins.edulis.Edulis.Companion.craftingConfig
+import co.akoot.plugins.edulis.Edulis.Companion.smokerConfig
 import co.akoot.plugins.edulis.util.CreateItem.getInput
-import co.akoot.plugins.plushies.util.builders.CookRecipe
+import co.akoot.plugins.edulis.util.CreateItem.getMaterial
 import co.akoot.plugins.plushies.util.builders.CraftRecipe
-import org.bukkit.configuration.ConfigurationSection
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger.logger
+import org.bukkit.Bukkit
+import org.bukkit.NamespacedKey
+import org.bukkit.inventory.CampfireRecipe
+import org.bukkit.inventory.FurnaceRecipe
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.Recipe
+import org.bukkit.inventory.SmokingRecipe
 
 object CreateRecipes {
-    fun craftingRecipes(config: ConfigurationSection, recipeName: String): Recipe? {
-        // i let the intelliJ suggestions go crazy lol, worked out great!
-        if (!config.contains("shape")) {
-            return shapelessCraftingRecipes(config, recipeName)
-        }
 
-        val shape = config.getStringList("shape")
-        // make sure the shape is 3x3 so paper doesn't start crying
-        if (shape.size != 3 || !shape.all { row -> row.length == 3 }) {
-            log.error("Invalid shape for recipe $recipeName. Shape must be 3x3.") // Shape is not 3x3
-            return null
-        }
+    fun smeltingRecipes(key: String) {
+        val result = smokerConfig.getString("$key.output") ?: return
+        val input = smokerConfig.getString("$key.input") ?: return
+        val time = parseTime(smokerConfig.getString("$key.cookTime") ?: "10s", true).toInt()
+        val xp = smokerConfig.getDouble("$key.xp") ?: 0.7f
 
-        return CraftRecipe.builder(recipeName,
-            ItemStack(config.getConfigurationSection("result")?.let
+        val smokerKey = NamespacedKey("edulis", "${key}_smoker")
+        val campfireKey = NamespacedKey("edulis", "${key}_campfire")
+        val furnaceKey = NamespacedKey("edulis", "${key}_furnace")
 
-            { createItem(it, recipeName) } ?: return null)) // set the output item or material
+        val parts = result.split("/")
+        val amount = parts.getOrNull(1)?.toIntOrNull() ?: 1
 
-            .shape(*shape.toTypedArray()) // set the shape of the recipe
+        Bukkit.removeRecipe(furnaceKey)
+        Bukkit.addRecipe(
+            FurnaceRecipe(
+                furnaceKey,
+                getMaterial(parts[0], amount = amount, recipeName = key) ?: return,
+                getInput(input, key) ?: return,
+                xp.toFloat(),
+                time
+            )
+        )
 
-            .apply { config.getConfigurationSection("ingredients")?.getKeys(false)?.forEach { key ->
-                    ingredient(key[0], config.getString("ingredients.$key.material")?.let
-                    { getInput(it, recipeName) } ?: return null)
-                }
+        Bukkit.removeRecipe(campfireKey)
+        Bukkit.addRecipe(
+            CampfireRecipe(
+                campfireKey,
+                getMaterial(parts[0], amount = amount, recipeName = key) ?: return,
+                getInput(input, key) ?: return,
+                xp.toFloat(),
+                time * 3
+            )
+        )
 
-            }.shaped("edulis") // add recipe
+        Bukkit.removeRecipe(smokerKey)
+        Bukkit.addRecipe(
+            SmokingRecipe(
+                smokerKey,
+                getMaterial(parts[0], amount = amount, recipeName = key) ?: return,
+                getInput(input, key) ?: return,
+                xp.toFloat(),
+                time / 2
+            )
+        )
     }
 
-    private fun shapelessCraftingRecipes(config: ConfigurationSection, recipeName: String): Recipe? {
-        return CraftRecipe.builder(recipeName,
+    fun craftingRecipes(key: String) {
+        val shape = craftingConfig.getStringList("$key.shape")
+        val result = craftingConfig.getString("$key.result") ?: return
+        val input = result.split("/")
+        val inputAmount = input.getOrNull(1)?.toIntOrNull() ?: 1
 
-            ItemStack(config.getConfigurationSection("result")?.let
-            { createItem(it, recipeName) } ?: return null)) // set the output item or material
+        if (shape.isEmpty()) {
 
-            .apply {
-                config.getStringList("ingredients").forEach { ingredientMaterial ->
-                    val (material, amount) = ingredientMaterial.split("/").let {
-                        it[0] to (it.getOrNull(1)?.toIntOrNull() ?: 1)
+            // shapeless recipe
+            CraftRecipe.builder(
+                key,
+                ItemStack(getMaterial(input[0],amount = inputAmount, recipeName = key) ?: return)
+            )// skip if output is invalid
+                .apply {
+                    for (ingredient in craftingConfig.getStringList("$key.ingredients")) {
+                        val parts = ingredient.split("/")
+                        val amount = parts.getOrNull(1)?.toIntOrNull() ?: 1
+                        val material = getInput(parts[0], key) ?: continue // skip if input is invalid
+
+                        // nice!, add ingredient to recipe
+                        ingredient(material, amount)
                     }
+                }.shapeless("edulis")
+        } else {
 
-                    getInput(material, recipeName)?.let { ingredient(it, amount) }
-                }
-            }.shapeless("edulis") // add recipe
-    }
+            if (shape.size < 3) {
+                logger("Edulis").warn("Invalid shape for recipe $key: shape size = ${shape.size}, shape = $shape")
+                return
+            }
 
-    fun cookRecipes(config: ConfigurationSection, recipeName: String): CookRecipe? {
-        return CookRecipe.builder(recipeName,
-            config.getString("input")?.let { getInput(it, recipeName) } ?: return null,
+            CraftRecipe.builder(
+                key,
+                ItemStack(getMaterial(input[0],amount = inputAmount, recipeName = key) ?: return)
+            ) // skip if output is invalid
+                .shape(shape[0], shape[1], shape[2])
+                .apply {
+                    for (ingredient in craftingConfig.getKeys("$key.ingredients")) {
+                        val material = craftingConfig.getString("$key.ingredients.$ingredient")
+                            ?.let { getInput(it, key) } ?: continue // skip if input is invalid
 
-            ItemStack(config.getConfigurationSection("result")?.let
-            { createItem(it, recipeName) } ?: return null), // set the output item or material
-
-            config.getInt("cookTime"),
-            config.getDouble("xp").toFloat()
-
-        ).smoke("edulis") // add recipes
+                        // all valid, add ingredient
+                        ingredient(ingredient[0], material)
+                    }
+                }.shaped("edulis")
+        }
     }
 }

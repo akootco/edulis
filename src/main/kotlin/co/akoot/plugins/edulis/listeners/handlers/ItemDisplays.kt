@@ -1,6 +1,6 @@
 package co.akoot.plugins.edulis.listeners.handlers
 
-import co.akoot.plugins.edulis.util.loaders.ConfigLoader.overlayConfig
+import co.akoot.plugins.edulis.Edulis.Companion.overlayConfig
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
 import org.bukkit.Location
 import org.bukkit.Material
@@ -22,9 +22,9 @@ object ItemDisplays {
             }
         }
 
-        val cmd = overlayConfig.getInt("overlays.$id.$age", 0)
+        val cmd = overlayConfig.getInt("$id.age$age")
         val overlay = ItemBuilder.builder(ItemStack(Material.BARRIER))
-            .customModelData(cmd)
+            .customModelData(cmd?: 0)
             .build()
 
         if (existingDisplay != null) {

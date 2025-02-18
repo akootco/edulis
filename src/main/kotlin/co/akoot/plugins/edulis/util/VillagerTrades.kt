@@ -2,7 +2,7 @@ package co.akoot.plugins.edulis.util
 
 import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.setPDC
-import co.akoot.plugins.edulis.Edulis.Config.traderConfig
+import co.akoot.plugins.edulis.Edulis.Companion.traderConfig
 import co.akoot.plugins.edulis.util.CreateItem.getMaterial
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Villager
