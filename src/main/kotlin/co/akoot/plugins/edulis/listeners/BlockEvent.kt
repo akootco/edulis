@@ -1,9 +1,9 @@
 package co.akoot.plugins.edulis.listeners
 
-import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.removePDC
 import co.akoot.plugins.bluefox.extensions.setPDC
+import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.dropItems
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.getBlockPDC
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.isLeaf
@@ -32,7 +32,7 @@ import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.event.player.PlayerHarvestBlockEvent
 import org.bukkit.event.world.StructureGrowEvent
 
-class BlockEvent(private val plugin: FoxPlugin) : Listener {
+class BlockEvent : Listener {
 
     @EventHandler
     fun onPlace(event: BlockPlaceEvent) {
@@ -135,7 +135,7 @@ class BlockEvent(private val plugin: FoxPlugin) : Listener {
 
     @EventHandler
     fun cropGrow(event: BlockGrowEvent) {
-        CropDisplay(event.block).runTaskLater(plugin, 1)
+        runLater(1, CropDisplay(event.block))
     }
 
     @EventHandler
@@ -165,6 +165,6 @@ class BlockEvent(private val plugin: FoxPlugin) : Listener {
         if (event.block.type != Material.DISPENSER || event.item.type != Material.BONE_MEAL) return
 
         val face = (event.block.blockData as? Directional)?.facing ?: return // where is it looking?
-        CropDisplay(event.block.location.add(face.direction).block).runTaskLater(plugin, 1)
+        runLater(1, CropDisplay(event.block.location.add(face.direction).block))
     }
 }

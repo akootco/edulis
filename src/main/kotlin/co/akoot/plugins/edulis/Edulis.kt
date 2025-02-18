@@ -84,7 +84,7 @@ class Edulis : FoxPlugin("edulis") {
         registerEventListener(MobDrops())
         registerEventListener(PlayerEvent(this))
         registerEventListener(PluginEvent())
-        registerEventListener(BlockEvent(this))
+        registerEventListener(BlockEvent())
         registerEventListener(EntityEvent())
     }
 

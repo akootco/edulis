@@ -2,6 +2,7 @@ package co.akoot.plugins.edulis.listeners
 
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.bluefox.extensions.getPDC
+import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.listeners.handlers.FoodEffects.setAttributes
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.giveCovid
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.pauseCovid
@@ -86,7 +87,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
                 in Tag.CROPS.values.plus(Material.SWEET_BERRY_BUSH) -> {
                     if (item.type == Material.BONE_MEAL) {
-                        CropDisplay(block).runTaskLater(plugin, 1)
+                        runLater(1, CropDisplay(block))
                     }
                 }
 
