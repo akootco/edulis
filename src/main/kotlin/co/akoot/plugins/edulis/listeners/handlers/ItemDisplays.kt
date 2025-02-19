@@ -22,9 +22,13 @@ object ItemDisplays {
             }
         }
 
-        val cmd = overlayConfig.getInt("$id.age$age")
+        val cmd = overlayConfig.getInt("$id.age$age") ?: run {
+            removeDisplay(location)
+            return
+        }
+
         val overlay = ItemBuilder.builder(ItemStack(Material.BARRIER))
-            .customModelData(cmd?: 0)
+            .customModelData(cmd)
             .build()
 
         if (existingDisplay != null) {

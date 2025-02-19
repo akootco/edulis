@@ -13,7 +13,6 @@ import org.bukkit.NamespacedKey
 import org.bukkit.Tag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.RecipeChoice
-import java.util.*
 import kotlin.collections.HashMap
 
 object CreateItem {
@@ -24,82 +23,90 @@ object CreateItem {
     val foodKey = NamespacedKey("edulis", "food")
 
     // get recipe input items
-    fun getInput(item: String, recipeName: String): RecipeChoice? {
-        return when {
-            // items created by flugin™
-            item.startsWith("edulis:") ->
-                resolvedResults[item.removePrefix("edulis:")]?.let {
-                    RecipeChoice.ExactChoice(it)
+    fun getInput(input: String, recipeName: String): RecipeChoice? {
+        // brewery items
+        if (input.startsWith("brewery:")) {
+            // Check if the Brewery plugin is enabled
+            if (pluginEnabled("Brewery")) {
+                BreweryApi.createBrewItem(
+                    BreweryApi.getRecipe(
+                        input.removePrefix("brewery:")
+                            .replace("_", " ")
+                    ), 10 // i hate how this is auto formatted but oh well
+                )?.let { brewItem ->
+                    return RecipeChoice.ExactChoice(brewItem)
                 }
+            } else {
+                pendingRecipes.add(recipeName.lowercase())
+                return null
+            }
+        }
 
-            // brewery items
-            item.startsWith("brewery:") -> {
-                // Check if the Brewery plugin is enabled
-                if (pluginEnabled("Brewery")) {
-                    BreweryApi.createBrewItem(BreweryApi.getRecipe(item.removePrefix("brewery:")
-                            .replace("_", " ")), 10
-                    )?.let { brewItem ->
-                        RecipeChoice.ExactChoice(brewItem)
-                    }
-                } else {
-                    pendingRecipes.add(recipeName.lowercase())
+        // material tags
+        if (input.startsWith("tag.")) {
+            val tag = when (input.removePrefix("tag.").uppercase()) {
+                "WOOL" -> Tag.WOOL
+                "LEAVES" -> Tag.LEAVES
+                "PLANKS" -> Tag.PLANKS
+                "LOGS" -> Tag.LOGS
+                else -> {
+                    // if the tag is not found, skip.
+                    // i would like this to handle every tag without having to list them eventually
+                    log.error("$input not found, skipping ingredient")
                     return null
                 }
             }
-
-            // material tags
-            item.startsWith("tag.") -> {
-                val tag = when (item.removePrefix("tag.").uppercase()) {
-                    "WOOL" -> Tag.WOOL
-                    "LEAVES" -> Tag.LEAVES
-                    "PLANKS" -> Tag.PLANKS
-                    "LOGS" -> Tag.LOGS
-                    else -> {
-                        // if the tag is not found, skip.
-                        // i would like this to handle every tag without having to list them eventually
-                        log.error("$item not found, skipping ingredient")
-                        return null
-                    }
-                }
-                RecipeChoice.MaterialChoice(tag)
-            }
-
-            // if no prefix, check for vanilla material.
-            else -> Material.getMaterial(item.uppercase())?.let { RecipeChoice.MaterialChoice(it) }
+            return RecipeChoice.MaterialChoice(tag)
         }
+
+        // if no prefix, check for flugin item or vanilla material.
+        resolvedResults.keys.find { it.equals(input, ignoreCase = true) }?.let { key ->
+            resolvedResults[key]?.let {
+                return RecipeChoice.ExactChoice(it)
+            }
+        }
+
+        Material.getMaterial(input.uppercase())?.let { return RecipeChoice.MaterialChoice(it) }
+
+        log.error("Invalid input: $input for recipe $recipeName.")
+        return null
     }
 
-    // try to get material from config
-    fun getMaterial(input: String, amount: Int = 1, recipeName: String = "null"): ItemStack? {
 
-        val material = when {
-            // Edulis items
-            input.startsWith("edulis:") -> resolvedResults[input.removePrefix("edulis:")]
+    // try to get material from config
+    fun getMaterial(input: String, amount: Int = 1, recipeName: String = ""): ItemStack? {
 
             // Brewery items
-            input.startsWith("brewery:") -> {
-                if (pluginEnabled("Brewery")) {
-                    BreweryApi.createBrewItem(
-                        BreweryApi.getRecipe(input.removePrefix("brewery:").replace("_", " ")),
-                        10
-                    )
-                } else {
-                    pendingRecipes.add(recipeName.lowercase())
-                    return null
-                }
+        if (input.startsWith("brewery:")) {
+            if (pluginEnabled("Brewery")) {
+                val brewItem = BreweryApi.createBrewItem(
+                    BreweryApi.getRecipe(input.removePrefix("brewery:").replace("_", " ")),
+                    10
+                )
+                brewItem.amount = amount
+                return brewItem
+            } else {
+                pendingRecipes.add(recipeName.lowercase())
+                return null
             }
-
-            // Vanilla items
-            else -> Material.getMaterial(input.uppercase(Locale.getDefault()))?.let { ItemStack(it) }
         }
 
-        if (material == null) {
-            log.error("Invalid material: $input")
-            return null
+        // if no prefix, check for flugin item or vanilla material.
+        resolvedResults.keys.find { it.equals(input, ignoreCase = true) }?.let { key ->
+            resolvedResults[key]?.let {
+                it.amount = amount
+                return it
+            }
         }
 
-        material.amount = amount
-        return material
+        Material.getMaterial(input.uppercase())?.let {
+            val itemStack = ItemStack(it)
+            itemStack.amount = amount
+            return itemStack
+        }
+
+        log.error("Invalid output: $input for recipe $recipeName.")
+        return null
     }
 
 
@@ -110,7 +117,7 @@ object CreateItem {
         val itemWithPDC = ItemBuilder.builder(itemStack).apply {
             pdc(foodKey, path)
 
-            config.getStringList("$path.attributes").joinToString(";").takeIf { it.isNotBlank() }
+            config.getStringList("$path.food.attributes").joinToString(";").takeIf { it.isNotBlank() }
                 ?.let { pdc(NamespacedKey("edulis", "attributes"), it) }
 
         }.build()
@@ -146,7 +153,7 @@ object CreateItem {
             val foodItem = FoodBuilder.builder(item).apply {
                 hunger(
                     config.getInt("$path.food.hunger") ?: 1,
-                    config.getDouble("$path.food.saturation")?.toFloat()?: 2.0f,
+                    config.getDouble("$path.food.saturation")?.toFloat() ?: 2.0f,
                     config.getDouble("$path.food.eatTime")?.toFloat()
                 )
 
@@ -156,7 +163,7 @@ object CreateItem {
                 config.getString("$path.food.sound.burp")?.let { afterEatSound(it.lowercase()) }
                 config.getString("$path.food.sound.eat")?.let { eatSound(it.lowercase()) }
                 config.getBoolean("$path.food.crumbs")?.takeIf { !it }?.let { noCrumbs() }
-                config.getBoolean("$path.food.isMilk")?.takeIf { !it }?.let { clearEffects() }
+                config.getBoolean("$path.food.isMilk")?.takeIf { it }?.let { clearEffects() }
 
 
                 config.getString("$path.food.animation")?.let { animationName ->
@@ -167,11 +174,11 @@ object CreateItem {
             }.build()
 
             // Add the food item to resolvedResults
-            resolvedResults[path] = foodItem
+            resolvedResults[path.lowercase()] = foodItem
             return foodItem
         } else {
             // Add the non-food item to resolvedResults
-            resolvedResults[path] = item
+            resolvedResults[path.lowercase()] = item
             return item
         }
     }

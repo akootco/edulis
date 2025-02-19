@@ -2,6 +2,9 @@ package co.akoot.plugins.edulis.listeners.handlers
 
 import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.removePDC
+import co.akoot.plugins.bluefox.util.runLater
+import co.akoot.plugins.edulis.Edulis.Companion.leafConfig
+import co.akoot.plugins.edulis.util.CreateItem.getMaterial
 import co.akoot.plugins.edulis.util.CreateItem.resolvedResults
 import org.bukkit.Location
 import org.bukkit.Material
@@ -57,8 +60,19 @@ object BlockDrops {
     }
 
     fun leafDrops(block: Block) {
-        if (block.type == Material.CHERRY_LEAVES && ThreadLocalRandom.current().nextDouble() < 0.05) {
-            resolvedResults["cherries"]?.let { block.world.dropItemNaturally(block.location, it) }
+        val key = block.type.name
+        if (leafConfig.getKeys().contains(key)) {
+
+            for (ingredient in leafConfig.getStringList(key)) {
+                val parts = ingredient.split("/")
+                val chance = parts.getOrNull(1)?.toFloat() ?: 0.05f
+                val material = getMaterial(parts[0]) ?: continue // skip if input is invalid
+
+                // nice!, add ingredient to recipe
+                if (ThreadLocalRandom.current().nextDouble() < chance) {
+                    runLater(1) { block.world.dropItemNaturally(block.location.add(0.5,0.0,0.5), material) }
+                }
+            }
         }
     }
 }

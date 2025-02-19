@@ -28,6 +28,8 @@ class Edulis : FoxPlugin("edulis") {
         lateinit var craftingConfig: FoxConfig
         lateinit var overlayConfig: FoxConfig
         lateinit var cookieConfig: FoxConfig
+        lateinit var leafConfig: FoxConfig
+
         lateinit var brewRecipesConfig: FileConfiguration
 
         val log = logger("Edulis")
@@ -81,6 +83,7 @@ class Edulis : FoxPlugin("edulis") {
         craftingConfig = registerConfig("crafting", "recipes/crafting.conf")
         overlayConfig = registerConfig("overlay", "data/overlays.conf")
         cookieConfig = registerConfig("cookies", "items/cookies.conf")
+        leafConfig = registerConfig("leafDrop", "data/leaf_drops.conf")
     }
 
     override fun registerEvents() {

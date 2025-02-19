@@ -19,11 +19,14 @@ class FoodCommand(plugin: FoxPlugin) : FoxCommand(plugin, "food") {
 
         if (args.isEmpty()) return sendError(sender, "Please specify an item.")
 
-        val outputItem = resolvedResults[args[0]] ?: run {
-            return sendError(sender,"Invalid food item.")
-        }
+        val outputItem = resolvedResults.keys.find { it.equals(args[0], ignoreCase = true) }
+            ?.let { resolvedResults[it] }
+            ?: run {
+                return sendError(sender, "Invalid food item.")
+            }
 
-        val item = outputItem.clone().apply { amount = args.getOrNull(1)?.toIntOrNull() ?: 1 }
+        val count = args.getOrNull(1)?.toIntOrNull() ?: 1
+        val item = outputItem.clone().apply { amount = count }
 
         p.inventory.addItem(item)
         return true
