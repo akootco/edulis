@@ -28,6 +28,7 @@ object Schematics {
             val key = NamespacedKey("edulis", file.nameWithoutExtension)
 
             manager.apply {
+                unregisterStructure(key)
                 registerStructure(key, manager.loadStructure(file))
             }
         }
