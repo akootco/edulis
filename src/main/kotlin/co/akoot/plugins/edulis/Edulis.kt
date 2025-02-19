@@ -27,6 +27,7 @@ class Edulis : FoxPlugin("edulis") {
         lateinit var mobDropConfig: FoxConfig
         lateinit var craftingConfig: FoxConfig
         lateinit var overlayConfig: FoxConfig
+        lateinit var cookieConfig: FoxConfig
         lateinit var brewRecipesConfig: FileConfiguration
 
         val log = logger("Edulis")
@@ -39,6 +40,7 @@ class Edulis : FoxPlugin("edulis") {
 
         loadItems(itemConfig)
         loadItems(cakeConfig)
+        loadItems(cookieConfig)
 
         for (key in smokerConfig.getKeys()) {
             smeltingRecipes(key)
@@ -78,6 +80,7 @@ class Edulis : FoxPlugin("edulis") {
         mobDropConfig = registerConfig("mob_drops", "items/mob_drops.conf")
         craftingConfig = registerConfig("crafting", "recipes/crafting.conf")
         overlayConfig = registerConfig("overlay", "data/overlays.conf")
+        cookieConfig = registerConfig("cookies", "items/cookies.conf")
     }
 
     override fun registerEvents() {

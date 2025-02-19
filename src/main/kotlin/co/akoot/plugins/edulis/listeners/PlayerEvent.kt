@@ -2,7 +2,9 @@ package co.akoot.plugins.edulis.listeners
 
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.bluefox.extensions.getPDC
+import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.runLater
+import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.getBlockPDC
 import co.akoot.plugins.edulis.listeners.handlers.FoodEffects.setAttributes
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.giveCovid
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.pauseCovid
@@ -14,6 +16,7 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.Tag
 import org.bukkit.block.Block
+import org.bukkit.block.BlockFace
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
@@ -88,6 +91,24 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                 in Tag.CROPS.values.plus(Material.SWEET_BERRY_BUSH) -> {
                     if (item.type == Material.BONE_MEAL) {
                         runLater(1, CropDisplay(block))
+                    }
+                }
+
+                in Tag.DIRT.values -> {
+                    if (item.isSimilar(resolvedResults["tomato"] ?: return)) {
+                        if (event.blockFace == BlockFace.UP) { // make sure player is clicking top of block
+                            // make sure the space above is empty
+                            val aboveBlock = block.getRelative(BlockFace.UP).takeIf { it.type == Material.AIR } ?: return
+
+                            event.isCancelled = true
+                            aboveBlock.apply { // plant tomato
+                                type = Material.SWEET_BERRY_BUSH
+                                chunk.setPDC(getBlockPDC(aboveBlock.location), item.itemMeta.getPDC<String>(foodKey))
+                                location.world.playSound(location, Sound.BLOCK_SWEET_BERRY_BUSH_PLACE, 1f, 1f)
+
+                            }
+                            item.amount.minus(1)
+                        }
                     }
                 }
 
