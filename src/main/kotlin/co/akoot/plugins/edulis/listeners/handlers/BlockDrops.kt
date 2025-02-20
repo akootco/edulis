@@ -47,7 +47,7 @@ object BlockDrops {
             item.amount = if (ageable.age == 2) 2 else if (ageable.age == 3) 3 else 1
         }
 
-        loc.world.dropItemNaturally(loc.add(0.5, 0.5, 0.5), item)
+        loc.world.dropItemNaturally(loc.add(0.5, 0.8, 0.5), item)
 
         // only remove if asked, since this is used for harvesting as well as block break
         if (removePDC) block.chunk.removePDC(getBlockPDC(loc))
