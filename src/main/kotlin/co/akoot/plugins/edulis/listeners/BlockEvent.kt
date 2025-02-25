@@ -98,6 +98,9 @@ class BlockEvent : Listener {
             is Fox -> {
                 if (dropItems(block, 3, false)) {
                     block.location.world.playSound(block.location, Sound.BLOCK_SWEET_BERRY_BUSH_PICK_BERRIES, 1f, 1f)
+                    val ageableBlockData = block.blockData as Ageable
+                    ageableBlockData.age = 1
+                    block.blockData = ageableBlockData
                 }
             }
 
@@ -120,11 +123,7 @@ class BlockEvent : Listener {
             else -> return
         }
 
-        val ageableBlockData = block.blockData as Ageable
-
         removeDisplay(event.block.location)
-        ageableBlockData.age = 1
-        block.blockData = ageableBlockData
         event.isCancelled = true
     }
 
