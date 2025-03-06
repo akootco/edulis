@@ -1,7 +1,9 @@
 package co.akoot.plugins.edulis.listeners.tasks
 
 import co.akoot.plugins.bluefox.api.FoxPlugin
+import co.akoot.plugins.bluefox.api.Kolor
 import co.akoot.plugins.bluefox.extensions.getPDC
+import co.akoot.plugins.bluefox.extensions.invoke
 import co.akoot.plugins.bluefox.extensions.removePDC
 import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.Text
@@ -78,10 +80,11 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
             if (player.getPDC<Byte>(immuneKey) != null) return
 
             player.apply {
-                sendMessage(
-                    (Text("You have been infected", "error_accent")
-                            + (Text(if (wasCaught) " by $spreader!" else "!", "error_accent"))).component
-                )
+                Text(this) {
+                    Kolor.ERROR("You have been infected") +
+                            if (wasCaught) (Kolor.ERROR(" by ") + Kolor.ERROR.player(spreader ?: "someone"))
+                            else Kolor.ERROR("!")
+                }
 
                 setPDC(endKey, System.currentTimeMillis() + parseTime("30m")) // set the end time to 30 minutes
             }
