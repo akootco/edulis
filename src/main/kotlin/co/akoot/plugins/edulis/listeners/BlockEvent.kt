@@ -23,7 +23,6 @@ import org.bukkit.block.data.Directional
 import org.bukkit.block.data.type.Cake
 import org.bukkit.entity.Fox
 import org.bukkit.entity.Player
-import org.bukkit.entity.Villager
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.*
@@ -36,7 +35,7 @@ class BlockEvent : Listener {
 
     @EventHandler
     fun onPlace(event: BlockPlaceEvent) {
-        if (event.isCancelled) return
+        if (event.isCancelled) return // this needs to be checked so core protect doesn't break
         val block = event.blockPlaced
 
         val id = event.itemInHand.itemMeta.getPDC<String>(foodKey) ?: return
@@ -50,12 +49,12 @@ class BlockEvent : Listener {
 
     @EventHandler
     fun onBreak(event: BlockBreakEvent) {
-        if (event.isCancelled) return
+        if (event.isCancelled) return // this needs to be checked so core protect doesn't break
 
         if (isLeaf(event.block)) return leafDrops(event.block)
 
         removeDisplay(event.block.location)
-        event.isDropItems = !dropItems(event.block)
+        event.isDropItems = !dropItems(event.block, removePDC = true)
 
     }
 
@@ -64,7 +63,7 @@ class BlockEvent : Listener {
         if (isLeaf(event.block)) return leafDrops(event.block)
 
         removeDisplay(event.block.location)
-        if (dropItems(event.block)) event.drops.clear()
+        if (dropItems(event.block, removePDC = true)) event.drops.clear()
     }
 
     @EventHandler
@@ -74,7 +73,7 @@ class BlockEvent : Listener {
         if (isLeaf(event.block)) return leafDrops(event.block)
 
         removeDisplay(event.block.location)
-        event.setWillDrop(!dropItems(event.block))
+        event.setWillDrop(!dropItems(event.block, removePDC = true))
 
     }
 
@@ -85,35 +84,34 @@ class BlockEvent : Listener {
             if (isLeaf(block)) leafDrops(block)
 
             removeDisplay(block.location)
-            if (dropItems(block)) block.type = Material.AIR
+            if (dropItems(block, removePDC = true)) block.type = Material.AIR
         }
     }
 
     @EventHandler
-    fun entityHarvest(event: EntityChangeBlockEvent) {
-        if (event.isCancelled) return
+    fun blockChange(event: EntityChangeBlockEvent) {
         val block = event.block
 
         when (event.entity) {
             is Fox -> {
-                if (dropItems(block, 3, false)) {
+                if (dropItems(block, 3, setAge = true)) {
+                    event.isCancelled = true
                     block.location.world.playSound(block.location, Sound.BLOCK_SWEET_BERRY_BUSH_PICK_BERRIES, 1f, 1f)
-                    val ageableBlockData = block.blockData as Ageable
-                    ageableBlockData.age = 1
-                    block.blockData = ageableBlockData
                 }
             }
 
-            is Villager -> {
-                if (dropItems(block, 3, false)) {
-                    block.location.world.playSound(block.location, Sound.BLOCK_CROP_BREAK, 1f, 1f)
-                }
-            }
+//            is Villager -> {
+//                if (dropItems(block, 3, true)) {
+//                    event.isCancelled = true
+//                    block.location.world.playSound(block.location, Sound.BLOCK_CROP_BREAK, 1f, 1f)
+//                }
+//            }
 
             is Player -> {
+                if (event.isCancelled) return // this needs to be checked so core protect doesn't break
                 if (block.type == Material.CAKE) {
                     val cake = block.blockData as Cake
-                    val id = block.location.chunk.getPDC<String>(getBlockPDC(block.location))?: return
+                    val id = block.location.chunk.getPDC<String>(getBlockPDC(block.location)) ?: return
 
                     createDisplay(block.location, cake.bites.plus(1), id)
                     return
@@ -124,7 +122,6 @@ class BlockEvent : Listener {
         }
 
         removeDisplay(event.block.location)
-        event.isCancelled = true
     }
 
     @EventHandler
@@ -139,8 +136,9 @@ class BlockEvent : Listener {
 
     @EventHandler
     fun onPlayerHarvest(event: PlayerHarvestBlockEvent) {
+        if (event.isCancelled) return // this needs to be checked so core protect doesn't break
         val ageableBlockData = event.harvestedBlock.blockData as Ageable
-        if (dropItems(event.harvestedBlock, ageableBlockData.age, false)) {
+        if (dropItems(event.harvestedBlock, ageableBlockData.age)) {
 
             removeDisplay(event.harvestedBlock.location)
             event.itemsHarvested.clear()

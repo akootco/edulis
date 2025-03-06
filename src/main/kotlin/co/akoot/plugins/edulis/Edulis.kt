@@ -12,6 +12,7 @@ import co.akoot.plugins.edulis.util.brewery.BrewItems
 import com.dre.brewery.recipe.PluginItem
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger.logger
 import org.bukkit.Bukkit
+import org.bukkit.NamespacedKey
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.Plugin
@@ -31,6 +32,10 @@ class Edulis : FoxPlugin("edulis") {
         lateinit var leafConfig: FoxConfig
 
         lateinit var brewRecipesConfig: FileConfiguration
+
+        fun key(key: String): NamespacedKey {
+            return NamespacedKey("edulis", key)
+        }
 
         val log = logger("Edulis")
         fun checkPlugin(name: String): Plugin? = Bukkit.getPluginManager().getPlugin(name)
@@ -54,7 +59,7 @@ class Edulis : FoxPlugin("edulis") {
 
         registerSchematics(this)
 
-        brewRecipesConfig = loadYamlConfig(this,"recipes/brew.yml")
+        brewRecipesConfig = loadYamlConfig(this, "recipes/brew.yml")
 
         if (checkPlugin("Brewery") != null) {
             PluginItem.registerForConfig("edulis") { BrewItems() }

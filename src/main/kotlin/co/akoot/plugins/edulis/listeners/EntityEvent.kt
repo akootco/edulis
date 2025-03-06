@@ -26,7 +26,7 @@ class EntityEvent : Listener {
             }
 
             is Villager -> {
-                if (item.type == Material.CAKE && entity.profession == Villager.Profession.NONE) {
+                if (item.type == Material.CAKE && entity.profession in listOf(Villager.Profession.NONE, Villager.Profession.NITWIT)) {
                     modifyVillager(entity)
                 }
             }
@@ -44,7 +44,7 @@ class EntityEvent : Listener {
                     val milk = resolvedResults["bird_spit"]?: return
                     event.isCancelled = true
                     player.inventory.itemInMainHand.amount -= 1
-                    entity.location.world.playSound(entity.location, Sound.ENTITY_LLAMA_SPIT, 1f, 1f)
+                    entity.location.world.playSound(entity.location, Sound.ENTITY_LLAMA_SPIT, 0.5f, 2f)
                     player.give(milk)
                 }
             }

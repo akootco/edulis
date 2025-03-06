@@ -123,39 +123,30 @@ object CreateItem {
         }.build()
 
         val item = ItemBuilder.builder(itemWithPDC).apply {
-
             // set ItemName or DisplayName depending on the type
-            config.getString("$path.itemName")?.let { name ->
-                itemName(Text(name).component)
-            }
+
+            config.getString("$path.itemName")?.let { name -> itemName(Text(name).component) }
 
             // set amount
-            config.getInt("$path.amount").takeIf { it != 1 }?.let {
-                itemStack.amount = it
-            }
+            config.getInt("$path.amount").takeIf { it != 1 }?.let { itemStack.amount = it }
+
+            config.getInt("$path.potionColor")?.let { potionColor(it) }
 
             // makes sure to get the id directly from the texture servers!
-            config.getString("$path.textures")?.let { id ->
-                headTexture(id)
-            }
+            config.getString("$path.textures")?.let { id -> headTexture(id) }
 
             // set custom model data
-            config.getInt("$path.customModelData").takeIf { it != 0 }?.let {
-                customModelData(it)
-            }
+            config.getInt("$path.customModelData").takeIf { it != 0 }?.let { customModelData(it) }
 
             //set lore
             lore(config.getStringList("$path.lore").map { Text(it).component })
 
             // stackSize needs to be 1-99 or else the server will explode (real)
-            config.getInt("$path.stackSize").takeIf { it in 1..99 }?.let {
-                stackSize(it)
-            }
-
+            config.getInt("$path.stackSize").takeIf { it in 1..99 }?.let { stackSize(it) }
         }.build()
 
-        if (config.getKeys(path).contains("food")) {
-            val foodItem = FoodBuilder.builder(item).apply {
+        val resultItem = if (config.getKeys(path).contains("food")) {
+            FoodBuilder.builder(item).apply {
                 // i wonder why they split food into two components?
                 hunger(
                     config.getInt("$path.food.hunger") ?: 1,
@@ -197,20 +188,16 @@ object CreateItem {
 
                 // eating animation (i love this)
                 config.getString("$path.food.animation")?.let { animationName ->
-                    val animation = enumValues<ItemUseAnimation>().firstOrNull { it.name.equals(animationName, ignoreCase = true) }
+                    val animation =
+                        enumValues<ItemUseAnimation>().firstOrNull { it.name.equals(animationName, ignoreCase = true) }
                     animation?.let { animation(it) }
                 }
 
             }.build()
+        } else { item }
 
-            // Add the food item to resolvedResults
-            resolvedResults[path.lowercase()] = foodItem
-            return foodItem
-        } else {
-            // Add the non-food item to resolvedResults
-            resolvedResults[path.lowercase()] = item
-            return item
-        }
+        resolvedResults[path.lowercase()] = item
+        return resultItem
     }
 
     fun loadItems(config: FoxConfig) {

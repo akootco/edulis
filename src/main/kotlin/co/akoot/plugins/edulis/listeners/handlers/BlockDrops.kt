@@ -21,7 +21,7 @@ object BlockDrops {
         return NamespacedKey("edulis", key)
     }
 
-    fun dropItems(block: Block, amount: Int = 1, removePDC: Boolean = true): Boolean {
+    fun dropItems(block: Block, amount: Int = 1, removePDC: Boolean = false, setAge: Boolean = false): Boolean {
         if (block.type == Material.CAKE) return false
 
         // get the id of the item from the block pdc
@@ -43,8 +43,14 @@ object BlockDrops {
 
         // for sweet berry bush set amount depending on age
         else if (block.type == Material.SWEET_BERRY_BUSH) {
-            val ageable = block.blockData as? Ageable ?: return false
+            val ageable = block.blockData as Ageable
             item.amount = if (ageable.age == 2) 2 else if (ageable.age == 3) 3 else 1
+        }
+
+        if (setAge) { // set crop age to 1 if asked
+            val ageable = block.blockData as Ageable
+            ageable.age = 1
+            block.blockData = ageable
         }
 
         loc.world.dropItemNaturally(loc.add(0.5, 0.8, 0.5), item)
@@ -56,7 +62,7 @@ object BlockDrops {
     }
 
     fun isLeaf(block: Block): Boolean {
-        return block.type.name.endsWith("_LEAVES")
+        return Tag.LEAVES.isTagged(block.type)
     }
 
     fun leafDrops(block: Block) {
@@ -68,7 +74,7 @@ object BlockDrops {
                 val chance = parts.getOrNull(1)?.toFloat() ?: 0.05f
                 val material = getMaterial(parts[0]) ?: continue // skip if input is invalid
 
-                // nice!, add ingredient to recipe
+                // nice!, add item to drop
                 if (ThreadLocalRandom.current().nextDouble() < chance) {
                     runLater(1) { block.world.dropItemNaturally(block.location.add(0.5,0.0,0.5), material) }
                 }

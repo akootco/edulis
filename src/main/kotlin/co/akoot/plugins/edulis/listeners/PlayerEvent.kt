@@ -62,7 +62,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
             when (block.type) {
                 Material.STONECUTTER -> {
-                    val id = item.itemMeta.getPDC<String>(foodKey) ?: return
+                    val id = item.itemMeta?.getPDC<String>(foodKey) ?: return
                     giveSlice(event, id, block, event.player)
                 }
 
