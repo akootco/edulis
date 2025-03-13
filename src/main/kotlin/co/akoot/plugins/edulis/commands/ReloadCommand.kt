@@ -3,7 +3,7 @@ package co.akoot.plugins.edulis.commands
 import co.akoot.plugins.bluefox.api.FoxCommand
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.edulis.Edulis.Companion.cakeConfig
-import co.akoot.plugins.edulis.Edulis.Companion.cookieConfig
+import co.akoot.plugins.edulis.Edulis.Companion.headConfig
 import co.akoot.plugins.edulis.Edulis.Companion.craftingConfig
 import co.akoot.plugins.edulis.Edulis.Companion.itemConfig
 import co.akoot.plugins.edulis.Edulis.Companion.pluginEnabled
@@ -33,7 +33,7 @@ class ReloadCommand(plugin: FoxPlugin) : FoxCommand(plugin, "loadfood") {
 
         loadItems(itemConfig)
         loadItems(cakeConfig)
-        loadItems(cookieConfig)
+        loadItems(headConfig)
 
         // remove all flugin recipes
         val iterator = Bukkit.recipeIterator()

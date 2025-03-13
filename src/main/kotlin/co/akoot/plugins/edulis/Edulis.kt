@@ -28,7 +28,7 @@ class Edulis : FoxPlugin("edulis") {
         lateinit var mobDropConfig: FoxConfig
         lateinit var craftingConfig: FoxConfig
         lateinit var overlayConfig: FoxConfig
-        lateinit var cookieConfig: FoxConfig
+        lateinit var headConfig: FoxConfig
         lateinit var leafConfig: FoxConfig
 
         lateinit var brewRecipesConfig: FileConfiguration
@@ -47,7 +47,7 @@ class Edulis : FoxPlugin("edulis") {
 
         loadItems(itemConfig)
         loadItems(cakeConfig)
-        loadItems(cookieConfig)
+        loadItems(headConfig)
 
         for (key in smokerConfig.getKeys()) {
             smeltingRecipes(key)
@@ -87,7 +87,7 @@ class Edulis : FoxPlugin("edulis") {
         mobDropConfig = registerConfig("mob_drops", "items/mob_drops.conf")
         craftingConfig = registerConfig("crafting", "recipes/crafting.conf")
         overlayConfig = registerConfig("overlay", "data/overlays.conf")
-        cookieConfig = registerConfig("cookies", "items/cookies.conf")
+        headConfig = registerConfig("heads", "items/heads.conf")
         leafConfig = registerConfig("leafDrop", "data/leaf_drops.conf")
     }
 
