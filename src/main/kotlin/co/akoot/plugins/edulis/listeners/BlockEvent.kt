@@ -23,6 +23,8 @@ import org.bukkit.block.data.Directional
 import org.bukkit.block.data.type.Cake
 import org.bukkit.entity.Fox
 import org.bukkit.entity.Player
+import org.bukkit.entity.Rabbit
+import org.bukkit.entity.Villager
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.*
@@ -97,15 +99,19 @@ class BlockEvent : Listener {
                 if (dropItems(block, 3, setAge = true)) {
                     event.isCancelled = true
                     block.location.world.playSound(block.location, Sound.BLOCK_SWEET_BERRY_BUSH_PICK_BERRIES, 1f, 1f)
+                    removeDisplay(event.block.location)
                 }
             }
 
-//            is Villager -> {
-//                if (dropItems(block, 3, true)) {
-//                    event.isCancelled = true
-//                    block.location.world.playSound(block.location, Sound.BLOCK_CROP_BREAK, 1f, 1f)
-//                }
-//            }
+            is Villager -> {
+                if (block.type == Material.AIR && block.location.subtract(0.0, 1.0, 0.0).block.type == Material.FARMLAND) {
+                    val inventory = (event.entity as Villager).inventory.contents.clone()
+                    val item = inventory.filterNotNull().first().clone()
+                    val id = item.itemMeta.getPDC<String>(foodKey) ?: return
+
+                    block.chunk.setPDC(getBlockPDC(block.location), id)
+                }
+            }
 
             is Player -> {
                 if (event.isCancelled) return // this needs to be checked so core protect doesn't break
@@ -114,14 +120,15 @@ class BlockEvent : Listener {
                     val id = block.location.chunk.getPDC<String>(getBlockPDC(block.location)) ?: return
 
                     createDisplay(block.location, cake.bites.plus(1), id)
-                    return
                 }
+            }
+
+            is Rabbit -> {
+                runLater(1, CropDisplay(event.block))
             }
 
             else -> return
         }
-
-        removeDisplay(event.block.location)
     }
 
     @EventHandler
