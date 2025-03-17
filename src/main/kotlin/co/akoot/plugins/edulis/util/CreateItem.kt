@@ -68,22 +68,21 @@ object CreateItem {
 
         Material.getMaterial(input.uppercase())?.let { return RecipeChoice.MaterialChoice(it) }
 
-        log.error("Invalid input: $input for recipe $recipeName.")
         return null
     }
 
 
     // try to get material from config
-    fun getMaterial(input: String, amount: Int = 1, recipeName: String = ""): ItemStack? {
+    fun getMaterial(input: String, amount: Int = 1, recipeName: String = "".replace("edulis:", "")): ItemStack? {
 
             // Brewery items
         if (input.startsWith("brewery:")) {
             if (pluginEnabled("Brewery")) {
                 val brewItem = BreweryApi.createBrewItem(
-                    BreweryApi.getRecipe(input.removePrefix("brewery:").replace("_", " ")),
+                    input.removePrefix("brewery:").replace("_", " "),
                     10
                 )
-                brewItem.amount = amount
+                brewItem?.amount = amount
                 return brewItem
             } else {
                 pendingRecipes.add(recipeName.lowercase())
@@ -105,7 +104,6 @@ object CreateItem {
             return itemStack
         }
 
-        log.error("Invalid output: $input for recipe $recipeName.")
         return null
     }
 
@@ -113,18 +111,15 @@ object CreateItem {
     private fun createItem(config: FoxConfig, path: String): ItemStack? {
         val itemStack = config.getString("$path.material")?.let { getMaterial(it, recipeName = path) } ?: return null
 
-        // need to set pdc first, or else nothing else gets set.
-        val itemWithPDC = ItemBuilder.builder(itemStack).apply {
+        val item = ItemBuilder.builder(itemStack).apply {
+
             pdc(foodKey, path)
 
+            // attributes
             config.getStringList("$path.food.attributes").joinToString(";").takeIf { it.isNotBlank() }
                 ?.let { pdc(NamespacedKey("edulis", "attributes"), it) }
 
-        }.build()
-
-        val item = ItemBuilder.builder(itemWithPDC).apply {
-            // set ItemName or DisplayName depending on the type
-
+            // name
             config.getString("$path.itemName")?.let { name -> itemName(Text(name).component) }
 
             // set amount

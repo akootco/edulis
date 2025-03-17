@@ -4,19 +4,16 @@ import co.akoot.plugins.bluefox.api.FoxConfig
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.edulis.commands.*
 import co.akoot.plugins.edulis.listeners.*
-import co.akoot.plugins.edulis.util.CreateItem.loadItems
-import co.akoot.plugins.edulis.util.CreateRecipes.craftingRecipes
-import co.akoot.plugins.edulis.util.CreateRecipes.smeltingRecipes
-import co.akoot.plugins.edulis.util.Schematics.registerSchematics
+import co.akoot.plugins.edulis.util.Util.loadEverything
+import co.akoot.plugins.edulis.util.Util.loadYamlConfig
 import co.akoot.plugins.edulis.util.brewery.BrewItems
+import co.akoot.plugins.edulis.util.brewery.DrinksCommand
 import com.dre.brewery.recipe.PluginItem
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger.logger
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.configuration.file.FileConfiguration
-import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.Plugin
-import java.io.File
 
 class Edulis : FoxPlugin("edulis") {
 
@@ -45,19 +42,7 @@ class Edulis : FoxPlugin("edulis") {
     override fun load() {
         logger.info("hello!!!!!!!!")
 
-        loadItems(itemConfig)
-        loadItems(cakeConfig)
-        loadItems(headConfig)
-
-        for (key in smokerConfig.getKeys()) {
-            smeltingRecipes(key)
-        }
-
-        for (key in craftingConfig.getKeys()) {
-            craftingRecipes(key)
-        }
-
-        registerSchematics(this)
+        loadEverything(this)
 
         brewRecipesConfig = loadYamlConfig(this, "recipes/brew.yml")
 
@@ -77,6 +62,7 @@ class Edulis : FoxPlugin("edulis") {
         registerCommand(CureCommand(this))
         registerCommand(ImmuneCommand(this))
         registerCommand(ReloadCommand(this))
+        registerCommand(DrinksCommand(this))
     }
 
     override fun registerConfigs() {
@@ -97,15 +83,5 @@ class Edulis : FoxPlugin("edulis") {
         registerEventListener(PluginEvent())
         registerEventListener(BlockEvent())
         registerEventListener(EntityEvent())
-    }
-
-    private fun loadYamlConfig(plugin: FoxPlugin, path: String): FileConfiguration {
-        val file = File(plugin.dataFolder, path)
-        // Check if the file exists, if not, save it
-        if (!file.exists()) {
-            plugin.saveResource(path, false)
-            log.info("Saved config: $path")
-        }
-        return YamlConfiguration.loadConfiguration(file)
     }
 }

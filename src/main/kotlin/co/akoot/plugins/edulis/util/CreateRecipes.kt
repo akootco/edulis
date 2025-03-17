@@ -1,6 +1,7 @@
 package co.akoot.plugins.edulis.util
 
 import co.akoot.plugins.edulis.Edulis.Companion.craftingConfig
+import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.smokerConfig
 import co.akoot.plugins.edulis.util.CreateItem.getInput
 import co.akoot.plugins.edulis.util.CreateItem.getMaterial
@@ -11,6 +12,13 @@ import org.bukkit.inventory.ItemStack
 
 object CreateRecipes {
 
+    private fun errorIn(input: String, key: String) {
+        log.error("Invalid input: $input for recipe $key.")
+    }
+    private fun errorOut(output: String, key: String) {
+        log.error("Invalid output: $output for recipe $key.")
+    }
+
     fun smeltingRecipes(key: String) {
         val result = smokerConfig.getString("$key.output") ?: return
         val input = smokerConfig.getString("$key.input") ?: return
@@ -20,8 +28,8 @@ object CreateRecipes {
 
         CookRecipe.builder(
             key,
-            getInput(input, key) ?: return,
-            getMaterial(parts[0], amount = amount, recipeName = key) ?: return,
+            getInput(input, key) ?: return errorIn(input,key),
+            getMaterial(parts[0],amount,key) ?: return errorOut(input,key),
             smokerConfig.getString("$key.cookTime"),
             smokerConfig.getDouble("$key.xp")
         ).smelt("edulis").smoke("edulis")
@@ -38,13 +46,17 @@ object CreateRecipes {
             // shapeless recipe
             CraftRecipe.builder(
                 key,
-                ItemStack(getMaterial(input[0],amount = inputAmount, recipeName = key) ?: return)
+                ItemStack(getMaterial(input[0],inputAmount,key) ?:  return errorOut(input[0],key))
             )// skip if output is invalid
                 .apply {
                     for (ingredient in craftingConfig.getStringList("$key.ingredients")) {
                         val parts = ingredient.split("/")
                         val amount = parts.getOrNull(1)?.toIntOrNull() ?: 1
-                        val material = getInput(parts[0], key) ?: continue // skip if input is invalid
+                        val material = getInput(parts[0], key)
+                        if (material == null) {
+                            errorIn(parts[0],key)
+                            continue // Skip if invalid
+                        }
 
                         // nice!, add ingredient to recipe
                         ingredient(material, amount)
@@ -59,13 +71,17 @@ object CreateRecipes {
 
             CraftRecipe.builder(
                 key,
-                ItemStack(getMaterial(input[0],amount = inputAmount, recipeName = key) ?: return)
-            ) // skip if output is invalid
+                ItemStack(getMaterial(input[0],inputAmount,key) ?: return errorOut(input[0],key)))
                 .shape(shape[0], shape[1], shape[2])
                 .apply {
                     for (ingredient in craftingConfig.getKeys("$key.ingredients")) {
                         val material = craftingConfig.getString("$key.ingredients.$ingredient")
-                            ?.let { getInput(it, key) } ?: continue // skip if input is invalid
+                            ?.let { getInput(it, key) }
+
+                        if (material == null) {
+                            errorIn(ingredient,key)
+                            continue // Skip if input is invalid
+                        }
 
                         // all valid, add ingredient
                         ingredient(ingredient[0], material)
