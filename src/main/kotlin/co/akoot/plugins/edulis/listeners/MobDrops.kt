@@ -1,11 +1,11 @@
 package co.akoot.plugins.edulis.listeners
 
+import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.Edulis.Companion.mobDropConfig
 import co.akoot.plugins.edulis.util.CreateItem.getMaterial
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Ageable
 import org.bukkit.entity.Frog
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDeathEvent
@@ -15,53 +15,62 @@ class MobDrops : Listener {
 
     @EventHandler
     fun onEntityDeath(event: EntityDeathEvent) {
-        val killer = event.entity.killer ?: return
         val entity = event.entity
         val keys = mobDropConfig.getKeys()
+        val name = entity.type.name
 
         when (entity) {
             is Frog -> { // this should be okay to check first since baby frogs are tadpoles
-                val variant = "FROG_${entity.variant.key.key.uppercase()}"
-                if (keys.contains(variant)) {
-                    mobDropConfig.getStringList(variant).forEach {
-                        val dropItem = ItemStack(getMaterial(it) ?: return)
-                        handleLooting(event, dropItem, killer)
-                    }
+                val key = "FROG_${entity.variant.key.key.uppercase()}"
+                if (keys.contains(key)) {
+                    handleDrop(event, key)
                     return
                 }
             }
         }
 
+        // es bebe?
         if (entity is Ageable && !entity.isAdult) {
-            val key = "${entity.type.name}_BABY"
+            val key = "${name}_BABY"
             if (keys.contains(key)) {
-                mobDropConfig.getStringList(key).forEach {
-                    val dropItem = ItemStack(getMaterial(it) ?: return)
-                    handleLooting(event, dropItem, killer)
-                }
+                handleDrop(event, key)
                 return
             }
         }
 
-        if (keys.contains(event.entityType.name)) { // handle all other mobs
-            mobDropConfig.getStringList(event.entityType.name).forEach {
-                val dropItem = ItemStack(getMaterial(it) ?: return)
-                handleLooting(event, dropItem, killer)
-            }
+        // handle other mobs
+        if (keys.contains(event.entityType.name)) {
+            handleDrop(event, event.entityType.name)
+            return
         }
     }
 
-    private fun handleLooting(event: EntityDeathEvent, dropItem: ItemStack, killer: Player): Boolean {
-        // get looting level
-        val lootingLevel = killer.inventory.itemInMainHand.getEnchantmentLevel(Enchantment.LOOTING)
+    private fun handleDrop(event: EntityDeathEvent, key: String) {
+        runLater(1) { // run 1 tick later or else fire ticks will always be -1
+            val item = handleFire(event, key) ?: return@runLater
+            val killer = event.entity.killer
 
-        if (lootingLevel == 0) {
-            dropItem.amount = 1
-        } else {
-            // TODO: make looting better, this sucks
-            dropItem.amount += (2 * lootingLevel)
+            // looting
+            if (killer != null) {
+                // this still SUCKS
+                val lootingLevel = killer.inventory.itemInMainHand.getEnchantmentLevel(Enchantment.LOOTING) + 1
+                item.amount += lootingLevel
+            }
+
+            // for some reason using runlater stops the item from dropping
+            // gotta use dropItem instead
+            val loc = event.entity.location
+            loc.world.dropItemNaturally(loc.add(0.0,0.5,0.0), item)
         }
-        // drop item
-        return event.drops.add(dropItem)
+    }
+
+    private fun handleFire(event: EntityDeathEvent, mob: String): ItemStack? {
+        val name = if (event.entity.fireTicks > -1) "${mob}.cookedDrops" else "${mob}.drops"
+
+        mobDropConfig.getStringList(name).forEach {
+            return ItemStack(getMaterial(it) ?: return null)
+        }
+
+        return null
     }
 }

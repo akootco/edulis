@@ -1,6 +1,7 @@
 package co.akoot.plugins.edulis.listeners.handlers
 
 import co.akoot.plugins.bluefox.extensions.getPDC
+import co.akoot.plugins.edulis.Edulis.Companion.key
 import io.papermc.paper.registry.RegistryAccess
 import io.papermc.paper.registry.RegistryKey
 import org.bukkit.NamespacedKey
@@ -10,7 +11,7 @@ import org.bukkit.inventory.ItemStack
 object FoodEffects {
 
     fun setAttributes(item: ItemStack, player: Player) {
-        val attributes = item.itemMeta.getPDC<String>(NamespacedKey("edulis", "attributes")) ?: return
+        val attributes = item.itemMeta.getPDC<String>(key("attributes")) ?: return
         val attributeRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ATTRIBUTE)
 
         // name/value;name/value;name/value

@@ -2,16 +2,16 @@ package co.akoot.plugins.edulis.util
 
 import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.setPDC
+import co.akoot.plugins.edulis.Edulis.Companion.key
 import co.akoot.plugins.edulis.Edulis.Companion.traderConfig
 import co.akoot.plugins.edulis.util.CreateItem.getMaterial
-import org.bukkit.NamespacedKey
 import org.bukkit.entity.Villager
 import org.bukkit.entity.WanderingTrader
 import org.bukkit.inventory.MerchantRecipe
 
 object VillagerTrades {
 
-    private val modifiedKey = NamespacedKey("edulis","modified")
+    private val modifiedKey = key("modified")
 
     private fun getTrades(type: String): MutableList<MerchantRecipe> {
         val trades: MutableList<MerchantRecipe> = mutableListOf()

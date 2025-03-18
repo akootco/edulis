@@ -2,6 +2,7 @@ package co.akoot.plugins.edulis.util
 
 import co.akoot.plugins.bluefox.api.FoxConfig
 import co.akoot.plugins.bluefox.util.Text
+import co.akoot.plugins.edulis.Edulis.Companion.key
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.pluginEnabled
 import co.akoot.plugins.plushies.util.builders.FoodBuilder
@@ -20,7 +21,7 @@ object CreateItem {
     val resolvedResults: MutableMap<String, ItemStack> = HashMap()
     val pendingRecipes: MutableSet<String> = mutableSetOf()
 
-    val foodKey = NamespacedKey("edulis", "food")
+    val foodKey = key("food")
 
     // get recipe input items
     fun getInput(input: String, recipeName: String): RecipeChoice? {
@@ -117,7 +118,7 @@ object CreateItem {
 
             // attributes
             config.getStringList("$path.food.attributes").joinToString(";").takeIf { it.isNotBlank() }
-                ?.let { pdc(NamespacedKey("edulis", "attributes"), it) }
+                ?.let { pdc(key( "attributes"), it) }
 
             // name
             config.getString("$path.itemName")?.let { name -> itemName(Text(name).component) }
@@ -125,7 +126,7 @@ object CreateItem {
             // set amount
             config.getInt("$path.amount").takeIf { it != 1 }?.let { itemStack.amount = it }
 
-            config.getInt("$path.potionColor")?.let { potionColor(it) }
+            config.getString("$path.potionColor")?.let { potion(it) }
 
             // makes sure to get the id directly from the texture servers!
             config.getString("$path.textures")?.let { id -> headTexture(id) }

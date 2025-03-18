@@ -1,10 +1,10 @@
 package co.akoot.plugins.edulis.util
 
 import co.akoot.plugins.bluefox.api.FoxPlugin
+import co.akoot.plugins.edulis.Edulis.Companion.key
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.NamespacedKey
 import org.bukkit.block.structure.Mirror
 import org.bukkit.block.structure.StructureRotation
 import java.io.File
@@ -25,7 +25,7 @@ object Schematics {
         directory.listFiles()?.forEach { file ->
 
             val manager = Bukkit.getStructureManager()
-            val key = NamespacedKey("edulis", file.nameWithoutExtension)
+            val key = key( file.nameWithoutExtension)
 
             manager.apply {
                 unregisterStructure(key)
@@ -36,7 +36,7 @@ object Schematics {
 
     fun paste(value: String, location: Location): Boolean {
         val structureManager = Bukkit.getStructureManager()
-        val key = NamespacedKey("edulis", value)
+        val key = key(value)
 
         val structure = structureManager.getStructure(key) ?: return false
 
