@@ -1,7 +1,7 @@
 package co.akoot.plugins.edulis.util.brewery
 
 import co.akoot.plugins.bluefox.extensions.getPDC
-import co.akoot.plugins.edulis.util.CreateItem.foodKey
+import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import com.dre.brewery.recipe.PluginItem
 import org.bukkit.inventory.ItemStack
 

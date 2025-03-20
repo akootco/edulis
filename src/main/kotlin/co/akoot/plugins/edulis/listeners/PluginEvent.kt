@@ -1,7 +1,7 @@
 package co.akoot.plugins.edulis.listeners
 
 import co.akoot.plugins.edulis.Edulis.Companion.log
-import co.akoot.plugins.edulis.util.CreateItem.pendingRecipes
+import co.akoot.plugins.edulis.util.Materials.pendingRecipes
 import co.akoot.plugins.edulis.util.CreateRecipes.craftingRecipes
 import co.akoot.plugins.edulis.util.CreateRecipes.smeltingRecipes
 import co.akoot.plugins.edulis.util.brewery.BrewRecipes.loadBrewRecipes

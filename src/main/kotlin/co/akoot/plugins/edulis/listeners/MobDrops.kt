@@ -2,7 +2,7 @@ package co.akoot.plugins.edulis.listeners
 
 import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.Edulis.Companion.mobDropConfig
-import co.akoot.plugins.edulis.util.CreateItem.getMaterial
+import co.akoot.plugins.edulis.util.Materials.getMaterial
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Ageable
 import org.bukkit.entity.Frog

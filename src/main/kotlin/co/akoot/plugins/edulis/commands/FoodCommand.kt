@@ -2,7 +2,7 @@ package co.akoot.plugins.edulis.commands
 
 import co.akoot.plugins.bluefox.api.FoxCommand
 import co.akoot.plugins.bluefox.api.FoxPlugin
-import co.akoot.plugins.edulis.util.CreateItem.resolvedResults
+import co.akoot.plugins.edulis.util.Materials.resolvedResults
 import org.bukkit.command.CommandSender
 
 class FoodCommand(plugin: FoxPlugin) : FoxCommand(plugin, "food") {

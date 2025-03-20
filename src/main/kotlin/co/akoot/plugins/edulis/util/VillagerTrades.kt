@@ -4,7 +4,7 @@ import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.edulis.Edulis.Companion.key
 import co.akoot.plugins.edulis.Edulis.Companion.traderConfig
-import co.akoot.plugins.edulis.util.CreateItem.getMaterial
+import co.akoot.plugins.edulis.util.Materials.getMaterial
 import org.bukkit.entity.Villager
 import org.bukkit.entity.WanderingTrader
 import org.bukkit.inventory.MerchantRecipe

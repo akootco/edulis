@@ -5,8 +5,9 @@ import co.akoot.plugins.bluefox.extensions.removePDC
 import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.Edulis.Companion.key
 import co.akoot.plugins.edulis.Edulis.Companion.leafConfig
-import co.akoot.plugins.edulis.util.CreateItem.getMaterial
-import co.akoot.plugins.edulis.util.CreateItem.resolvedResults
+import co.akoot.plugins.edulis.util.Materials.getMaterial
+import co.akoot.plugins.edulis.util.Materials.matches
+import co.akoot.plugins.edulis.util.Materials.resolvedResults
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -23,7 +24,7 @@ object BlockDrops {
     }
 
     fun dropItems(block: Block, amount: Int = 1, removePDC: Boolean = false, setAge: Boolean = false): Boolean {
-        if (block.type == Material.CAKE) return false
+        if (block.type.matches(Material.CAKE)) return false
 
         // get the id of the item from the block pdc
         val id = block.chunk.getPDC<String>(getBlockPDC(block.location))
@@ -43,7 +44,7 @@ object BlockDrops {
         }
 
         // for sweet berry bush set amount depending on age
-        else if (block.type == Material.SWEET_BERRY_BUSH) {
+        else if (block.type.matches(Material.SWEET_BERRY_BUSH)) {
             val ageable = block.blockData as Ageable
             item.amount = if (ageable.age == 2) 2 else if (ageable.age == 3) 3 else 1
         }

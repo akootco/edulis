@@ -34,6 +34,8 @@ class Edulis : FoxPlugin("edulis") {
             return NamespacedKey("edulis", key)
         }
 
+        val foodKey = key("food")
+
         val log = logger("Edulis")
         fun checkPlugin(name: String): Plugin? = Bukkit.getPluginManager().getPlugin(name)
         fun pluginEnabled(name: String): Boolean = checkPlugin(name)?.isEnabled == true

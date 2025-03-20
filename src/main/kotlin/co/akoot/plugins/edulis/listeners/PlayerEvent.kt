@@ -5,13 +5,13 @@ import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.getBlockPDC
-import co.akoot.plugins.edulis.listeners.handlers.FoodEffects.setAttributes
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.giveCovid
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.pauseCovid
 import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.resumeCovid
 import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
-import co.akoot.plugins.edulis.util.CreateItem.foodKey
-import co.akoot.plugins.edulis.util.CreateItem.resolvedResults
+import co.akoot.plugins.edulis.Edulis.Companion.foodKey
+import co.akoot.plugins.edulis.util.Materials.matches
+import co.akoot.plugins.edulis.util.Materials.resolvedResults
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.Tag
@@ -69,7 +69,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                 Material.POTTED_FERN -> {
                     val basil = resolvedResults["basil"] ?: return
 
-                    if (item.type == Material.SHEARS) {
+                    if (item.type.matches(Material.SHEARS)) {
                         block.world.apply {
                             dropItemNaturally(block.location.add(0.5, 1.0, 0.5), basil)
                             playSound(block.location, Sound.ENTITY_BOGGED_SHEAR, 1.0f, 2.0f)
@@ -89,7 +89,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                 }
 
                 in Tag.CROPS.values.plus(Material.SWEET_BERRY_BUSH) -> {
-                    if (item.type == Material.BONE_MEAL) {
+                    if (item.type.matches(Material.BONE_MEAL)) {
                         runLater(1, CropDisplay(block))
                     }
                 }
@@ -98,7 +98,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                     if (item.isSimilar(resolvedResults["tomato"] ?: return)) {
                         if (event.blockFace == BlockFace.UP) { // make sure player is clicking top of block
                             // make sure the space above is empty
-                            val aboveBlock = block.getRelative(BlockFace.UP).takeIf { it.type == Material.AIR } ?: return
+                            val aboveBlock = block.getRelative(BlockFace.UP).takeIf { it.type.matches(Material.AIR) } ?: return
 
                             event.isCancelled = true
                             aboveBlock.apply { // plant tomato
@@ -127,8 +127,6 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
         if (id.contains("bat_wing")) {
             giveCovid(player, plugin)
         }
-
-        setAttributes(event.item, player)
     }
 
     private fun giveSlice(event: PlayerInteractEvent, cake: String, cutter: Block, player: Player) {

@@ -7,7 +7,7 @@ import co.akoot.plugins.edulis.Edulis.Companion.headConfig
 import co.akoot.plugins.edulis.Edulis.Companion.itemConfig
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.smokerConfig
-import co.akoot.plugins.edulis.util.CreateItem.loadItems
+import co.akoot.plugins.edulis.util.Materials.loadItems
 import co.akoot.plugins.edulis.util.CreateRecipes.craftingRecipes
 import co.akoot.plugins.edulis.util.CreateRecipes.smeltingRecipes
 import co.akoot.plugins.edulis.util.Schematics.registerSchematics

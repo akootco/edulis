@@ -1,7 +1,7 @@
 package co.akoot.plugins.edulis.util.brewery
 
 import co.akoot.plugins.bluefox.util.*
-import co.akoot.plugins.edulis.util.CreateItem.getMaterial
+import co.akoot.plugins.edulis.util.Materials.getMaterial
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
 import com.dre.brewery.api.BreweryApi
 import com.dre.brewery.recipe.BRecipe

@@ -3,8 +3,8 @@ package co.akoot.plugins.edulis.util
 import co.akoot.plugins.edulis.Edulis.Companion.craftingConfig
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.smokerConfig
-import co.akoot.plugins.edulis.util.CreateItem.getInput
-import co.akoot.plugins.edulis.util.CreateItem.getMaterial
+import co.akoot.plugins.edulis.util.Materials.getInput
+import co.akoot.plugins.edulis.util.Materials.getMaterial
 import co.akoot.plugins.plushies.util.builders.CookRecipe
 import co.akoot.plugins.plushies.util.builders.CraftRecipe
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger.logger

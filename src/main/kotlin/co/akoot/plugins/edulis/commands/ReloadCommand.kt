@@ -3,8 +3,8 @@ package co.akoot.plugins.edulis.commands
 import co.akoot.plugins.bluefox.api.FoxCommand
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.edulis.Edulis.Companion.pluginEnabled
-import co.akoot.plugins.edulis.util.CreateItem.pendingRecipes
-import co.akoot.plugins.edulis.util.CreateItem.resolvedResults
+import co.akoot.plugins.edulis.util.Materials.pendingRecipes
+import co.akoot.plugins.edulis.util.Materials.resolvedResults
 import co.akoot.plugins.edulis.util.Util.loadEverything
 import co.akoot.plugins.edulis.util.brewery.BrewRecipes.loadBrewRecipes
 import com.dre.brewery.P

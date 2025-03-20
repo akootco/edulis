@@ -1,6 +1,7 @@
 package co.akoot.plugins.edulis.listeners
 
-import co.akoot.plugins.edulis.util.CreateItem.resolvedResults
+import co.akoot.plugins.edulis.util.Materials.matches
+import co.akoot.plugins.edulis.util.Materials.resolvedResults
 import co.akoot.plugins.edulis.util.VillagerTrades.modifyTrader
 import co.akoot.plugins.edulis.util.VillagerTrades.modifyVillager
 import org.bukkit.Material
@@ -26,13 +27,13 @@ class EntityEvent : Listener {
             }
 
             is Villager -> {
-                if (item.type == Material.CAKE && entity.profession in listOf(Villager.Profession.NONE, Villager.Profession.NITWIT)) {
+                if (item.type.matches(Material.CAKE) && entity.profession in listOf(Villager.Profession.NONE, Villager.Profession.NITWIT)) {
                     modifyVillager(entity)
                 }
             }
 
             is Goat -> {
-                if (item.type == Material.BUCKET) {
+                if (item.type.matches(Material.BUCKET)) {
                     val milk = resolvedResults["goat_milk"]?: return
                     event.isCancelled = true
                     player.inventory.itemInMainHand.amount -= 1
@@ -40,7 +41,7 @@ class EntityEvent : Listener {
                 }
             }
             is Parrot -> {
-                if (item.type == Material.BUCKET) {
+                if (item.type.matches(Material.BUCKET)) {
                     val milk = resolvedResults["bird_spit"]?: return
                     event.isCancelled = true
                     player.inventory.itemInMainHand.amount -= 1

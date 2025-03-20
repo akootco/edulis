@@ -4,6 +4,7 @@ import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.removePDC
 import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.runLater
+import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.dropItems
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.getBlockPDC
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.isLeaf
@@ -11,7 +12,8 @@ import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.leafDrops
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.createDisplay
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.removeDisplay
 import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
-import co.akoot.plugins.edulis.util.CreateItem.foodKey
+import co.akoot.plugins.edulis.util.Materials.matches
+
 import co.akoot.plugins.edulis.util.Schematics.paste
 import com.destroystokyo.paper.event.block.BlockDestroyEvent
 import io.papermc.paper.event.block.BlockBreakBlockEvent
@@ -42,7 +44,7 @@ class BlockEvent : Listener {
 
         val id = event.itemInHand.itemMeta.getPDC<String>(foodKey) ?: return
 
-        if (block.type == Material.CAKE) {
+        if (block.type.matches(Material.CAKE)) {
             createDisplay(block.location, 0, id)
         }
 
@@ -104,7 +106,7 @@ class BlockEvent : Listener {
             }
 
             is Villager -> {
-                if (block.type == Material.AIR && block.location.subtract(0.0, 1.0, 0.0).block.type == Material.FARMLAND) {
+                if (block.type.matches(Material.AIR) && block.location.subtract(0.0, 1.0, 0.0).block.type.matches(Material.FARMLAND)) {
                     val inventory = (event.entity as Villager).inventory.contents.clone()
                     val item = inventory.filterNotNull().first().clone()
                     val id = item.itemMeta.getPDC<String>(foodKey) ?: return
@@ -115,7 +117,7 @@ class BlockEvent : Listener {
 
             is Player -> {
                 if (event.isCancelled) return // this needs to be checked so core protect doesn't break
-                if (block.type == Material.CAKE) {
+                if (block.type.matches(Material.CAKE)) {
                     val cake = block.blockData as Cake
                     val id = block.location.chunk.getPDC<String>(getBlockPDC(block.location)) ?: return
 
