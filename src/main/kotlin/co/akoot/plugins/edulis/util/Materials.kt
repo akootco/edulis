@@ -4,7 +4,7 @@ import co.akoot.plugins.bluefox.api.FoxConfig
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.pluginEnabled
-import co.akoot.plugins.plushies.util.CustomItem
+import co.akoot.plugins.plushies.util.ItemCreator
 import com.dre.brewery.api.BreweryApi
 import org.bukkit.Material
 import org.bukkit.Tag
@@ -105,7 +105,7 @@ object Materials {
 
     fun loadItems(config: FoxConfig) {
         for (key in config.getKeys()) {
-            resolvedResults[key.lowercase()] = CustomItem.createItem(config, key, foodKey)?: continue
+            resolvedResults[key.lowercase()] = ItemCreator.createItem(config, key, foodKey)?: continue
         }
     }
 }
