@@ -1,61 +1,35 @@
 cauldron:
-  burrito_water:
-    name: Burrito Water
+  fermented_cherry_juice:
+    name: Fermented Cherry Juice
     ingredients:
-      - edulis:burrito
-    color: BLACK
+      - Brewery:Cherry Juice
+      - SUGAR
+    color: RED
     cookParticles:
-      - 'RED'
+      - 'b0415a/2'
+      - '36000c/3'
+      - '29020b/7'
     lore:
-      - An example for a Base Potion
-      - This is how it comes out of a Cauldron
-    customModelData: 545
+      - Not so sweet!
 
 recipes:
-  example_edulis:
-    name: EDULIS
-    ingredients:
-      - Diamond/1
-      - Spruce_Planks/8
-      - Bedrock/1
-      - Brewery:Wheatbeer/2
-      - edulis:burrito/4
-    cookingtime: 3
-    distillruns: 2
-    distilltime: 60
-    wood: 4
-    age: 11
-    color: DARK_RED
-    difficulty: 3
-    alcohol: 14
-    lore:
-      - This is an examble brew
-      - ++Just a normal Example
-      - This text would be on the brew
-      - + Smells disgusting
-      - ++ Smells alright
-      - +++ Smells really good
-    servercommands:
-      - +++ weather clear
-      - + weather rain
-    playercommands:
-      - homes
-    drinkmessage: Tastes good
-    drinktitle: Warms you from inside
-    customModelData: 556/557/557
-    effects:
-      - FIRE_RESISTANCE/20
-      - HEAL/1
-      - WEAKNESS/2-3/50-60
-      - POISON/1-0/20-0
-
   cherry_juice:
     name: Cherry Juice
     ingredients:
-      - edulis:cherries/12
-    cookingtime: 2
+      - edulis:cherries/9
+    cookingtime: 4
     color: RED
     cookParticles:
       - 'RED'
-    lore:
-      - CHERRY JUICE!!!!!!!!!!!!!!!!!!!!!!
+
+  cherry_wine:
+    name: Cherry Wine
+    ingredients:
+      - Brewery:Cherry Juice
+      - SUGAR/6
+    cookingtime: 8
+    age: 3
+    wood: 2
+    color: RED
+    cookParticles:
+      - 'RED'
