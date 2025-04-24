@@ -12,6 +12,7 @@ import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.util.Materials.matches
 import co.akoot.plugins.edulis.util.Materials.resolvedResults
+import co.akoot.plugins.edulis.util.Util.updateItem
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.Tag
@@ -25,45 +26,49 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 
 class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
-
     @EventHandler
-    fun onDeath(event: PlayerDeathEvent) {
-        pauseCovid(event.player)
+    fun PlayerItemHeldEvent.onHold() {
+        runLater(1) { updateItem(player.inventory) }
     }
 
     @EventHandler
-    fun onLeave(event: PlayerQuitEvent) {
-        pauseCovid(event.player)
+    fun PlayerDeathEvent.onDeath() {
+        pauseCovid(player)
     }
 
     @EventHandler
-    fun onJoin(event: PlayerJoinEvent) {
-        resumeCovid(event.player, plugin)
+    fun PlayerQuitEvent.onLeave() {
+        pauseCovid(player)
     }
 
     @EventHandler
-    fun onRespawn(event: PlayerRespawnEvent) {
-        resumeCovid(event.player, plugin)
+    fun PlayerJoinEvent.onJoin() {
+        resumeCovid(player, plugin)
     }
 
     @EventHandler
-    fun playerInteract(event: PlayerInteractEvent) {
-        val block = event.clickedBlock ?: return
-        val player = event.player
+    fun PlayerRespawnEvent.onRespawn() {
+        resumeCovid(player, plugin)
+    }
+
+    @EventHandler
+    fun PlayerInteractEvent.playerInteract() {
+        val block = clickedBlock ?: return
         val item = player.inventory.itemInMainHand
 
-        if (event.action == Action.RIGHT_CLICK_BLOCK) {
+        if (action == Action.RIGHT_CLICK_BLOCK) {
 
             when (block.type) {
                 Material.STONECUTTER -> {
                     val id = item.itemMeta?.getPDC<String>(foodKey) ?: return
-                    giveSlice(event, id, block, event.player)
+                    giveSlice(this, id, block, player)
                 }
 
                 Material.POTTED_FERN -> {
@@ -78,7 +83,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                         player.give(basil)
                         block.type = Material.FLOWER_POT
                     }
-                    event.isCancelled = true
+                    isCancelled = true
                 }
 
                 Material.FLOWER_POT -> {
@@ -96,11 +101,12 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
                 in Tag.DIRT.values -> {
                     if (item.isSimilar(resolvedResults["tomato"] ?: return)) {
-                        if (event.blockFace == BlockFace.UP) { // make sure player is clicking top of block
+                        if (blockFace == BlockFace.UP) { // make sure player is clicking top of block
                             // make sure the space above is empty
                             val aboveBlock = block.getRelative(BlockFace.UP).takeIf { it.type.matches(Material.AIR) } ?: return
 
-                            event.isCancelled = true
+                            isCancelled = true
+
                             aboveBlock.apply { // plant tomato
                                 type = Material.SWEET_BERRY_BUSH
                                 chunk.setPDC(getBlockPDC(aboveBlock.location), item.itemMeta.getPDC<String>(foodKey))
@@ -118,10 +124,9 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
     }
 
     @EventHandler
-    fun itemConsume(event: PlayerItemConsumeEvent) {
-        val player = event.player
+    fun PlayerItemConsumeEvent.itemConsume() {
         // is it a flugin item?
-        val id = event.item.itemMeta.getPDC<String>(foodKey) ?: return
+        val id = item.itemMeta.getPDC<String>(foodKey) ?: return
 
         // more importantly, is it a bat wing
         if (id.contains("bat_wing")) {

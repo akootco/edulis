@@ -4,6 +4,7 @@ import co.akoot.plugins.bluefox.api.FoxConfig
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.edulis.commands.*
 import co.akoot.plugins.edulis.listeners.*
+import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.pauseCovid
 import co.akoot.plugins.edulis.util.Util.loadEverything
 import co.akoot.plugins.edulis.util.Util.loadYamlConfig
 import co.akoot.plugins.edulis.util.brewery.BrewItems
@@ -55,6 +56,9 @@ class Edulis : FoxPlugin("edulis") {
     }
 
     override fun unload() {
+        server.onlinePlayers.forEach { player ->
+            pauseCovid(player)
+        }
         logger.info("goodbye!!!!!!!!")
     }
 
