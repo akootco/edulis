@@ -7,7 +7,7 @@ import co.akoot.plugins.edulis.Edulis.Companion.key
 import co.akoot.plugins.edulis.Edulis.Companion.leafConfig
 import co.akoot.plugins.edulis.util.Materials.getMaterial
 import co.akoot.plugins.edulis.util.Materials.matches
-import co.akoot.plugins.edulis.util.Materials.resolvedResults
+import co.akoot.plugins.plushies.util.Items.customItems
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -33,7 +33,7 @@ object BlockDrops {
         val loc = block.location
 
         // does the item exist?
-        val item = resolvedResults[id] ?: return false
+        val item = customItems[id] ?: return false
 
         item.amount = amount
 

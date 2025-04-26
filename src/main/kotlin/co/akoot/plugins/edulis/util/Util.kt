@@ -5,28 +5,31 @@ import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.edulis.Edulis.Companion.cakeConfig
 import co.akoot.plugins.edulis.Edulis.Companion.craftingConfig
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
-import co.akoot.plugins.edulis.Edulis.Companion.headConfig
 import co.akoot.plugins.edulis.Edulis.Companion.itemConfig
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.smokerConfig
 import co.akoot.plugins.edulis.util.Materials.loadItems
 import co.akoot.plugins.edulis.util.CreateRecipes.craftingRecipes
 import co.akoot.plugins.edulis.util.CreateRecipes.smeltingRecipes
-import co.akoot.plugins.edulis.util.Materials.resolvedResults
+import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.edulis.util.Schematics.registerSchematics
 import org.bukkit.Bukkit
 import org.bukkit.Keyed
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
 import java.io.File
 
 object Util {
+
+    val ItemStack.isFood: Boolean
+        get() = itemMeta.getPDC<String>(foodKey) != null
+
     fun loadEverything(plugin: FoxPlugin) {
 
         loadItems(itemConfig)
         loadItems(cakeConfig)
-        loadItems(headConfig)
 
         // remove all flugin recipes
         val iterator = Bukkit.recipeIterator()
@@ -92,7 +95,7 @@ object Util {
         }
 
         // if item is not in the list or is unchanged, do nothing
-        val item = resolvedResults[pdc] ?: return
+        val item = customItems[pdc] ?: return
         if (hand.isSimilar(item)) return
 
         // update item and re-add name and lore

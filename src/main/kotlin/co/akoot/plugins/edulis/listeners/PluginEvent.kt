@@ -1,12 +1,15 @@
 package co.akoot.plugins.edulis.listeners
 
 import co.akoot.plugins.edulis.Edulis.Companion.log
+import co.akoot.plugins.edulis.gui.FoodItemMenu
+import co.akoot.plugins.edulis.gui.FoodItemMenu.Companion.foodItemMenu
 import co.akoot.plugins.edulis.util.Materials.pendingRecipes
 import co.akoot.plugins.edulis.util.CreateRecipes.craftingRecipes
 import co.akoot.plugins.edulis.util.CreateRecipes.smeltingRecipes
 import co.akoot.plugins.edulis.util.brewery.BrewRecipes.loadBrewRecipes
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.server.PluginEnableEvent
 
 class PluginEvent: Listener {
@@ -21,6 +24,16 @@ class PluginEvent: Listener {
                 craftingRecipes(recipe)
             }
             log.info("Loaded Brewery Recipes!")
+        }
+    }
+
+    @EventHandler
+    fun InventoryClickEvent.onInvClick() {
+        when (val holder = clickedInventory?.holder) {
+            is FoodItemMenu -> {
+                foodItemMenu(currentItem ?: return, whoClicked, holder)
+                isCancelled = true
+            }
         }
     }
 }

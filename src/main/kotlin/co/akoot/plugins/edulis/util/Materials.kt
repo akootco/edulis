@@ -5,6 +5,7 @@ import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.pluginEnabled
 import co.akoot.plugins.plushies.util.ItemCreator
+import co.akoot.plugins.plushies.util.Items.customItems
 import com.dre.brewery.api.BreweryApi
 import org.bukkit.Material
 import org.bukkit.Tag
@@ -13,7 +14,6 @@ import org.bukkit.inventory.RecipeChoice
 
 object Materials {
 
-    val resolvedResults: MutableMap<String, ItemStack> = HashMap()
     val pendingRecipes: MutableSet<String> = mutableSetOf()
 
     fun Material.matches(material: Material): Boolean = this == material
@@ -56,8 +56,8 @@ object Materials {
         }
 
         // if no prefix, check for flugin item or vanilla material.
-        resolvedResults.keys.find { it.equals(input, ignoreCase = true) }?.let { key ->
-            resolvedResults[key]?.let {
+        customItems.keys.find { it.equals(input, ignoreCase = true) }?.let { key ->
+            customItems[key]?.let {
                 return RecipeChoice.ExactChoice(it)
             }
         }
@@ -87,8 +87,8 @@ object Materials {
         }
 
         // if no prefix, check for flugin item or vanilla material.
-        resolvedResults.keys.find { it.equals(input, ignoreCase = true) }?.let { key ->
-            resolvedResults[key]?.let {
+        customItems.keys.find { it.equals(input, ignoreCase = true) }?.let { key ->
+            customItems[key]?.let {
                 it.amount = amount
                 return it
             }
@@ -105,7 +105,7 @@ object Materials {
 
     fun loadItems(config: FoxConfig) {
         for (key in config.getKeys()) {
-            resolvedResults[key.lowercase()] = ItemCreator.createItem(config, key, foodKey)?: continue
+            customItems[key.lowercase()] = ItemCreator.createItem(config, key, foodKey)?: continue
         }
     }
 }

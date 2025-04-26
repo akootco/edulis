@@ -1,7 +1,7 @@
 package co.akoot.plugins.edulis.listeners
 
 import co.akoot.plugins.edulis.util.Materials.matches
-import co.akoot.plugins.edulis.util.Materials.resolvedResults
+import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.edulis.util.VillagerTrades.modifyTrader
 import co.akoot.plugins.edulis.util.VillagerTrades.modifyVillager
 import org.bukkit.Material
@@ -34,7 +34,7 @@ class EntityEvent : Listener {
 
             is Goat -> {
                 if (item.type.matches(Material.BUCKET)) {
-                    val milk = resolvedResults["goat_milk"]?: return
+                    val milk = customItems["goat_milk"]?: return
                     event.isCancelled = true
                     player.inventory.itemInMainHand.amount -= 1
                     player.give(milk)
@@ -42,7 +42,7 @@ class EntityEvent : Listener {
             }
             is Parrot -> {
                 if (item.type.matches(Material.BUCKET)) {
-                    val milk = resolvedResults["bird_spit"]?: return
+                    val milk = customItems["bird_spit"]?: return
                     event.isCancelled = true
                     player.inventory.itemInMainHand.amount -= 1
                     entity.location.world.playSound(entity.location, Sound.ENTITY_LLAMA_SPIT, 0.5f, 2f)

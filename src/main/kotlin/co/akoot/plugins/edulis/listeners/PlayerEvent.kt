@@ -11,7 +11,7 @@ import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.resumeCovid
 import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.util.Materials.matches
-import co.akoot.plugins.edulis.util.Materials.resolvedResults
+import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.edulis.util.Util.updateItem
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -72,7 +72,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                 }
 
                 Material.POTTED_FERN -> {
-                    val basil = resolvedResults["basil"] ?: return
+                    val basil = customItems["basil"] ?: return
 
                     if (item.type.matches(Material.SHEARS)) {
                         block.world.apply {
@@ -87,7 +87,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                 }
 
                 Material.FLOWER_POT -> {
-                    if (item.isSimilar(resolvedResults["basil"] ?: return)) {
+                    if (item.isSimilar(customItems["basil"] ?: return)) {
                         block.type = Material.POTTED_FERN
                         item.amount.minus(1)
                     }
@@ -100,7 +100,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                 }
 
                 in Tag.DIRT.values -> {
-                    if (item.isSimilar(resolvedResults["tomato"] ?: return)) {
+                    if (item.isSimilar(customItems["tomato"] ?: return)) {
                         if (blockFace == BlockFace.UP) { // make sure player is clicking top of block
                             // make sure the space above is empty
                             val aboveBlock = block.getRelative(BlockFace.UP).takeIf { it.type.matches(Material.AIR) } ?: return
@@ -135,7 +135,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
     }
 
     private fun giveSlice(event: PlayerInteractEvent, cake: String, cutter: Block, player: Player) {
-        val cakeSlice = resolvedResults["${cake}_slice"] ?: return
+        val cakeSlice = customItems["${cake}_slice"] ?: return
 
         // cakes should give 8 and pies should give 4
         cakeSlice.amount = if (cake.endsWith("cake")) 8 else 4
