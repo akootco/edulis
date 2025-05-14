@@ -3,7 +3,6 @@ package co.akoot.plugins.edulis.listeners.handlers
 import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.removePDC
 import co.akoot.plugins.bluefox.util.runLater
-import co.akoot.plugins.edulis.Edulis.Companion.key
 import co.akoot.plugins.edulis.Edulis.Companion.leafConfig
 import co.akoot.plugins.edulis.util.Materials.getMaterial
 import co.akoot.plugins.edulis.util.Materials.matches
@@ -18,9 +17,9 @@ import java.util.concurrent.ThreadLocalRandom
 
 object BlockDrops {
 
-    fun getBlockPDC(location: Location): NamespacedKey {
-        val key = "${location.world.name}.${location.blockX}.${location.blockY}.${location.blockZ}"
-        return key(key)
+    fun getBlockPDC(location: Location, plugin: String = "edulis"): NamespacedKey {
+        val key = "${location.world.name.lowercase()}.${location.blockX}.${location.blockY}.${location.blockZ}"
+        return NamespacedKey(plugin, key)
     }
 
     fun dropItems(block: Block, amount: Int = 1, removePDC: Boolean = false, setAge: Boolean = false): Boolean {

@@ -41,14 +41,16 @@ class BlockEvent : Listener {
     fun onPlace(event: BlockPlaceEvent) {
         if (event.isCancelled) return // this needs to be checked so core protect doesn't break
         val block = event.blockPlaced
-
         val id = event.itemInHand.itemMeta.getPDC<String>(foodKey) ?: return
 
         if (block.type.matches(Material.CAKE)) {
             createDisplay(block.location, 0, id)
         }
 
-        block.chunk.setPDC(getBlockPDC(block.location), id)
+        block.chunk.apply {
+            removePDC(getBlockPDC(block.location, "alces"))
+            setPDC(getBlockPDC(block.location), id)
+        }
     }
 
     @EventHandler
@@ -146,11 +148,12 @@ class BlockEvent : Listener {
     @EventHandler
     fun onPlayerHarvest(event: PlayerHarvestBlockEvent) {
         if (event.isCancelled) return // this needs to be checked so core protect doesn't break
-        val ageableBlockData = event.harvestedBlock.blockData as Ageable
-        if (dropItems(event.harvestedBlock, ageableBlockData.age)) {
-
-            removeDisplay(event.harvestedBlock.location)
-            event.itemsHarvested.clear()
+        val blockData = event.harvestedBlock.blockData
+        if (blockData is Ageable) {
+            if (dropItems(event.harvestedBlock, blockData.age)) {
+                removeDisplay(event.harvestedBlock.location)
+                event.itemsHarvested.clear()
+            }
         }
     }
 
