@@ -47,10 +47,8 @@ class BlockEvent : Listener {
             createDisplay(block.location, 0, id)
         }
 
-        block.chunk.apply {
-            removePDC(getBlockPDC(block.location, "alces"))
-            setPDC(getBlockPDC(block.location), id)
-        }
+        block.chunk.setPDC(getBlockPDC(block.location), id)
+        runLater(1) {block.chunk.removePDC(getBlockPDC(block.location, "alces")) }
     }
 
     @EventHandler
