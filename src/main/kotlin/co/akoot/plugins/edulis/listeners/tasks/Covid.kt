@@ -11,6 +11,7 @@ import co.akoot.plugins.bluefox.util.TimeUtil.getTimeString
 import co.akoot.plugins.bluefox.util.TimeUtil.parseTime
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.pluginEnabled
+import co.akoot.plugins.plushies.util.Util.pl
 import com.dre.brewery.BPlayer
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
@@ -25,10 +26,9 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
     private var lastEffectTime = 0L
 
     override fun run() {
-        val currentTime = System.currentTimeMillis()
         val endTime = player.getPDC<Long>(endKey)
 
-        if (endTime == null || currentTime > endTime) {
+        if (endTime == null || System.currentTimeMillis() > endTime) {
             player.apply {
                 sendMessage("You are no longer contagious.")
                 clearActivePotionEffects()
@@ -41,18 +41,22 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
         }
 
         // 50% chance to trigger effect, every 3 minutes
-        if (currentTime - lastEffectTime >= 180 * 1000 && Random.nextDouble() > 0.5) {
+        if (System.currentTimeMillis() - lastEffectTime >= 180 * 1000 && Random.nextBoolean()) {
             // reset timer
-            lastEffectTime = currentTime
+            lastEffectTime = System.currentTimeMillis()
+            player.chat("*cough*")
 
             // 50% chance on which effect to give
-            if (Random.nextDouble() < 0.5) {
+            if (Random.nextBoolean()) {
                 if (pluginEnabled("brewery")) {
                     BPlayer.addPuke(player, 64)
-                } else player.apply {
-                    addPotionEffect(PotionEffect(PotionEffectType.DARKNESS, 200, 10))
-                    addPotionEffect(PotionEffect(PotionEffectType.POISON, 100, 0))
+                } else {
+                    player.addPotionEffects(listOf(
+                        PotionEffect(PotionEffectType.DARKNESS, 200, 10),
+                        PotionEffect(PotionEffectType.POISON, 100, 0)
+                    ))
                 }
+
             }
         }
 
@@ -62,9 +66,11 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
             }
         }
 
-        player.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, -1, 10))
-        // gonna change unluck in the texture pack
-        player.addPotionEffect(PotionEffect(PotionEffectType.UNLUCK, -1, 0))
+        player.addPotionEffects(listOf(
+                PotionEffect(PotionEffectType.WEAKNESS, -1, 4),
+                PotionEffect(PotionEffectType.UNLUCK, -1, 0)
+            )
+        )
     }
 
     companion object {
@@ -76,6 +82,8 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
 
         fun giveCovid(player: Player, plugin: FoxPlugin, wasCaught: Boolean = false, spreader: String? = null) {
             covidTask[player]?.cancel() //  if the player is already infected, cancel the task, so it doesn't run multiple times
+
+            if (player.hasMetadata("CITIZENS_NPC")) return
 
             if (player.getPDC<Byte>(immuneKey) != null) return
 
@@ -89,6 +97,7 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
                 setPDC(endKey, System.currentTimeMillis() + parseTime("30m")) // set the end time to 30 minutes
             }
             covidTask[player] = Covid(player, plugin).runTaskTimer(plugin, 1L, 100L)
+            pl.logger.info("${player.name} has been infected")
         }
 
         fun resumeCovid(player: Player, plugin: FoxPlugin) {
