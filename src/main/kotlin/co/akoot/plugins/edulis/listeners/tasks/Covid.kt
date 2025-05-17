@@ -81,11 +81,11 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
         val immuneKey = NamespacedKey("covid", "immune")
 
         fun giveCovid(player: Player, plugin: FoxPlugin, wasCaught: Boolean = false, spreader: String? = null) {
-            covidTask[player]?.cancel() //  if the player is already infected, cancel the task, so it doesn't run multiple times
 
-            if (player.hasMetadata("CITIZENS_NPC")) return
-
-            if (player.getPDC<Byte>(immuneKey) != null) return
+            if (covidTask.containsKey(player) ||
+                player.getPDC<Byte>(immuneKey) != null ||
+                player.scoreboardTags.contains("CITIZENS_NPC")
+            ) return
 
             player.apply {
                 Text(this) {

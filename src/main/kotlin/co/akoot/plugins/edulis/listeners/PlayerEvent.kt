@@ -67,7 +67,14 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
             when (block.type) {
                 Material.STONECUTTER -> {
-                    val id = item.itemMeta?.getPDC<String>(foodKey) ?: return
+                    val type = item.type
+                    val pdc = item.itemMeta?.getPDC<String>(foodKey)
+
+                    val id = when {
+                        pdc != null -> pdc
+                        type == Material.CAKE || type == Material.PUMPKIN_PIE -> type.name.lowercase()
+                        else -> return
+                    }
                     giveSlice(this, id, block, player)
                 }
 
@@ -89,14 +96,12 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                 Material.FLOWER_POT -> {
                     if (item.isSimilar(customItems["basil"] ?: return)) {
                         block.type = Material.POTTED_FERN
-                        item.amount.minus(1)
+                        item.amount -= 1
                     }
                 }
 
                 in Tag.CROPS.values.plus(Material.SWEET_BERRY_BUSH) -> {
-                    if (item.type.matches(Material.BONE_MEAL)) {
-                        runLater(1, CropDisplay(block))
-                    }
+                    runLater(1, CropDisplay(block))
                 }
 
                 in Tag.DIRT.values -> {
@@ -113,7 +118,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                                 location.world.playSound(location, Sound.BLOCK_SWEET_BERRY_BUSH_PLACE, 1f, 1f)
 
                             }
-                            item.amount.minus(1)
+                            item.amount -= 1
                         }
                     }
                 }
@@ -144,8 +149,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
         event.setUseInteractedBlock(Event.Result.DENY)
 
         // remove 1 item, if only 1 item, set air
-        val currentAmount = player.inventory.itemInMainHand.amount
-        player.inventory.itemInMainHand.amount = currentAmount - 1
+        player.inventory.itemInMainHand.amount -= 1
 
         cutter.world.playSound(cutter.location, Sound.BLOCK_HONEY_BLOCK_HIT, 0.2f, 2.0f)
         cutter.world.dropItemNaturally(cutter.location.add(0.5, 1.0, 0.5), cakeSlice)

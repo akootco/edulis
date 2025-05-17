@@ -17,6 +17,7 @@ import co.akoot.plugins.edulis.util.Materials.matches
 import co.akoot.plugins.edulis.util.Schematics.paste
 import com.destroystokyo.paper.event.block.BlockDestroyEvent
 import io.papermc.paper.event.block.BlockBreakBlockEvent
+import org.bukkit.ExplosionResult
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.TreeType
@@ -83,7 +84,9 @@ class BlockEvent : Listener {
 
     @EventHandler
     fun onExplosion(event: EntityExplodeEvent) {
-        if (event.isCancelled) return
+        if (event.isCancelled ||
+            event.explosionResult != ExplosionResult.DESTROY ) return
+
         for (block in event.blockList()) {
             if (isLeaf(block)) leafDrops(block)
 
