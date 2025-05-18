@@ -4,7 +4,7 @@ import co.akoot.plugins.bluefox.api.FoxCommand
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.removePDC
-import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.endKey
+import co.akoot.plugins.edulis.listeners.tasks.endKey
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 

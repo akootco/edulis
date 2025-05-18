@@ -2,7 +2,7 @@ package co.akoot.plugins.edulis.commands
 
 import co.akoot.plugins.bluefox.api.FoxCommand
 import co.akoot.plugins.bluefox.api.FoxPlugin
-import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.giveCovid
+import co.akoot.plugins.edulis.listeners.tasks.giveCovid
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 

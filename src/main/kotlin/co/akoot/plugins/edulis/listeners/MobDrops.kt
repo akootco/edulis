@@ -71,10 +71,14 @@ class MobDrops : Listener {
     }
 
     private fun handleFire(event: EntityDeathEvent, mob: String): ItemStack? {
-        val name = if (event.entity.fireTicks > -1) "${mob}.cookedDrops" else "${mob}.drops"
+        val isBurning = event.entity.fireTicks > -1
+        val cooked = mobDropConfig.getStringList("${mob}.cookedDrops")
+        val normal = mobDropConfig.getStringList("${mob}.drops")
 
-        mobDropConfig.getStringList(name).forEach {
-            return ItemStack(getMaterial(it) ?: return null)
+        val drops = if (isBurning && cooked.isNotEmpty()) cooked else normal
+
+        for (drop in drops) {
+            getMaterial(drop)?.let { return ItemStack(it) }
         }
 
         return null

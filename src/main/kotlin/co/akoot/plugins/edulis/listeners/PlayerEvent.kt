@@ -1,18 +1,21 @@
 package co.akoot.plugins.edulis.listeners
 
 import co.akoot.plugins.bluefox.api.FoxPlugin
+import co.akoot.plugins.bluefox.api.Kolor
 import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.setPDC
+import co.akoot.plugins.bluefox.util.Text
 import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.getBlockPDC
-import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.giveCovid
-import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.pauseCovid
-import co.akoot.plugins.edulis.listeners.tasks.Covid.Companion.resumeCovid
 import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.util.Materials.matches
 import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.edulis.util.Util.updateItem
+import co.akoot.plugins.edulis.listeners.tasks.giveCovid
+import co.akoot.plugins.edulis.listeners.tasks.isInfected
+import co.akoot.plugins.edulis.listeners.tasks.pauseCovid
+import co.akoot.plugins.edulis.listeners.tasks.resumeCovid
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.Tag
@@ -131,8 +134,12 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
     @EventHandler
     fun PlayerItemConsumeEvent.itemConsume() {
         // is it a flugin item?
-        val id = item.itemMeta.getPDC<String>(foodKey) ?: return
+        if (player.isInfected && item.type == Material.MILK_BUCKET) {
+            Text(player) {Kolor.ERROR("Good trick, but milk wont save you!") }
+            return
+        }
 
+        val id = item.itemMeta.getPDC<String>(foodKey) ?: return
         // more importantly, is it a bat wing
         if (id.contains("bat_wing")) {
             giveCovid(player, plugin)
