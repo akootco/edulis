@@ -6,9 +6,9 @@ import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.Text
 import co.akoot.plugins.bluefox.util.runLater
-import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.getBlockPDC
 import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
+import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.dropItems
 import co.akoot.plugins.edulis.util.Materials.matches
 import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.edulis.util.Util.updateItem
@@ -16,11 +16,13 @@ import co.akoot.plugins.edulis.listeners.tasks.giveCovid
 import co.akoot.plugins.edulis.listeners.tasks.isInfected
 import co.akoot.plugins.edulis.listeners.tasks.pauseCovid
 import co.akoot.plugins.edulis.listeners.tasks.resumeCovid
+import co.akoot.plugins.plushies.util.Util.getBlockPDC
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.Tag
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
+import org.bukkit.block.data.Ageable
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
@@ -104,6 +106,14 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                 }
 
                 in Tag.CROPS.values.plus(Material.SWEET_BERRY_BUSH) -> {
+                    if (block.chunk.getPDC<String>(getBlockPDC(block.location, "edulis")) == null) return
+
+                    val crop = block.state.blockData as? Ageable ?: return
+                    if (crop.age == crop.maximumAge) {
+                       isCancelled = true
+                        dropItems(block, crop.age, setAge = true)
+                    }
+
                     runLater(1, CropDisplay(block))
                 }
 
@@ -117,9 +127,8 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
                             aboveBlock.apply { // plant tomato
                                 type = Material.SWEET_BERRY_BUSH
-                                chunk.setPDC(getBlockPDC(aboveBlock.location), item.itemMeta.getPDC<String>(foodKey))
+                                chunk.setPDC(getBlockPDC(aboveBlock.location, "edulis"), item.itemMeta.getPDC<String>(foodKey))
                                 location.world.playSound(location, Sound.BLOCK_SWEET_BERRY_BUSH_PLACE, 1f, 1f)
-
                             }
                             item.amount -= 1
                         }

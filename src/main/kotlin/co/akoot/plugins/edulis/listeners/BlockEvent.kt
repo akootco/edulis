@@ -6,7 +6,6 @@ import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.dropItems
-import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.getBlockPDC
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.isLeaf
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.leafDrops
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.createDisplay
@@ -15,6 +14,7 @@ import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
 import co.akoot.plugins.edulis.util.Materials.matches
 
 import co.akoot.plugins.edulis.util.Schematics.paste
+import co.akoot.plugins.plushies.util.Util.getBlockPDC
 import com.destroystokyo.paper.event.block.BlockDestroyEvent
 import io.papermc.paper.event.block.BlockBreakBlockEvent
 import org.bukkit.ExplosionResult
@@ -48,7 +48,7 @@ class BlockEvent : Listener {
             createDisplay(block.location, 0, id)
         }
 
-        block.chunk.setPDC(getBlockPDC(block.location), id)
+        block.chunk.setPDC(getBlockPDC(block.location, "edulis"), id)
         runLater(1) {block.chunk.removePDC(getBlockPDC(block.location, "alces")) }
     }
 
@@ -114,16 +114,20 @@ class BlockEvent : Listener {
                     val item = inventory.filterNotNull().first().clone()
                     val id = item.itemMeta.getPDC<String>(foodKey) ?: return
 
-                    block.chunk.setPDC(getBlockPDC(block.location), id)
+                    block.chunk.setPDC(getBlockPDC(block.location, "edulis"), id)
                 }
             }
 
             is Player -> {
                 if (event.isCancelled) return // this needs to be checked so core protect doesn't break
+                val id = block.location.chunk.getPDC<String>(getBlockPDC(block.location,  "edulis")) ?: return
+
                 if (block.type.matches(Material.CAKE)) {
                     val cake = block.blockData as Cake
-                    val id = block.location.chunk.getPDC<String>(getBlockPDC(block.location)) ?: return
 
+                    if (cake.bites.plus(1) == 7) {
+                        removeDisplay(block.location, true)
+                    }
                     createDisplay(block.location, cake.bites.plus(1), id)
                 }
             }
@@ -162,11 +166,11 @@ class BlockEvent : Listener {
     fun treeGrow(event: StructureGrowEvent) {
         val location = event.location
         val chunk = location.chunk
-        val key = chunk.getPDC<String>(getBlockPDC(location)) ?: return
+        val key = chunk.getPDC<String>(getBlockPDC(location, "edulis")) ?: return
 
         if (event.species in listOf(TreeType.TREE, TreeType.BIG_TREE)) {
             event.isCancelled = paste(key, location)
-            chunk.removePDC(getBlockPDC(location))
+            chunk.removePDC(getBlockPDC(location, "edulis"))
         }
     }
 

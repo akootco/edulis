@@ -18,7 +18,14 @@ class ImmuneCommand(plugin: FoxPlugin) : FoxCommand(plugin, "immune") {
         val p = playerCheck(sender) ?: return false
 
         // i DONT even want to add immunity but i know people will cry!
-        if (p.isImmune) p.removePDC(immuneKey) else p.setPDC<Byte>(immuneKey, 1)
-        return sendMessage(p, "You are ${if (p.isImmune) "no longer" else "now"} immune to covid!")
+        val nowImmune = if (p.isImmune) {
+            p.removePDC(immuneKey)
+            false
+        } else {
+            p.setPDC<Byte>(immuneKey, 1)
+            true
+        }
+        return sendMessage(p, "You are ${if (nowImmune) "now" else "no longer"} immune to covid!")
+
     }
 }

@@ -7,9 +7,8 @@ import co.akoot.plugins.edulis.Edulis.Companion.leafConfig
 import co.akoot.plugins.edulis.util.Materials.getMaterial
 import co.akoot.plugins.edulis.util.Materials.matches
 import co.akoot.plugins.plushies.util.Items.customItems
-import org.bukkit.Location
+import co.akoot.plugins.plushies.util.Util.getBlockPDC
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.Tag
 import org.bukkit.block.Block
 import org.bukkit.block.data.Ageable
@@ -17,17 +16,16 @@ import java.util.concurrent.ThreadLocalRandom
 
 object BlockDrops {
 
-    fun getBlockPDC(location: Location, plugin: String = "edulis"): NamespacedKey {
-        val key = "${location.world.name.lowercase()}.${location.blockX}.${location.blockY}.${location.blockZ}"
-        return NamespacedKey(plugin, key)
-    }
-
     fun dropItems(block: Block, amount: Int = 1, removePDC: Boolean = false, setAge: Boolean = false): Boolean {
-        if (block.type.matches(Material.CAKE)) return false
 
         // get the id of the item from the block pdc
-        val id = block.chunk.getPDC<String>(getBlockPDC(block.location))
+        val id = block.chunk.getPDC<String>(getBlockPDC(block.location, "edulis"))
             ?: return false
+
+        if (block.type.matches(Material.CAKE)) {
+            block.chunk.removePDC(getBlockPDC(block.location, "edulis"))
+            return false
+        }
 
         val loc = block.location
 
@@ -57,7 +55,7 @@ object BlockDrops {
         loc.world.dropItemNaturally(loc.add(0.5, 0.8, 0.5), item)
 
         // only remove if asked, since this is used for harvesting as well as block break
-        if (removePDC) block.chunk.removePDC(getBlockPDC(loc))
+        if (removePDC) block.chunk.removePDC(getBlockPDC(loc, "edulis"))
 
         return true
     }
