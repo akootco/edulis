@@ -53,8 +53,7 @@ object BrewBook {
     }
 
     private fun createPage(recipe: String): Component? {
-        val brewData = BRecipe.get(recipe) ?: return null
-
+        val brewData = BRecipe.getMatching(recipe) ?: return null
         return (
                 Text()
                     // brew name

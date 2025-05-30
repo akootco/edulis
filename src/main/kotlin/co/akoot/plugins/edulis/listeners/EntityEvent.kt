@@ -10,6 +10,9 @@ import org.bukkit.entity.Goat
 import org.bukkit.entity.Parrot
 import org.bukkit.entity.Villager
 import org.bukkit.entity.WanderingTrader
+import org.bukkit.entity.Cow
+import org.bukkit.entity.Player
+import org.bukkit.entity.Entity
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEntityEvent
@@ -33,13 +36,22 @@ class EntityEvent : Listener {
             }
 
             is Goat -> {
-                if (item.type.matches(Material.BUCKET)) {
-                    val milk = customItems["goat_milk"]?: return
-                    event.isCancelled = true
-                    player.inventory.itemInMainHand.amount -= 1
-                    player.give(milk)
+                when {
+                    item.type.matches(Material.BUCKET) -> {
+                        val milk = customItems["goat_milk"]?: return
+                        event.isCancelled = true
+                        player.inventory.itemInMainHand.amount -= 1
+                        player.give(milk)
+                    }
+                    item.type.matches(Material.GLASS_BOTTLE) -> { milkBottle(player, entity) }
+                    else -> return
                 }
             }
+
+            is Cow -> {
+                if (item.type == Material.GLASS_BOTTLE) { milkBottle(player, entity) }
+            }
+
             is Parrot -> {
                 if (item.type.matches(Material.BUCKET)) {
                     val milk = customItems["bird_spit"]?: return
@@ -50,5 +62,12 @@ class EntityEvent : Listener {
                 }
             }
         }
+    }
+
+    private fun milkBottle(player: Player, entity: Entity) {
+        val milkBottle = customItems["milk_bottle"] ?: return
+        entity.location.world.playSound(entity.location, Sound.ENTITY_COW_MILK, 0.5f, 2f)
+        player.inventory.itemInMainHand.amount -= 1
+        player.give(milkBottle.asOne())
     }
 }
