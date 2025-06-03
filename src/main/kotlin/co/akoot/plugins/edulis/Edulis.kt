@@ -64,6 +64,7 @@ class Edulis : FoxPlugin("edulis") {
     override fun registerCommands() {
         registerCommand(FoodCommand(this))
         registerCommand(CovidCommand(this))
+        registerCommand(InfectCommand(this))
         registerCommand(CureCommand(this))
         registerCommand(ImmuneCommand(this))
         registerCommand(ReloadCommand(this))

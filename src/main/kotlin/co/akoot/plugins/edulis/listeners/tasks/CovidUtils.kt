@@ -10,7 +10,7 @@ import co.akoot.plugins.bluefox.util.Text
 import co.akoot.plugins.bluefox.util.TimeUtil.getTimeString
 import co.akoot.plugins.bluefox.util.TimeUtil.parseTime
 import co.akoot.plugins.edulis.Edulis.Companion.log
-import co.akoot.plugins.plushies.util.Util.pl
+import co.akoot.plugins.edulis.events.CovidContractEvent
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
@@ -26,19 +26,23 @@ val Player.isInfected: Boolean
 
 val Player.timeUntilCured: String
     get() {
-        val remainingTime = getPDC<Long>(remainingKey) ?: return "$name is not sick."
-        return getTimeString(remainingTime)
+        val remainingTime = getPDC<Long>(endKey) ?: return "$name is not sick."
+        return "$name has ${getTimeString(remainingTime.minus(System.currentTimeMillis()))} remaining"
     }
 
 val Player.isImmune: Boolean
     get() = this.getPDC<Byte>(immuneKey) != null
 
-fun giveCovid(player: Player, plugin: FoxPlugin, wasCaught: Boolean = false, spreader: String? = null) {
+fun giveCovid(
+    player: Player,
+    plugin: FoxPlugin,
+    wasCaught: Boolean = false,
+    spreader: String? = null,
+    resume: Boolean = false
+) {
+    if (player.isImmune || player.scoreboardTags.contains("CITIZENS_NPC")) return
 
-    if (player.isInfected ||
-        player.isImmune ||
-        player.scoreboardTags.contains("CITIZENS_NPC")
-    ) return
+    CovidContractEvent(player).fire() ?: return
 
     player.apply {
         Text(this) {
@@ -47,31 +51,33 @@ fun giveCovid(player: Player, plugin: FoxPlugin, wasCaught: Boolean = false, spr
                     else Kolor.ERROR("!")
         }
 
-        setPDC(endKey, System.currentTimeMillis() + parseTime("30m")) // set the end time to 30 minutes
+        val endTime =
+            if (resume) {
+                val remainingTime = getPDC<Long>(remainingKey)
+                removePDC(remainingKey)
+                System.currentTimeMillis() + (remainingTime ?: parseTime("30m"))
+            } else {
+                System.currentTimeMillis() + parseTime("30m")
+            }
+
+        setPDC(endKey, endTime)
     }
     covidTask[player] = Covid(player, plugin).runTaskTimer(plugin, 1L, 100L)
-    pl.logger.info("${player.name} has been infected")
+    log.info("${player.name} has been infected")
 }
 
 fun resumeCovid(player: Player, plugin: FoxPlugin) {
-    val remainingTime = player.getPDC<Long>(remainingKey) ?: return
-
-    player.apply {
-        removePDC(remainingKey)
-        setPDC(endKey, System.currentTimeMillis() + remainingTime)
-    }
-
-    log.info("${player.name}'s contagion has been resumed, ${player.timeUntilCured} remaining")
-    giveCovid(player, plugin)
+    if (player.isInfected) giveCovid(player, plugin, resume = true)
 }
 
 fun pauseCovid(player: Player) {
-    val endTime = player.getPDC<Long>(endKey)?: return
+    if (!player.isInfected) return
 
-    val remainingTimeMillis = endTime.minus(System.currentTimeMillis())
+    val remainingTimeMillis = player.getPDC<Long>(endKey)
+        ?.minus(System.currentTimeMillis())
 
     player.setPDC(remainingKey, remainingTimeMillis)
-    player.saveData() // need to run this or the pdc isn't saved
+    player.saveData()
 
     covidTask[player]?.cancel()
     covidTask.remove(player)

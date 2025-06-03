@@ -47,12 +47,11 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
                         PotionEffect(PotionEffectType.POISON, 100, 0)
                     ))
                 }
-
             }
         }
 
         for (target in player.getNearbyEntities(3.0, 3.0, 3.0)) { // spread it
-            if (target is Player && target.getPDC<Long>(endKey) == null) {
+            if (target is Player && !target.isInfected) {
                 giveCovid(target, plugin, true, player.name)
             }
         }
