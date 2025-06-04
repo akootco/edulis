@@ -8,9 +8,8 @@ import org.bukkit.command.CommandSender
 
 class CovidCommand(plugin: FoxPlugin) : FoxCommand(plugin, "covid") {
 
-    override fun onTabComplete(sender: CommandSender, alias: String, args: Array<out String>): MutableList<String> {
-        return mutableListOf()
-    }
+    override fun onTabComplete(sender: CommandSender, alias: String, args: Array<out String>): MutableList<String> =
+        if (args.size == 1) getOnlinePlayerSuggestions(exclude = setOf(sender.name)) else mutableListOf()
 
     override fun onCommand(sender: CommandSender, alias: String, args: Array<out String>): Boolean {
         val target = if (args.isEmpty()) {

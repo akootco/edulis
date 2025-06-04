@@ -69,6 +69,7 @@ class Edulis : FoxPlugin("edulis") {
         registerCommand(ImmuneCommand(this))
         registerCommand(ReloadCommand(this))
         registerCommand(DrinksCommand(this))
+        registerCommand(EdibleCommand(this))
     }
 
     override fun registerConfigs() {
