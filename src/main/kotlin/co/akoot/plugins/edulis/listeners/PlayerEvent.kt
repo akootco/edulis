@@ -19,6 +19,7 @@ import co.akoot.plugins.edulis.listeners.tasks.resumeCovid
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
 import org.bukkit.Material
 import org.bukkit.Sound
+import org.bukkit.Statistic
 import org.bukkit.Tag
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
@@ -142,16 +143,16 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
     @EventHandler
     fun PlayerItemConsumeEvent.itemConsume() {
-        // is it a flugin item?
         if (player.isInfected && item.type == Material.MILK_BUCKET) {
-            Text(player) {Kolor.ERROR("Good trick, but milk wont save you!") }
+            Text(player) { Kolor.ERROR("Good trick, but milk won't save you!") }
             return
         }
 
         val id = item.itemMeta.getPDC<String>(foodKey) ?: return
-        // more importantly, is it a bat wing
-        if (id.contains("bat_wing")) {
-            giveCovid(player, plugin)
+
+        when {
+            "bat_wing" in id -> giveCovid(player, plugin)
+            "cake_slice" in id -> player.incrementStatistic(Statistic.CAKE_SLICES_EATEN)
         }
     }
 

@@ -120,15 +120,15 @@ class BlockEvent : Listener {
 
             is Player -> {
                 if (event.isCancelled) return // this needs to be checked so core protect doesn't break
-                val id = block.location.chunk.getPDC<String>(getBlockPDC(block.location,  "edulis")) ?: return
+                val id = block.location.chunk.getPDC<String>(getBlockPDC(block.location, "edulis")) ?: return
 
-                if (block.type.matches(Material.CAKE)) {
-                    val cake = block.blockData as Cake
-
-                    if (cake.bites.plus(1) == 7) {
+                runLater(1) {
+                    if (block.type.name.endsWith("CANDLE_CAKE")) return@runLater // why is this even a thing?
+                    if (block.type != Material.CAKE) {
                         removeDisplay(block.location, true)
+                        return@runLater
                     }
-                    createDisplay(block.location, cake.bites.plus(1), id)
+                    (block.blockData as? Cake)?.let { createDisplay(block.location, it.bites, id) }
                 }
             }
 
