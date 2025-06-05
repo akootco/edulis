@@ -16,6 +16,7 @@ import co.akoot.plugins.edulis.listeners.tasks.giveCovid
 import co.akoot.plugins.edulis.listeners.tasks.isInfected
 import co.akoot.plugins.edulis.listeners.tasks.pauseCovid
 import co.akoot.plugins.edulis.listeners.tasks.resumeCovid
+import co.akoot.plugins.edulis.util.Util.unlockRecipes
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -56,6 +57,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
     @EventHandler
     fun PlayerJoinEvent.onJoin() {
+        unlockRecipes(player)
         resumeCovid(player, plugin)
     }
 
