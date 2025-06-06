@@ -111,7 +111,7 @@ class BlockEvent : Listener {
             is Villager -> {
                 if (block.type.matches(Material.AIR) && block.location.subtract(0.0, 1.0, 0.0).block.type.matches(Material.FARMLAND)) {
                     val inventory = (event.entity as Villager).inventory.contents.clone()
-                    val item = inventory.filterNotNull().first().clone()
+                    val item = inventory.filterNotNull().firstOrNull()?.clone() ?: return
                     val id = item.itemMeta.getPDC<String>(foodKey) ?: return
 
                     block.chunk.setPDC(getBlockPDC(block.location, "edulis"), id)

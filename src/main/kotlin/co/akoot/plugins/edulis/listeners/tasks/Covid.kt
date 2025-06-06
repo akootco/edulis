@@ -4,6 +4,7 @@ import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.removePDC
 import co.akoot.plugins.bluefox.extensions.setPDC
+import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.Edulis.Companion.pluginEnabled
 import com.dre.brewery.BPlayer
 import org.bukkit.entity.Player
@@ -35,7 +36,19 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
         if (System.currentTimeMillis() - lastEffectTime >= 180 * 1000 && Random.nextBoolean()) {
             // reset timer
             lastEffectTime = System.currentTimeMillis()
-            player.chat("*cough*")
+            if (Math.random() <= 0.75) {
+                var coughs = ""
+                repeat(Random.nextInt(1, 10)) {
+                    coughs += "*cough* "
+                }
+                player.chat(coughs.trim())
+            } else {
+                repeat(Random.nextInt(1, 3)) { // 1 to 2 inclusive
+                    runLater(Random.nextInt(20, 40).toLong()) {
+                        player.chat("*sneeze*")
+                    }
+                }
+            }
 
             // 50% chance on which effect to give
             if (Random.nextBoolean()) {

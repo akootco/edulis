@@ -99,7 +99,7 @@ object BrewBook {
     }
 
     private val RecipeItem.name: String
-        get() = (this as? PluginItem)?.itemId?.ccrgx ?: configId ?: materials?.first().toString()
+        get() = (this as? PluginItem)?.itemId?.ccrgx ?: configId ?: materials?.firstOrNull().toString()
 
     private val BRecipe.woodString: String
         get() = woodMap[this.wood.toInt()] ?: "Unknown"
