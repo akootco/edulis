@@ -17,7 +17,6 @@ import org.bukkit.Bukkit
 import org.bukkit.Keyed
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
 import java.io.File
@@ -26,21 +25,6 @@ object Util {
 
     val ItemStack.isFood: Boolean
         get() = itemMeta.getPDC<String>(foodKey) != null
-
-
-    fun unlockRecipes(player: Player) {
-        val iterator = Bukkit.recipeIterator()
-        while (iterator.hasNext()) {
-            val recipe = iterator.next()
-
-            if (recipe is Keyed) {
-                val key = (recipe as Keyed).key // erm?
-                if (key.namespace == "edulis") {
-                    player.discoverRecipe(key)
-                }
-            }
-        }
-    }
 
     fun loadEverything(plugin: FoxPlugin) {
 
