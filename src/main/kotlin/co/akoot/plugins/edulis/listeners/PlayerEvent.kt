@@ -5,9 +5,7 @@ import co.akoot.plugins.bluefox.api.Kolor
 import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.Text
-import co.akoot.plugins.bluefox.util.Text.Companion.asString
 import co.akoot.plugins.bluefox.util.runLater
-import co.akoot.plugins.bluefox.util.sync
 import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.dropItems
@@ -20,7 +18,6 @@ import co.akoot.plugins.edulis.listeners.tasks.pauseCovid
 import co.akoot.plugins.edulis.listeners.tasks.resumeCovid
 import co.akoot.plugins.plushies.util.Recipes.unlockRecipes
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
-import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.Statistic
@@ -136,8 +133,15 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
                     val crop = block.state.blockData as? Ageable ?: return
                     if (crop.age == crop.maximumAge) {
-                       isCancelled = true
+                        val sound = if (block.type == Material.SWEET_BERRY_BUSH)
+                            Sound.BLOCK_SWEET_BERRY_BUSH_PICK_BERRIES else Sound.BLOCK_CROP_BREAK
+
+                        block.location.world.playSound(
+                            block.location,
+                            sound, 1f, 1f
+                        )
                         dropItems(block, crop.age, setAge = true)
+                        isCancelled = true
                     }
 
                     runLater(1, CropDisplay(block))
