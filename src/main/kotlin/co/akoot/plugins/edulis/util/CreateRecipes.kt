@@ -2,11 +2,13 @@ package co.akoot.plugins.edulis.util
 
 import co.akoot.plugins.edulis.Edulis.Companion.craftingConfig
 import co.akoot.plugins.edulis.Edulis.Companion.log
+import co.akoot.plugins.edulis.Edulis.Companion.smithConfig
 import co.akoot.plugins.edulis.Edulis.Companion.smokerConfig
 import co.akoot.plugins.edulis.util.Materials.getInput
 import co.akoot.plugins.edulis.util.Materials.getMaterial
 import co.akoot.plugins.plushies.util.builders.CookRecipe
 import co.akoot.plugins.plushies.util.builders.CraftRecipe
+import co.akoot.plugins.plushies.util.builders.SmithRecipe
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger.logger
 import org.bukkit.inventory.ItemStack
 
@@ -33,6 +35,24 @@ object CreateRecipes {
             smokerConfig.getString("$key.cookTime"),
             smokerConfig.getDouble("$key.xp")
         ).smelt("edulis").smoke("edulis")
+    }
+
+    fun smithingRecipes(key: String) {
+        val result = smithConfig.getString("$key.output") ?: return
+        val base = smithConfig.getString("$key.base") ?: return
+        val template = smithConfig.getString("$key.template") ?: return
+        val addition = smithConfig.getString("$key.addition") ?: return
+
+        val parts = result.split("/")
+        val amount = parts.getOrNull(1)?.toIntOrNull() ?: 1
+
+        SmithRecipe.builder(
+            key,
+            getInput(template, key) ?: return errorIn(template,key),
+            getInput(base, key) ?: return errorIn(base,key),
+            getInput(addition, key) ?: return errorIn(addition,key),
+            getMaterial(parts[0],amount,key) ?: return errorOut(result,key)
+        ).add("edulis")
     }
 
     fun craftingRecipes(key: String) {

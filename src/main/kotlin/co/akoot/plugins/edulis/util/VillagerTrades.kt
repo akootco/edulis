@@ -1,6 +1,6 @@
 package co.akoot.plugins.edulis.util
 
-import co.akoot.plugins.bluefox.extensions.getPDC
+import co.akoot.plugins.bluefox.extensions.hasPDC
 import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.edulis.Edulis.Companion.key
 import co.akoot.plugins.edulis.Edulis.Companion.traderConfig
@@ -34,7 +34,7 @@ object VillagerTrades {
 
 
     fun modifyTrader(trader: WanderingTrader) {
-        if (trader.getPDC<Byte>(modifiedKey) != null) return
+        if (trader.hasPDC(modifiedKey)) return
 
         val currentTrades = mutableSetOf<MerchantRecipe>()
         currentTrades.apply {
@@ -47,16 +47,14 @@ object VillagerTrades {
     }
 
     fun modifyVillager(villager: Villager) {
-        if (villager.getPDC<Byte>(modifiedKey) != null) return
+        if (villager.hasPDC(modifiedKey)) return
 
         villager.apply {
-            villagerType = Villager.Type.SWAMP
+            villagerType = Villager.Type.JUNGLE
             villagerLevel = 5
             profession = Villager.Profession.NITWIT
+            recipes = getTrades("villager").toMutableList()
+            setPDC<Byte>(modifiedKey, 1)
         }
-
-        villager.recipes = getTrades("villager").toMutableList()
-
-        villager.setPDC<Byte>(modifiedKey, 1)
     }
 }

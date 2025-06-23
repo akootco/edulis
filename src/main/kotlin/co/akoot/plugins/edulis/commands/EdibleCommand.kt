@@ -2,8 +2,9 @@ package co.akoot.plugins.edulis.commands
 
 import co.akoot.plugins.bluefox.api.FoxCommand
 import co.akoot.plugins.bluefox.api.FoxPlugin
-import co.akoot.plugins.bluefox.extensions.getPDC
+import co.akoot.plugins.bluefox.extensions.hasPDC
 import co.akoot.plugins.edulis.Edulis.Companion.key
+import co.akoot.plugins.edulis.util.Util.isFood
 import co.akoot.plugins.plushies.util.builders.FoodBuilder
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
 import io.papermc.paper.datacomponent.DataComponentTypes
@@ -19,14 +20,16 @@ class EdibleCommand(plugin: FoxPlugin) : FoxCommand(plugin, "edible") {
         val item = player.inventory.itemInMainHand
         val edibleKey = key("edible")
 
-        if (item.itemMeta.getPDC<String>(edibleKey) != null) {
+        if (item.isFood) return false
+
+        if (item.itemMeta.hasPDC(edibleKey)) {
             ItemBuilder.builder(item)
                 .removepdc(edibleKey)
-                .unsetData(DataComponentTypes.CONSUMABLE)
-                .unsetData(DataComponentTypes.FOOD)
+                .resetData(DataComponentTypes.CONSUMABLE)
+                .resetData(DataComponentTypes.FOOD)
                 .build()
             return true
-        } else if (item.getData(DataComponentTypes.FOOD) == null) {
+        } else {
             val edibleItem = ItemBuilder.builder(item)
                 .pdc(edibleKey)
                 .build()
@@ -36,6 +39,5 @@ class EdibleCommand(plugin: FoxPlugin) : FoxCommand(plugin, "edible") {
                 .isSnack().build()
             return true
         }
-        return false
     }
 }

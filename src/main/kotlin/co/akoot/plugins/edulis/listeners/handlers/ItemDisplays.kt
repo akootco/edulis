@@ -29,7 +29,7 @@ object ItemDisplays {
             return
         }
 
-        val overlay = ItemBuilder.builder(ItemStack(Material.BARRIER))
+        val overlay = ItemBuilder.builder(ItemStack(Material.OAK_PRESSURE_PLATE))
             .customModelData(cmd)
             .build()
 

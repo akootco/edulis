@@ -27,6 +27,7 @@ class Edulis : FoxPlugin("edulis") {
         lateinit var craftingConfig: FoxConfig
         lateinit var overlayConfig: FoxConfig
         lateinit var leafConfig: FoxConfig
+        lateinit var smithConfig: FoxConfig
 
         lateinit var brewRecipesConfig: FileConfiguration
 
@@ -70,6 +71,7 @@ class Edulis : FoxPlugin("edulis") {
         registerCommand(ReloadCommand(this))
         registerCommand(DrinksCommand(this))
         registerCommand(EdibleCommand(this))
+        registerCommand(HungryCommand(this))
     }
 
     override fun registerConfigs() {
@@ -81,6 +83,7 @@ class Edulis : FoxPlugin("edulis") {
         craftingConfig = registerConfig("crafting", "recipes/crafting.conf")
         overlayConfig = registerConfig("overlay", "data/overlays.conf")
         leafConfig = registerConfig("leafDrop", "data/leaf_drops.conf")
+        smithConfig = registerConfig("Smithing Recipes", "recipes/smithing.conf")
     }
 
     override fun registerEvents() {
