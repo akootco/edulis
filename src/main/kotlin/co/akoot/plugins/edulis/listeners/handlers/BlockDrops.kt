@@ -60,14 +60,9 @@ object BlockDrops {
         return true
     }
 
-    fun isLeaf(block: Block): Boolean {
-        return Tag.LEAVES.isTagged(block.type)
-    }
-
     fun leafDrops(block: Block) {
         val key = block.type.name
         if (leafConfig.getKeys().contains(key)) {
-
             for (ingredient in leafConfig.getStringList(key)) {
                 val parts = ingredient.split("/")
                 val chance = parts.getOrNull(1)?.toFloat() ?: 0.05f
@@ -75,7 +70,7 @@ object BlockDrops {
 
                 // nice!, add item to drop
                 if (ThreadLocalRandom.current().nextDouble() < chance) {
-                    runLater(1) { block.world.dropItemNaturally(block.location.add(0.5,0.0,0.5), material) }
+                    runLater(1) { block.world.dropItemNaturally(block.location.toCenterLocation(), material) }
                 }
             }
         }

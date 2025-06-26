@@ -6,20 +6,16 @@ import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.dropItems
-import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.isLeaf
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.leafDrops
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.createDisplay
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.removeDisplay
 import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
 import co.akoot.plugins.edulis.util.Materials.matches
-
 import co.akoot.plugins.edulis.util.Schematics.paste
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
-import com.destroystokyo.paper.event.block.BlockDestroyEvent
-import io.papermc.paper.event.block.BlockBreakBlockEvent
-import org.bukkit.ExplosionResult
 import org.bukkit.Material
 import org.bukkit.Sound
+import org.bukkit.Tag
 import org.bukkit.TreeType
 import org.bukkit.block.data.Ageable
 import org.bukkit.block.data.Directional
@@ -32,7 +28,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.*
 import org.bukkit.event.entity.EntityChangeBlockEvent
-import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.event.player.PlayerHarvestBlockEvent
 import org.bukkit.event.world.StructureGrowEvent
 
@@ -54,45 +49,8 @@ class BlockEvent : Listener {
 
     @EventHandler
     fun onBreak(event: BlockBreakEvent) {
-        if (event.isCancelled) return // this needs to be checked so core protect doesn't break
-
-        if (isLeaf(event.block)) return leafDrops(event.block)
-
-        removeDisplay(event.block.location)
-        event.isDropItems = !dropItems(event.block, removePDC = true)
-
-    }
-
-    @EventHandler
-    fun blockBreakBlock(event: BlockBreakBlockEvent) {
-        if (isLeaf(event.block)) return leafDrops(event.block)
-
-        removeDisplay(event.block.location)
-        if (dropItems(event.block, removePDC = true)) event.drops.clear()
-    }
-
-    @EventHandler
-    fun onDestroy(event: BlockDestroyEvent) {
-        if (event.isCancelled) return
-
-        if (isLeaf(event.block)) return leafDrops(event.block)
-
-        removeDisplay(event.block.location)
-        event.setWillDrop(!dropItems(event.block, removePDC = true))
-
-    }
-
-    @EventHandler
-    fun onExplosion(event: EntityExplodeEvent) {
-        if (event.isCancelled ||
-            event.explosionResult != ExplosionResult.DESTROY ) return
-
-        for (block in event.blockList()) {
-            if (isLeaf(block)) leafDrops(block)
-
-            removeDisplay(block.location)
-            if (dropItems(block, removePDC = true)) block.type = Material.AIR
-        }
+        if (event.isCancelled || Tag.LEAVES.isTagged(event.block.type).not()) return
+        leafDrops(event.block)
     }
 
     @EventHandler

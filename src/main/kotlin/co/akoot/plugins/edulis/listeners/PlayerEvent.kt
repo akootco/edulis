@@ -5,19 +5,17 @@ import co.akoot.plugins.bluefox.api.Kolor
 import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.Text
+import co.akoot.plugins.bluefox.util.Text.Companion.asString
 import co.akoot.plugins.bluefox.util.runLater
-import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.dropItems
+import co.akoot.plugins.edulis.listeners.tasks.*
 import co.akoot.plugins.edulis.util.Materials.matches
-import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.edulis.util.Util.updateItem
-import co.akoot.plugins.edulis.listeners.tasks.giveCovid
-import co.akoot.plugins.edulis.listeners.tasks.isInfected
-import co.akoot.plugins.edulis.listeners.tasks.pauseCovid
-import co.akoot.plugins.edulis.listeners.tasks.resumeCovid
+import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.Recipes.unlockRecipes
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
+import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.Statistic
@@ -32,32 +30,25 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.entity.PlayerDeathEvent
-import org.bukkit.event.player.AsyncPlayerChatEvent
-import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.event.player.PlayerItemConsumeEvent
-import org.bukkit.event.player.PlayerItemHeldEvent
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.event.player.PlayerRespawnEvent
+import org.bukkit.event.player.*
 import kotlin.random.Random
 
 class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
     // 50% chance to mix in coughs with the message content, if infected
     @EventHandler(priority = EventPriority.HIGHEST)
-    fun AsyncPlayerChatEvent.onChat() {
+    fun AsyncChatEvent.onChat() {
         if (!player.isInfected || Random.nextBoolean()) return
 
-        val words = message.split(" ")
+        val words = message().asString().split(" ")
         val modifiedWords = words.map { word ->
-            if (Math.random() <= 0.1) "$word *cough*" else word // 10% chance to add *cough* after a word
+            if (Math.random() <= 0.15) "$word *cough*" else word // 15% chance to add *cough* after a word
         }
 
         val coughCount = modifiedWords.count { it.contains("*cough*") }
         val extraCoughs = Random.nextInt(0, coughCount + 1) // add extra coughs at the end
 
-        message = modifiedWords.joinToString(" ") + " " + "*cough* ".repeat(extraCoughs).trim()
-
+        message(Text(modifiedWords.joinToString(" ") + " " + "*cough* ".repeat(extraCoughs).trim()).component)
     }
 
     @EventHandler
