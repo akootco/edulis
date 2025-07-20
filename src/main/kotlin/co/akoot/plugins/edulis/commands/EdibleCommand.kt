@@ -20,7 +20,7 @@ class EdibleCommand(plugin: FoxPlugin) : FoxCommand(plugin, "edible") {
         val item = player.inventory.itemInMainHand
         val edibleKey = key("edible")
 
-        if (item.isFood) return false
+        if (item.isEmpty || item.isFood) return false
 
         if (item.itemMeta.hasPDC(edibleKey)) {
             ItemBuilder.builder(item)
