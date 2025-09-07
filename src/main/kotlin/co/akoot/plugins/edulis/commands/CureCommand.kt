@@ -32,6 +32,19 @@ class CureCommand(plugin: FoxPlugin) : FoxCommand(plugin, "cure") {
             return sendError(sender, "You are not sick.")
         }
 
+        if (args[0].equals("all", ignoreCase = true)) {
+            var removedCount = 0
+
+            for (player in plugin.server.onlinePlayers) {
+                if (player.getPDC<Long>(endKey) != null) {
+                    player.removePDC(endKey)
+                    removedCount++
+                }
+            }
+
+            return sendMessage(sender, "Cured $removedCount player(s).")
+        }
+
         val target = plugin.server.getPlayer(args[0]) ?: run {
             return sendError(sender, "Player not found")
         }

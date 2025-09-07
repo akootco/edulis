@@ -11,7 +11,7 @@ import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.dropItems
 import co.akoot.plugins.edulis.listeners.tasks.*
 import co.akoot.plugins.edulis.util.Materials.matches
-import co.akoot.plugins.edulis.util.Util.updateItem
+import co.akoot.plugins.edulis.util.Util.foodid
 import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.Recipes.unlockRecipes
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
@@ -49,11 +49,6 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
         val extraCoughs = Random.nextInt(0, coughCount + 1) // add extra coughs at the end
 
         message(Text(modifiedWords.joinToString(" ") + " " + "*cough* ".repeat(extraCoughs).trim()).component)
-    }
-
-    @EventHandler
-    fun PlayerItemHeldEvent.onHold() {
-        runLater(1) { updateItem(player.inventory) }
     }
 
     @EventHandler
@@ -168,11 +163,9 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
             return
         }
 
-        val id = item.itemMeta.getPDC<String>(foodKey) ?: return
-
         when {
-            "bat_wing" in id -> giveCovid(player, plugin)
-            "cake_slice" in id -> player.incrementStatistic(Statistic.CAKE_SLICES_EATEN)
+            "bat_wing" in item.foodid -> giveCovid(player, plugin)
+            "cake_slice" in item.foodid -> player.incrementStatistic(Statistic.CAKE_SLICES_EATEN)
         }
     }
 
@@ -180,14 +173,15 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
         val cakeSlice = customItems["${cake}_slice"] ?: return
 
         // cakes should give 8 and pies should give 4
-        cakeSlice.amount = if (cake.endsWith("cake")) 8 else 4
+        cakeSlice.amount = when {
+            cake.endsWith("cake") -> 8
+            cake == "pizza" -> 12
+            else -> 4
+        }
 
         // stop stonecutter gui from opening
         event.setUseInteractedBlock(Event.Result.DENY)
-
-        // remove 1 item, if only 1 item, set air
         player.inventory.itemInMainHand.amount -= 1
-
         cutter.world.playSound(cutter.location, Sound.BLOCK_HONEY_BLOCK_HIT, 0.2f, 2.0f)
         cutter.world.dropItemNaturally(cutter.location.add(0.5, 1.0, 0.5), cakeSlice)
     }

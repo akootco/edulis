@@ -2,10 +2,12 @@ package co.akoot.plugins.edulis.commands
 
 import co.akoot.plugins.bluefox.api.FoxCommand
 import co.akoot.plugins.bluefox.api.FoxPlugin
+import co.akoot.plugins.bluefox.extensions.isSurventure
 import co.akoot.plugins.edulis.Edulis.Companion.cakeConfig
 import co.akoot.plugins.edulis.Edulis.Companion.itemConfig
 import co.akoot.plugins.edulis.gui.FoodItemMenu
 import co.akoot.plugins.edulis.util.Materials.loadItems
+import co.akoot.plugins.edulis.util.Util.foodid
 import co.akoot.plugins.edulis.util.Util.isFood
 import co.akoot.plugins.plushies.util.Items.customItems
 import org.bukkit.command.CommandSender
@@ -14,7 +16,7 @@ class FoodCommand(plugin: FoxPlugin) : FoxCommand(plugin, "food") {
 
     override fun onTabComplete(sender: CommandSender, alias: String, args: Array<out String>): MutableList<String> {
         if (args.size == 1) {
-            return customItems.filter { it.value.isFood }.keys.toMutableList()
+            return customItems.filter { it.value.isFood && !it.value.foodid.contains("bat_wing") }.keys.toMutableList()
         }
         return mutableListOf()
     }
@@ -40,7 +42,10 @@ class FoodCommand(plugin: FoxPlugin) : FoxCommand(plugin, "food") {
                     ?.let { customItems[it] } ?: run { return sendError(sender, "Invalid item.") }
                 val count = args.getOrNull(1)?.toIntOrNull() ?: 1
 
-                p.inventory.addItem(outputItem.clone().apply { amount = count })
+                if (!p.isSurventure) {
+                    p.give(outputItem.clone().apply { amount = count })
+                }
+
                 return true
             }
         }

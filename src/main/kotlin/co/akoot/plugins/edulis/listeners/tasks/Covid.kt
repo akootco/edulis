@@ -50,17 +50,16 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
                 }
             }
 
-            // 50% chance on which effect to give
+// 50% chance to apply effects or trigger brewery puke
             if (Random.nextBoolean()) {
-                if (pluginEnabled("brewery")) {
-                    BPlayer.addPuke(player, 64)
-                } else {
-                    player.addPotionEffects(listOf(
-                        PotionEffect(PotionEffectType.DARKNESS, 200, 10),
+                player.addPotionEffects(
+                    listOf(
+                        PotionEffect(PotionEffectType.DARKNESS, 600, 200),
                         PotionEffect(PotionEffectType.POISON, 100, 0)
-                    ))
-                }
-            }
+                    )
+                )
+            } else if (pluginEnabled("brewery"))
+                BPlayer.addPuke(player, 64)
         }
 
         for (target in player.getNearbyEntities(3.0, 3.0, 3.0)) { // spread it
@@ -70,7 +69,7 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
         }
 
         player.addPotionEffects(listOf(
-                PotionEffect(PotionEffectType.WEAKNESS, -1, 4),
+                PotionEffect(PotionEffectType.WEAKNESS, -1, 9),
                 PotionEffect(PotionEffectType.UNLUCK, -1, 0)
             )
         )
