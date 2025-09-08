@@ -17,6 +17,7 @@ import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.Items.itemKey
 import co.akoot.plugins.plushies.util.Recipes.unlockRecipes
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
+import com.dre.brewery.P
 import com.dre.brewery.api.events.PlayerPukeEvent
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.Material
@@ -34,6 +35,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.*
+import org.bukkit.metadata.FixedMetadataValue
 import java.util.*
 import kotlin.random.Random
 
@@ -74,6 +76,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                     velocity = loc.getDirection().multiply(0.5)
                     owner = UUID.fromString("78277c50-4e17-48bf-af38-7a25143da732") // PENJAMIN
                     ticksLived = 5600 + (0..50).random()
+                    setMetadata("brewery_puke", FixedMetadataValue(P.p, true))
                 }
             }
         }
