@@ -12,6 +12,7 @@ import org.bukkit.entity.ItemDisplay
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.server.PluginEnableEvent
 import org.bukkit.event.world.ChunkLoadEvent
 
@@ -28,6 +29,11 @@ class PluginEvent: Listener {
             }
             log.info("Loaded Brewery Recipes!")
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun InventoryPickupItemEvent.pukeItems() {
+        isCancelled = item.hasMetadata("brewery_puke")
     }
 
     @EventHandler

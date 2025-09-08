@@ -9,6 +9,7 @@ import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.Text
 import co.akoot.plugins.bluefox.util.TimeUtil.getTimeString
 import co.akoot.plugins.bluefox.util.TimeUtil.parseTime
+import co.akoot.plugins.edulis.Edulis.Companion.key
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.events.CovidContractEvent
 import org.bukkit.NamespacedKey
@@ -23,6 +24,12 @@ val immuneKey = NamespacedKey("covid", "immune")
 
 val Player.isInfected: Boolean
     get() = this.getPDC<Long>(endKey) != null
+
+var Player.foodEaten: List<String>
+    get() = (this.getPDC<String>(key("consumed"))?.split(",") ?: emptyList())
+    set(value) {
+        this.setPDC(key("consumed"), value.takeLast(3).joinToString(","))
+    }
 
 val Player.timeUntilCured: String
     get() {

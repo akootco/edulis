@@ -10,11 +10,14 @@ import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.dropItems
 import co.akoot.plugins.edulis.listeners.tasks.*
+import co.akoot.plugins.edulis.util.Materials.getMaterial
 import co.akoot.plugins.edulis.util.Materials.matches
 import co.akoot.plugins.edulis.util.Util.foodid
 import co.akoot.plugins.plushies.util.Items.customItems
+import co.akoot.plugins.plushies.util.Items.itemKey
 import co.akoot.plugins.plushies.util.Recipes.unlockRecipes
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
+import com.dre.brewery.api.events.PlayerPukeEvent
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -31,6 +34,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.*
+import java.util.*
 import kotlin.random.Random
 
 class PlayerEvent(private val plugin: FoxPlugin) : Listener {
@@ -49,6 +53,30 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
         val extraCoughs = Random.nextInt(0, coughCount + 1) // add extra coughs at the end
 
         message(Text(modifiedWords.joinToString(" ") + " " + "*cough* ".repeat(extraCoughs).trim()).component)
+    }
+
+    @EventHandler
+    fun PlayerPukeEvent.onPuke() {
+        val foods = player.foodEaten
+        if (foods.isEmpty()) return
+
+        isCancelled = true
+        for (i in 0 until count) {
+            runLater(2L * i) {
+                val pukeItem = getMaterial(foods.random()) ?: return@runLater
+                val loc = player.location.apply {
+                    y += 1.1
+                    pitch = pitch - 10 + Random.nextInt(20)
+                    yaw = yaw - 10 + Random.nextInt(20)
+                }
+
+                player.world.dropItem(loc, pukeItem).apply {
+                    velocity = loc.getDirection().multiply(0.5)
+                    owner = UUID.fromString("78277c50-4e17-48bf-af38-7a25143da732") // PENJAMIN
+                    ticksLived = 5600 + (0..50).random()
+                }
+            }
+        }
     }
 
     @EventHandler
@@ -167,6 +195,11 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
             "bat_wing" in item.foodid -> giveCovid(player, plugin)
             "cake_slice" in item.foodid -> player.incrementStatistic(Statistic.CAKE_SLICES_EATEN)
         }
+
+        // save food for throw up event
+        val id = item.itemMeta?.getPDC(itemKey) ?: item.foodid.lowercase()
+        player.foodEaten = (player.foodEaten.filterNot { it == id } + id)
+
     }
 
     private fun giveSlice(event: PlayerInteractEvent, cake: String, cutter: Block, player: Player) {

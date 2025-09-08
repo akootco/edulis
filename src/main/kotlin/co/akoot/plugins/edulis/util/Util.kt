@@ -28,7 +28,7 @@ object Util {
         get() = itemMeta.hasPDC(foodKey)
 
     val ItemStack.foodid: String
-        get() = itemMeta.getPDC<String>(foodKey).toString()
+        get() = itemMeta.getPDC<String>(foodKey) ?: type.name
 
     fun loadEverything(plugin: FoxPlugin) {
 
