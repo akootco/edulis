@@ -26,7 +26,9 @@ class DrinksCommand(plugin: FoxPlugin) : FoxCommand(plugin, "drinks") {
 
         val recipe = if (args.isNotEmpty()) args[0] else "all"
 
-        if (recipe == "book" && permissionCheck(p, "book") == true) { p.give(brewBook("all")) }
+        if (recipe == "book" && permissionCheck(p, "book") == true) {
+            brewBook("all")?.let { p.give(it) }
+        }
         else { p.openBook(brewBook(recipe) ?: return sendError(p, "Recipe not found!")) }
 
         return true
