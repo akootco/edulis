@@ -24,12 +24,13 @@ object ItemDisplays {
             }
         }
 
-        val cmd = overlayConfig.getInt("$id.age$age") ?: run {
+        val cmd = overlayConfig.getString("$id.age$age") ?: run {
             removeDisplay(location)
             return
         }
 
         val overlay = ItemBuilder.builder(ItemStack(Material.OAK_PRESSURE_PLATE))
+            .itemModel("air")
             .customModelData(cmd)
             .build()
 
