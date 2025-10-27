@@ -1,9 +1,11 @@
 package co.akoot.plugins.edulis.listeners
 
 import co.akoot.plugins.edulis.util.Materials.matches
-import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.edulis.util.VillagerTrades.modifyTrader
 import co.akoot.plugins.edulis.util.VillagerTrades.modifyVillager
+import co.akoot.plugins.plushies.util.Items.customItems
+import co.akoot.plugins.plushies.util.isCustomBlock
+import io.papermc.paper.event.entity.EntityInsideBlockEvent
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Goat
@@ -62,6 +64,12 @@ class EntityEvent : Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    fun inBlock(event: EntityInsideBlockEvent) {
+        val block = event.block
+        event.isCancelled = (block.type == Material.SWEET_BERRY_BUSH && block.isCustomBlock)
     }
 
     private fun milkBottle(player: Player, entity: Entity) {

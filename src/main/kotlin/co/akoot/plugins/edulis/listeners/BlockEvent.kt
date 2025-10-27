@@ -13,10 +13,12 @@ import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
 import co.akoot.plugins.edulis.util.Materials.matches
 import co.akoot.plugins.edulis.util.Schematics.paste
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
+import co.akoot.plugins.plushies.util.isCustomBlock
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.Tag
 import org.bukkit.TreeType
+import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Ageable
 import org.bukkit.block.data.Directional
 import org.bukkit.block.data.type.Cake
@@ -39,9 +41,7 @@ class BlockEvent : Listener {
         val block = event.blockPlaced
         val id = event.itemInHand.itemMeta.getPDC<String>(foodKey) ?: return
 
-        if (block.type.matches(Material.CAKE)) {
-            createDisplay(block.location, 0, id)
-        }
+        createDisplay(block.location, 0, id)
 
         block.chunk.setPDC(getBlockPDC(block.location, "edulis"), id)
         runLater(1) {block.chunk.removePDC(getBlockPDC(block.location, "alces")) }
@@ -105,6 +105,16 @@ class BlockEvent : Listener {
 
     @EventHandler
     fun cropGrow(event: BlockGrowEvent) {
+        val directions = listOf(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST)
+        val blocks = setOf(Material.MELON, Material.PUMPKIN)
+        for (face in directions) {
+            val nearby = event.block.getRelative(face)
+            if (nearby.isCustomBlock && event.newState.type in blocks) {
+                event.isCancelled = true
+                return
+            }
+        }
+
         runLater(1, CropDisplay(event.block))
     }
 

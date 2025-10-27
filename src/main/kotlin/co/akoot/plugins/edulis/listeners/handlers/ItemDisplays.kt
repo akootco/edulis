@@ -1,6 +1,7 @@
 package co.akoot.plugins.edulis.listeners.handlers
 
 import co.akoot.plugins.bluefox.extensions.removePDC
+import co.akoot.plugins.bluefox.util.Text
 import co.akoot.plugins.edulis.Edulis.Companion.overlayConfig
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
@@ -29,8 +30,12 @@ object ItemDisplays {
             return
         }
 
+        val name = id.split("_")
+            .joinToString(" ") { it.replaceFirstChar { c -> c.titlecase() } }
+
         val overlay = ItemBuilder.builder(ItemStack(Material.OAK_PRESSURE_PLATE))
             .itemModel("air")
+            .itemName(Text(name).component)
             .customModelData(cmd)
             .build()
 
