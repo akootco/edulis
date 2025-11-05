@@ -9,6 +9,7 @@ import co.akoot.plugins.edulis.util.Util.loadEverything
 import co.akoot.plugins.edulis.util.Util.loadYamlConfig
 import co.akoot.plugins.edulis.util.brewery.BrewItems
 import co.akoot.plugins.edulis.util.brewery.DrinksCommand
+import co.akoot.plugins.plushies.Plushies.Companion.tradeSource
 import com.dre.brewery.recipe.PluginItem
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger.logger
 import org.bukkit.Bukkit
@@ -53,6 +54,8 @@ class Edulis : FoxPlugin("edulis") {
             PluginItem.registerForConfig("edulis") { BrewItems() }
             logger.info("Items are now compatible with Brewery.")
         }
+
+        tradeSource.add(traderConfig)
     }
 
     override fun unload() {
