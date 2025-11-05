@@ -1,8 +1,6 @@
 package co.akoot.plugins.edulis.listeners
 
-import co.akoot.plugins.edulis.Edulis.Companion.traderConfig
 import co.akoot.plugins.edulis.util.Materials.matches
-import co.akoot.plugins.plushies.events.ModifyMerchantEvent
 import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.isCustomBlock
 import io.papermc.paper.event.entity.EntityInsideBlockEvent
@@ -10,8 +8,6 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Goat
 import org.bukkit.entity.Parrot
-import org.bukkit.entity.Villager
-import org.bukkit.entity.WanderingTrader
 import org.bukkit.entity.Cow
 import org.bukkit.entity.Player
 import org.bukkit.entity.Entity
@@ -27,12 +23,6 @@ class EntityEvent : Listener {
         val item = player.inventory.itemInMainHand
 
         when (val entity = event.rightClicked) {
-
-            is Villager -> {
-                if (item.type.matches(Material.CAKE) && entity.profession in listOf(Villager.Profession.NONE, Villager.Profession.NITWIT)) {
-                    ModifyMerchantEvent(entity).fire() ?: return
-                }
-            }
 
             is Goat -> {
                 when {
@@ -62,27 +52,6 @@ class EntityEvent : Listener {
             }
         }
     }
-
-    @EventHandler
-    fun onModifyMerchant(event: ModifyMerchantEvent) {
-        val merchant = event.merchant
-
-        val type = when(merchant) {
-            is Villager -> {
-                merchant.apply {
-                    villagerType = Villager.Type.JUNGLE
-                    villagerLevel = 5
-                    profession = Villager.Profession.NITWIT
-                }
-                "villager"
-            }
-            is WanderingTrader -> "wandering_trader"
-            else -> return
-        }
-
-        event.addTrades(type, traderConfig)
-    }
-
 
     @EventHandler
     fun inBlock(event: EntityInsideBlockEvent) {
