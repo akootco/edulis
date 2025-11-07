@@ -19,6 +19,7 @@ import co.akoot.plugins.plushies.util.Recipes.unlockRecipes
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
 import com.dre.brewery.P
 import com.dre.brewery.api.events.PlayerPukeEvent
+import io.papermc.paper.datacomponent.DataComponentTypes
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -65,12 +66,14 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
         isCancelled = true
         for (i in 0 until count) {
             runLater(2L * i) {
-                val pukeItem = getMaterial(foods.random()) ?: return@runLater
+                val pukeItem = getMaterial(foods.random())?.clone() ?: return@runLater
                 val loc = player.location.apply {
                     y += 1.1
                     pitch = pitch - 10 + Random.nextInt(20)
                     yaw = yaw - 10 + Random.nextInt(20)
                 }
+
+                pukeItem.setData(DataComponentTypes.MAX_STACK_SIZE,1)
 
                 player.world.dropItem(loc, pukeItem).apply {
                     velocity = loc.getDirection().multiply(0.5)
