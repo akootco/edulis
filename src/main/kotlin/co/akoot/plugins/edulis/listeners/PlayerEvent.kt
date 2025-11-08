@@ -3,6 +3,7 @@ package co.akoot.plugins.edulis.listeners
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.bluefox.api.Kolor
 import co.akoot.plugins.bluefox.extensions.getPDC
+import co.akoot.plugins.bluefox.extensions.hasPDC
 import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.Text
 import co.akoot.plugins.bluefox.util.Text.Companion.asString
@@ -13,6 +14,7 @@ import co.akoot.plugins.edulis.listeners.tasks.*
 import co.akoot.plugins.edulis.util.Materials.getMaterial
 import co.akoot.plugins.edulis.util.Materials.matches
 import co.akoot.plugins.edulis.util.Util.foodid
+import co.akoot.plugins.plushies.listeners.tasks.Throwable.Companion.axeKey
 import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.Items.itemKey
 import co.akoot.plugins.plushies.util.Recipes.unlockRecipes
@@ -203,9 +205,10 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
         }
 
         // save food for throw up event
-        val id = item.itemMeta?.getPDC(itemKey) ?: item.foodid.lowercase()
-        player.foodEaten = (player.foodEaten.filterNot { it == id } + id)
-
+        if (!item.itemMeta.hasPDC(axeKey)) {
+            val id = item.itemMeta?.getPDC(itemKey) ?: item.foodid.lowercase()
+            player.foodEaten = (player.foodEaten.filterNot { it == id } + id)
+        }
     }
 
     private fun giveSlice(event: PlayerInteractEvent, cake: String, cutter: Block, player: Player) {
