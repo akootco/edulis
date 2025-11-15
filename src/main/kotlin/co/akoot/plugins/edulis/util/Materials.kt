@@ -2,13 +2,12 @@ package co.akoot.plugins.edulis.util
 
 import co.akoot.plugins.bluefox.api.FoxConfig
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
-import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.pluginEnabled
 import co.akoot.plugins.plushies.util.ItemCreator
 import co.akoot.plugins.plushies.util.Items.customItems
+import co.akoot.plugins.plushies.util.Recipes
 import com.dre.brewery.api.BreweryApi
 import org.bukkit.Material
-import org.bukkit.Tag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.RecipeChoice
 
@@ -38,31 +37,7 @@ object Materials {
             }
         }
 
-        // material tags
-        if (input.startsWith("tag.")) {
-            val tag = when (input.removePrefix("tag.").uppercase()) {
-                "WOOL" -> Tag.WOOL
-                "LEAVES" -> Tag.LEAVES
-                "PLANKS" -> Tag.PLANKS
-                "LOGS" -> Tag.LOGS
-                else -> {
-                    // if the tag is not found, skip.
-                    // i would like this to handle every tag without having to list them eventually
-                    log.error("$input not found, skipping ingredient")
-                    return null
-                }
-            }
-            return RecipeChoice.MaterialChoice(tag)
-        }
-
-        // if no prefix, check for flugin item or vanilla material.
-        customItems.keys.find { it.equals(input, ignoreCase = true) }?.let { key ->
-            customItems[key]?.let {
-                return RecipeChoice.ExactChoice(it)
-            }
-        }
-
-        Material.getMaterial(input.uppercase())?.let { return RecipeChoice.MaterialChoice(it) }
+        Recipes.getInput(input)?.let { return it }
 
         return null
     }
