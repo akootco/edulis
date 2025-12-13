@@ -3,6 +3,8 @@ package co.akoot.plugins.edulis.util
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.hasPDC
+import co.akoot.plugins.bluefox.util.async
+import co.akoot.plugins.bluefox.util.sync
 import co.akoot.plugins.edulis.Edulis.Companion.cakeConfig
 import co.akoot.plugins.edulis.Edulis.Companion.craftingConfig
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
@@ -31,47 +33,41 @@ object Util {
         get() = itemMeta.getPDC<String>(foodKey) ?: type.name
 
     fun loadEverything(plugin: FoxPlugin) {
+        async {
+            loadItems(itemConfig)
+            loadItems(cakeConfig)
 
-        loadItems(itemConfig)
-        loadItems(cakeConfig)
+            // okay ig
+            val smokerKeys = smokerConfig.getKeys()
+            val craftingKeys = craftingConfig.getKeys()
+            val smithKeys = smithConfig.getKeys()
 
-        // remove all flugin recipes
-        val iterator = Bukkit.recipeIterator()
-        while (iterator.hasNext()) {
-            val recipe = iterator.next()
-
-            if (recipe is Keyed) {
-                val key = (recipe as Keyed).key // erm?
-                if (key.namespace == "edulis") {
-                    Bukkit.removeRecipe(key)
+            sync {
+                // remove all flugin recipes
+                val iterator = Bukkit.recipeIterator()
+                while (iterator.hasNext()) {
+                    val recipe = iterator.next()
+                    if (recipe is Keyed && recipe.key.namespace == "edulis") {
+                        Bukkit.removeRecipe(recipe.key)
+                    }
                 }
+
+                for (key in smokerKeys) smeltingRecipes(key)
+                for (key in craftingKeys) craftingRecipes(key)
+                for (key in smithKeys) smithingRecipes(key)
+
+                // remove all flugin schematics
+                val structureManager = Bukkit.getStructureManager()
+                for (structure in structureManager.structures) {
+                    if (structure is Keyed && structure.key.namespace == "edulis") {
+                        structureManager.unregisterStructure(structure.key)
+                    }
+                }
+
+                // ya, one day ill use this
+                registerSchematics(plugin)
             }
         }
-
-        for (key in smokerConfig.getKeys()) {
-            smeltingRecipes(key)
-        }
-
-        for (key in craftingConfig.getKeys()) {
-            craftingRecipes(key)
-        }
-
-        for (key in smithConfig.getKeys()) {
-            smithingRecipes(key)
-        }
-
-        // remove all flugin schematics
-        val structureManager = Bukkit.getStructureManager()
-        for (structure in structureManager.structures) {
-            if (structure is Keyed) {
-                val key = structure.key
-                if (key.namespace == "edulis") {
-                    structureManager.unregisterStructure(key)
-                }
-            }
-        }
-
-        registerSchematics(plugin)
     }
 
     fun loadYamlConfig(plugin: FoxPlugin, path: String): FileConfiguration {
