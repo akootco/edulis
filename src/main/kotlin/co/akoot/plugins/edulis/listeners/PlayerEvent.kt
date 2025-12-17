@@ -19,7 +19,6 @@ import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.Items.itemKey
 import co.akoot.plugins.plushies.util.Recipes.unlockRecipes
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
-import com.dre.brewery.P
 import com.dre.brewery.api.events.PlayerPukeEvent
 import io.papermc.paper.datacomponent.DataComponentTypes
 import io.papermc.paper.event.player.AsyncChatEvent
@@ -81,7 +80,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                     velocity = loc.getDirection().multiply(0.5)
                     owner = UUID.fromString("78277c50-4e17-48bf-af38-7a25143da732") // PENJAMIN
                     ticksLived = 5600 + (0..50).random()
-                    setMetadata("brewery_puke", FixedMetadataValue(P.p, true))
+                    setMetadata("brewery_puke", FixedMetadataValue(plugin, true))
                 }
             }
         }

@@ -58,7 +58,7 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
                         PotionEffect(PotionEffectType.POISON, 100, 0)
                     )
                 )
-            } else if (pluginEnabled("brewery"))
+            } else if (pluginEnabled("BreweryX"))
                 BPlayer.addPuke(player, 64)
         }
 

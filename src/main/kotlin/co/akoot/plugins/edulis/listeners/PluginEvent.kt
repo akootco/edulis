@@ -3,10 +3,12 @@ package co.akoot.plugins.edulis.listeners
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.gui.FoodItemMenu
 import co.akoot.plugins.edulis.gui.FoodItemMenu.Companion.foodItemMenu
-import co.akoot.plugins.edulis.util.Materials.pendingRecipes
 import co.akoot.plugins.edulis.util.CreateRecipes.craftingRecipes
 import co.akoot.plugins.edulis.util.CreateRecipes.smeltingRecipes
-import co.akoot.plugins.edulis.util.brewery.BrewRecipes.loadBrewRecipes
+import co.akoot.plugins.edulis.util.Materials.pendingRecipes
+import co.akoot.plugins.edulis.util.brewery.BrewItems
+import co.akoot.plugins.edulis.util.brewery.loadBrewRecipes
+import com.dre.brewery.recipe.PluginItem
 import org.bukkit.Material
 import org.bukkit.entity.ItemDisplay
 import org.bukkit.event.EventHandler
@@ -21,7 +23,10 @@ class PluginEvent: Listener {
     @EventHandler
     fun onBreweryEnable(event: PluginEnableEvent) {
         // we cant load the recipes until brewery is enabled smh
-        if (event.plugin.name == "Brewery") {
+        if (event.plugin.name == "BreweryX") {
+            PluginItem.registerForConfig("edulis") { BrewItems() }
+            log.info("Items are now compatible with Brewery.")
+
             loadBrewRecipes()
             for (recipe in pendingRecipes) {
                 smeltingRecipes(recipe)
