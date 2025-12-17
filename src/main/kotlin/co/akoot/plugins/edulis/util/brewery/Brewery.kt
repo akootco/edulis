@@ -50,10 +50,10 @@ fun loadBrewRecipes() {
         brewConfig.getInt("$recipe.alcohol")?.let { builder.alcohol(it) }
         brewConfig.getStringList("$recipe.lore").takeIf { it.isNotEmpty() }?.let { builder.lore(it) }
 
-        BreweryApi.addRecipe(
-            BRecipe.fromConfig(recipe, builder.build()),
-            false
-        )
+        val brewRecipe = BRecipe.fromConfig(recipe, builder.build())?: continue // good one
+
+        BRecipe.getMatching(recipe)?.let { BreweryApi.removeRecipe(it.recipeName) }
+        BreweryApi.addRecipe(brewRecipe, false)
     }
 }
 
