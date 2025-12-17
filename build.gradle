@@ -1,8 +1,15 @@
 group = project.group
 version = project.version
 
+repositories {
+    maven {
+        name = "jsinco"
+        url = "https://repo.jsinco.dev/releases"
+    }
+}
+
 dependencies {
     compileOnly project(":bluefox")
     compileOnly project(":plushies")
-    compileOnly 'com.github.DieReicheErethons:Brewery:3.1.1'
+    compileOnly 'com.dre.brewery:BreweryX:3.6.2'
 }

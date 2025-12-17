@@ -7,4 +7,3 @@ authors: [ IndiaPaleAle ]
 description: Food plugin
 website: 'https://akoot.co/plugins/${name}'
 softdepend: [ 'BlueFox', 'Plushies']
-loadbefore: [ 'Brewery' ]
