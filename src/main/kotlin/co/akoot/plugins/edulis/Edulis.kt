@@ -6,15 +6,11 @@ import co.akoot.plugins.edulis.commands.*
 import co.akoot.plugins.edulis.listeners.*
 import co.akoot.plugins.edulis.listeners.tasks.pauseCovid
 import co.akoot.plugins.edulis.util.Util.loadEverything
-import co.akoot.plugins.edulis.util.Util.loadYamlConfig
-import co.akoot.plugins.edulis.util.brewery.BrewItems
 import co.akoot.plugins.edulis.util.brewery.DrinksCommand
 import co.akoot.plugins.plushies.Plushies.Companion.tradeSource
-import com.dre.brewery.recipe.PluginItem
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger.logger
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
-import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.plugin.Plugin
 
 class Edulis : FoxPlugin("edulis") {
@@ -29,8 +25,7 @@ class Edulis : FoxPlugin("edulis") {
         lateinit var overlayConfig: FoxConfig
         lateinit var leafConfig: FoxConfig
         lateinit var smithConfig: FoxConfig
-
-        lateinit var brewRecipesConfig: FileConfiguration
+        lateinit var brewConfig: FoxConfig
 
         fun key(key: String): NamespacedKey {
             return NamespacedKey("edulis", key)
@@ -45,16 +40,7 @@ class Edulis : FoxPlugin("edulis") {
 
     override fun load() {
         logger.info("hello!!!!!!!!")
-
         loadEverything(this)
-
-        brewRecipesConfig = loadYamlConfig(this, "recipes/brew.yml")
-
-        if (checkPlugin("Brewery") != null) {
-            PluginItem.registerForConfig("edulis") { BrewItems() }
-            logger.info("Items are now compatible with Brewery.")
-        }
-
         tradeSource.add(traderConfig)
     }
 
@@ -87,6 +73,7 @@ class Edulis : FoxPlugin("edulis") {
         overlayConfig = registerConfig("overlay", "data/overlays.conf")
         leafConfig = registerConfig("leafDrop", "data/leaf_drops.conf")
         smithConfig = registerConfig("Smithing Recipes", "recipes/smithing.conf")
+        brewConfig = registerConfig("Brew Recipes", "recipes/brew.conf")
     }
 
     override fun registerEvents() {

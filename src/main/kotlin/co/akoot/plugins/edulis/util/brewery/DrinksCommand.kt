@@ -2,7 +2,6 @@ package co.akoot.plugins.edulis.util.brewery
 
 import co.akoot.plugins.bluefox.api.FoxCommand
 import co.akoot.plugins.bluefox.api.FoxPlugin
-import co.akoot.plugins.edulis.util.brewery.BrewBook.brewBook
 import com.dre.brewery.recipe.BRecipe
 
 import org.bukkit.command.CommandSender
@@ -14,7 +13,7 @@ class DrinksCommand(plugin: FoxPlugin) : FoxCommand(plugin, "drinks") {
         if (args.size == 1) {
             val pages = mutableListOf<String>()
 
-            BRecipe.getAllRecipes().forEach { pages.add(it.optionalID.get()) }
+            BRecipe.getRecipes().forEach { pages.add(it.id) }
             return pages
         }
 

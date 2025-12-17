@@ -22,7 +22,7 @@ object Materials {
         // brewery items
         if (input.startsWith("brewery:")) {
             // Check if the Brewery plugin is enabled
-            if (pluginEnabled("Brewery")) {
+            if (pluginEnabled("BreweryX")) {
                 BreweryApi.createBrewItem(
                     BreweryApi.getRecipe(
                         input.removePrefix("brewery:")
@@ -45,10 +45,9 @@ object Materials {
 
     // try to get material from config
     fun getMaterial(input: String, amount: Int = 1, recipeName: String = "".replace("edulis:", "")): ItemStack? {
-
             // Brewery items
         if (input.startsWith("brewery:")) {
-            if (pluginEnabled("Brewery")) {
+            if (pluginEnabled("BreweryX")) {
                 val brewItem = BreweryApi.createBrewItem(
                     input.removePrefix("brewery:").replace("_", " "),
                     10
@@ -61,21 +60,7 @@ object Materials {
             }
         }
 
-        // if no prefix, check for flugin item or vanilla material.
-        customItems.keys.find { it.equals(input, ignoreCase = true) }?.let { key ->
-            customItems[key]?.let {
-                it.amount = amount
-                return it
-            }
-        }
-
-        Material.getMaterial(input.uppercase())?.let {
-            val itemStack = ItemStack(it)
-            itemStack.amount = amount
-            return itemStack
-        }
-
-        return null
+        return Recipes.getMaterial(input)
     }
 
     fun loadItems(config: FoxConfig) {
