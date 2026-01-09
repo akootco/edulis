@@ -12,11 +12,11 @@ import co.akoot.plugins.edulis.Edulis.Companion.itemConfig
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.smithConfig
 import co.akoot.plugins.edulis.Edulis.Companion.smokerConfig
-import co.akoot.plugins.edulis.util.CreateRecipes.craftingRecipes
 import co.akoot.plugins.edulis.util.CreateRecipes.smeltingRecipes
 import co.akoot.plugins.edulis.util.CreateRecipes.smithingRecipes
 import co.akoot.plugins.edulis.util.Materials.loadItems
 import co.akoot.plugins.edulis.util.Schematics.registerSchematics
+import co.akoot.plugins.plushies.util.Recipes.configRecipes
 import org.bukkit.Bukkit
 import org.bukkit.Keyed
 import org.bukkit.configuration.file.FileConfiguration
@@ -39,7 +39,6 @@ object Util {
 
             // okay ig
             val smokerKeys = smokerConfig.getKeys()
-            val craftingKeys = craftingConfig.getKeys()
             val smithKeys = smithConfig.getKeys()
 
             sync {
@@ -53,7 +52,7 @@ object Util {
                 }
 
                 for (key in smokerKeys) smeltingRecipes(key)
-                for (key in craftingKeys) craftingRecipes(key)
+                configRecipes(craftingConfig, "edulis")
                 for (key in smithKeys) smithingRecipes(key)
 
                 // remove all flugin schematics
