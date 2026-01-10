@@ -5,10 +5,13 @@ import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.bluefox.api.Kolor
 import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.hasPDC
+import co.akoot.plugins.bluefox.extensions.sendActionBar
+import co.akoot.plugins.bluefox.util.Text.Companion.asString
 import co.akoot.plugins.edulis.Edulis.Companion.key
 import co.akoot.plugins.edulis.util.Util.isFood
 import co.akoot.plugins.plushies.util.builders.FoodBuilder
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
+import io.papermc.paper.datacomponent.DataComponentTypes
 import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
@@ -39,7 +42,21 @@ class EdibleCommand(plugin: FoxPlugin) : FoxCommand(plugin, "edible", aliases = 
         if (item.itemMeta.hasPDC(edibleKey)) {
             val bucketType = item.itemMeta.getPDC<String>(bucketKey)
             val material = bucketType?.let { Material.getMaterial(it) } ?: item.type
-            player.inventory.setItemInMainHand(ItemStack(material, item.amount))
+
+            val reverted = ItemBuilder.builder(ItemStack(material, item.amount))
+                .copyOf(item)
+                .removepdc(edibleKey)
+                .resetData(DataComponentTypes.CONSUMABLE)
+                .resetData(DataComponentTypes.FOOD)
+                .apply {
+                    if (bucketType != null || item.type.isBlock) {
+                        itemModel(material.name.lowercase())
+                        removepdc(bucketKey)
+                    }
+                }.build()
+
+            player.sendActionBar(Kolor.ACCENT("${item.effectiveName().asString()} is no longer $alias"))
+            player.inventory.setItemInMainHand(reverted)
             return true
         } else {
             val isBucket = item.type.name.endsWith("_BUCKET")
@@ -52,7 +69,6 @@ class EdibleCommand(plugin: FoxPlugin) : FoxCommand(plugin, "edible", aliases = 
             val edibleItem = ItemBuilder.builder(baseItem)
                 .pdc(edibleKey, true)
                 .copyOf(item)
-                .lore(listOf(Kolor.WARNING("Edible").component))
                 .apply {
                     if (isBucket || item.type.isBlock) {
                         itemModel(item.type.name.lowercase())
@@ -60,6 +76,7 @@ class EdibleCommand(plugin: FoxPlugin) : FoxCommand(plugin, "edible", aliases = 
                     }
                 }.build()
 
+            player.sendActionBar(Kolor.ACCENT("${item.effectiveName().asString()} is now $alias"))
             player.inventory.setItemInMainHand(FoodBuilder.builder(edibleItem)
                 .hunger(2, 2.0f)
                 .apply {
