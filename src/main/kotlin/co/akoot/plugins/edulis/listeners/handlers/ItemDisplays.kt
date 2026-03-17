@@ -52,11 +52,11 @@ object ItemDisplays {
     fun removeDisplay(location: Location, removePDC: Boolean = false) {
         val loc = location.clone().add(0.5, 0.5, 0.5) // this is so dumb!
 
-        for (entity in location.world.entities) {
-            if (entity is ItemDisplay && entity.location.distance(loc) < 0.5) {
+        location.world.getNearbyEntities(loc, 1.0, 1.0, 1.0)
+            .filterIsInstance<ItemDisplay>()
+            .forEach { display ->
                 if (removePDC) loc.chunk.removePDC(getBlockPDC(loc, "edulis"))
-                entity.remove()
+                display.remove()
             }
-        }
     }
 }
