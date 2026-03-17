@@ -1,21 +1,27 @@
 package co.akoot.plugins.edulis.blocks
 
+import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.hasPDC
 import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.Text
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.Edulis.Companion.key
+import co.akoot.plugins.edulis.listeners.handlers.BlockDrops
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.removeDisplay
 import co.akoot.plugins.plushies.util.Items.customItems
+import co.akoot.plugins.plushies.util.Util.getBlockPDC
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
+import co.akoot.plugins.plushies.util.isCustomBlock
 import co.akoot.plugins.plushies.util.spawnItemDisplay
 import io.papermc.paper.event.player.PlayerItemFrameChangeEvent
 import io.papermc.paper.event.player.PlayerItemFrameChangeEvent.ItemFrameChangeAction
 import org.bukkit.Material
 import org.bukkit.Tag
 import org.bukkit.block.BlockFace
+import org.bukkit.entity.GlowItemFrame
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.hanging.HangingBreakEvent
 import org.bukkit.event.hanging.HangingPlaceEvent
 import org.bukkit.util.Transformation
 import org.joml.AxisAngle4f
@@ -30,11 +36,13 @@ class CuttingBoard : Listener {
     fun HangingPlaceEvent.onPlace() {
         val item = itemStack ?: return
         val loc = block.location
+        val id = item.getPDC<String>(foodKey) ?: return
 
         if (!item.itemMeta.hasPDC(cbkey)) return
         if (blockFace != BlockFace.UP) { isCancelled = true ; return }
 
         entity.apply { setPDC(cbkey, loc) ; isInvisible = true }
+        block.chunk.setPDC(getBlockPDC(block.location, "edulis"), id)
         spawnItemDisplay(loc, item)
     }
 
@@ -61,6 +69,24 @@ class CuttingBoard : Listener {
             ItemFrameChangeAction.REMOVE -> { itemFrame.passengers.first().remove() }
 
             ItemFrameChangeAction.ROTATE -> {isCancelled = true }
+        }
+    }
+
+    @EventHandler
+    fun HangingBreakEvent.onBreak() {
+        val loc = entity.location
+
+        if (entity is GlowItemFrame && loc.block.isCustomBlock) {
+            val frame = entity as GlowItemFrame
+
+            loc.world.apply {
+                dropItemNaturally(loc, frame.item)
+                playSound(loc, "entity.item_frame.remove_item", .5f, 1.0f)
+            }
+
+            frame.remove()
+            removeDisplay(loc, true)
+            BlockDrops.dropItems(loc.block)
         }
     }
 
