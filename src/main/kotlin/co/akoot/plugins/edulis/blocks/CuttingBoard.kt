@@ -5,6 +5,7 @@ import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.Text
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.Edulis.Companion.key
+import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.removeDisplay
 import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
 import co.akoot.plugins.plushies.util.spawnItemDisplay
@@ -12,6 +13,7 @@ import io.papermc.paper.event.player.PlayerItemFrameChangeEvent
 import io.papermc.paper.event.player.PlayerItemFrameChangeEvent.ItemFrameChangeAction
 import org.bukkit.Material
 import org.bukkit.Tag
+import org.bukkit.block.BlockFace
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.hanging.HangingPlaceEvent
@@ -25,28 +27,23 @@ class CuttingBoard : Listener {
     init { createCuttingBoards() }
 
     @EventHandler
-    fun onPlace(event: HangingPlaceEvent) {
-        val item = event.itemStack ?: return
-        val loc = event.block.location
-        val itemFrame = event.entity
+    fun HangingPlaceEvent.onPlace() {
+        val item = itemStack ?: return
+        val loc = block.location
 
         if (!item.itemMeta.hasPDC(cbkey)) return
+        if (blockFace != BlockFace.UP) { isCancelled = true ; return }
 
-        itemFrame.apply {
-            setPDC(cbkey, loc)
-            isInvisible = true
-        }
-
+        entity.apply { setPDC(cbkey, loc) ; isInvisible = true }
         spawnItemDisplay(loc, item)
     }
 
     @EventHandler
-    fun onFrameInteract(event: PlayerItemFrameChangeEvent) {
-        val itemFrame = event.itemFrame
+    fun PlayerItemFrameChangeEvent.onInteract() {
         val loc = itemFrame.location
         if (!itemFrame.hasPDC(cbkey)) return
 
-        when (event.action) {
+        when (action) {
             ItemFrameChangeAction.PLACE -> {
                 val transformation = Transformation(
                     Vector3f(0f,0f,-0.45f),
@@ -55,7 +52,7 @@ class CuttingBoard : Listener {
                     AxisAngle4f()
                 )
                 itemFrame.addPassenger(spawnItemDisplay(loc,
-                    event.itemStack,
+                    itemStack,
                     transformation
                 ))
 
@@ -63,7 +60,7 @@ class CuttingBoard : Listener {
 
             ItemFrameChangeAction.REMOVE -> { itemFrame.passengers.first().remove() }
 
-            ItemFrameChangeAction.ROTATE -> { event.isCancelled = true }
+            ItemFrameChangeAction.ROTATE -> {isCancelled = true }
         }
     }
 
