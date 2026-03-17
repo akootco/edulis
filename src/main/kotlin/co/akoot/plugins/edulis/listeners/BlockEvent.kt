@@ -14,7 +14,6 @@ import co.akoot.plugins.edulis.util.Materials.matches
 import co.akoot.plugins.edulis.util.Schematics.paste
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
 import co.akoot.plugins.plushies.util.isCustomBlock
-import co.akoot.plugins.plushies.util.texturedkKey
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.Tag
@@ -37,14 +36,13 @@ import org.bukkit.event.world.StructureGrowEvent
 class BlockEvent : Listener {
 
     @EventHandler
-    fun onPlace(event: BlockPlaceEvent) {
-        if (event.isCancelled) return // this needs to be checked so core protect doesn't break
-        val block = event.blockPlaced
-        val id = event.itemInHand.itemMeta.getPDC<String>(foodKey) ?: return
-        val texture = event.itemInHand.itemMeta.getPDC<String>(texturedkKey)
+    fun BlockPlaceEvent.onPlace() {
+        if (isCancelled) return
 
-        if (texture != null) co.akoot.plugins.plushies.util.createDisplay(block.location, texture, true)
-        else  createDisplay(block.location, 0, id)
+        val id = itemInHand.itemMeta?.getPDC<String>(foodKey) ?: return
+        val block = blockPlaced
+
+        createDisplay(block.location, 0, id)
 
         block.chunk.setPDC(getBlockPDC(block.location, "edulis"), id)
         runLater(1) {block.chunk.removePDC(getBlockPDC(block.location, "alces")) }
