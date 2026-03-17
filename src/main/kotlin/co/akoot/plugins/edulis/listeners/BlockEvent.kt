@@ -1,10 +1,12 @@
 package co.akoot.plugins.edulis.listeners
 
 import co.akoot.plugins.bluefox.extensions.getPDC
+import co.akoot.plugins.bluefox.extensions.hasPDC
 import co.akoot.plugins.bluefox.extensions.removePDC
 import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
+import co.akoot.plugins.edulis.blocks.CuttingBoard.Companion.cbkey
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.dropItems
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.leafDrops
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.createDisplay
@@ -38,6 +40,12 @@ class BlockEvent : Listener {
     @EventHandler
     fun BlockPlaceEvent.onPlace() {
         if (isCancelled) return
+
+        if (block.world.getNearbyEntities(block.location, 1.0, 1.0, 1.0)
+                .any { entity -> entity.location.block == block && entity.hasPDC(cbkey) }) {
+            isCancelled = true
+            return
+        }
 
         val id = itemInHand.itemMeta?.getPDC<String>(foodKey) ?: return
         val block = blockPlaced

@@ -20,7 +20,7 @@ import org.joml.AxisAngle4f
 import org.joml.Vector3f
 
 class CuttingBoard : Listener {
-    private val cbkey = key("cutting_board")
+    companion object { val cbkey = key("cutting_board") }
 
     init { createCuttingBoards() }
 
