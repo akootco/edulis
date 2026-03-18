@@ -69,7 +69,7 @@ class CuttingBoard : Listener {
                 itemFrame.addPassenger(spawnItemDisplay(loc, itemStack, display))
             }
 
-            ItemFrameChangeAction.REMOVE -> { itemFrame.passengers.first().remove() }
+            ItemFrameChangeAction.REMOVE -> { itemFrame.passengers.firstOrNull()?.remove() }
 
             ItemFrameChangeAction.ROTATE -> {isCancelled = true }
         }
@@ -80,16 +80,14 @@ class CuttingBoard : Listener {
         val loc = entity.location
 
         if (entity is GlowItemFrame && loc.block.isCustomBlock) {
-            val frame = entity as GlowItemFrame
-
             loc.world.apply {
-                dropItemNaturally(loc, frame.item)
+                dropItemNaturally(loc, (entity as GlowItemFrame).item)
                 playSound(loc, "entity.item_frame.remove_item", .5f, 1.0f)
             }
 
-            frame.remove()
-            removeDisplay(loc, true)
+            entity.remove()
             BlockDrops.dropItems(loc.block)
+            removeDisplay(loc, true)
         }
     }
 
