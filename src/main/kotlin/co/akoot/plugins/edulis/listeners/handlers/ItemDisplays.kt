@@ -50,7 +50,7 @@ object ItemDisplays {
     }
 
     fun removeDisplay(location: Location, removePDC: Boolean = false) {
-        val loc = location.clone().add(0.5, 0.5, 0.5) // this is so dumb!
+        val loc = location.clone().toCenterLocation() // this is so dumb!
 
         location.world.getNearbyEntities(loc, 1.0, 1.0, 1.0)
             .filterIsInstance<ItemDisplay>()
