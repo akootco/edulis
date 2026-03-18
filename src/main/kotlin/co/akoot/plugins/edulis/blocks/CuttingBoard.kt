@@ -53,17 +53,20 @@ class CuttingBoard : Listener {
 
         when (action) {
             ItemFrameChangeAction.PLACE -> {
-                val transformation = Transformation(
+                val item = Transformation(
                     Vector3f(0f,0f,-0.45f),
                     AxisAngle4f(),
-                    Vector3f(.501f,.501f,.501f),
+                    Vector3f(0.501f,0.501f,0.501f),
                     AxisAngle4f()
                 )
-                itemFrame.addPassenger(spawnItemDisplay(loc,
-                    itemStack,
-                    transformation
-                ))
-
+                val tool = Transformation(
+                    Vector3f(-.2f, 0f, -0.15f),
+                    AxisAngle4f(Math.toRadians(-90.0).toFloat(), 1f, 0f, -.2f),
+                    Vector3f(.8f, .8f, .8f),
+                    AxisAngle4f()
+                )
+                val display = if (Tag.ITEMS_BREAKS_DECORATED_POTS.isTagged(itemStack.type)) tool else item
+                itemFrame.addPassenger(spawnItemDisplay(loc, itemStack, display))
             }
 
             ItemFrameChangeAction.REMOVE -> { itemFrame.passengers.first().remove() }
