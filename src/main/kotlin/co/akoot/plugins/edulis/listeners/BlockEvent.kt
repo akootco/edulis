@@ -6,7 +6,7 @@ import co.akoot.plugins.bluefox.extensions.removePDC
 import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
-import co.akoot.plugins.edulis.blocks.CuttingBoard.Companion.cbkey
+import co.akoot.plugins.edulis.blocks.cuttingboard.cbkey
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.dropItems
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.leafDrops
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.createDisplay
