@@ -26,11 +26,8 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.Statistic
 import org.bukkit.Tag
-import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Ageable
-import org.bukkit.entity.Player
-import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -115,18 +112,6 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
         if (action == Action.RIGHT_CLICK_BLOCK) {
 
             when (block.type) {
-                Material.STONECUTTER -> {
-                    val type = item.type
-                    val pdc = item.itemMeta?.getPDC<String>(foodKey)
-
-                    val id = when {
-                        pdc != null -> pdc
-                        type == Material.CAKE || type == Material.PUMPKIN_PIE -> type.name.lowercase()
-                        else -> return
-                    }
-                    giveSlice(this, id, block, player)
-                }
-
                 Material.POTTED_FERN -> {
                     val basil = customItems["basil"] ?: return
 
@@ -208,22 +193,5 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
             val id = item.itemMeta?.getPDC(itemKey) ?: item.foodid.lowercase()
             player.foodEaten = (player.foodEaten.filterNot { it == id } + id)
         }
-    }
-
-    private fun giveSlice(event: PlayerInteractEvent, cake: String, cutter: Block, player: Player) {
-        val cakeSlice = customItems["${cake}_slice"] ?: return
-
-        // cakes should give 8 and pies should give 4
-        cakeSlice.amount = when {
-            cake.endsWith("cake") -> 8
-            cake == "pizza" -> 12
-            else -> 4
-        }
-
-        // stop stonecutter gui from opening
-        event.setUseInteractedBlock(Event.Result.DENY)
-        player.inventory.itemInMainHand.amount -= 1
-        cutter.world.playSound(cutter.location, Sound.BLOCK_HONEY_BLOCK_HIT, 0.2f, 2.0f)
-        cutter.world.dropItemNaturally(cutter.location.add(0.5, 1.0, 0.5), cakeSlice)
     }
 }
