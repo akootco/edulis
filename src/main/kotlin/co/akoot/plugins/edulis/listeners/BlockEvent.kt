@@ -16,6 +16,7 @@ import co.akoot.plugins.edulis.util.Materials.matches
 import co.akoot.plugins.edulis.util.Schematics.paste
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
 import co.akoot.plugins.plushies.util.isCustomBlock
+import co.akoot.plugins.plushies.util.texturedkKey
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.Tag
@@ -40,6 +41,7 @@ class BlockEvent : Listener {
     @EventHandler
     fun BlockPlaceEvent.onPlace() {
         if (isCancelled) return
+        if (itemInHand.itemMeta.hasPDC(texturedkKey)) return
 
         if (block.world.getNearbyEntities(block.location, 1.0, 1.0, 1.0)
                 .any { entity -> entity.location.block == block && entity.hasPDC(cbkey) }) {
