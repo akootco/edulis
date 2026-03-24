@@ -2,7 +2,7 @@ package co.akoot.plugins.edulis
 
 import co.akoot.plugins.bluefox.api.FoxConfig
 import co.akoot.plugins.bluefox.api.FoxPlugin
-import co.akoot.plugins.edulis.blocks.cuttingboard.CuttingBoard
+import co.akoot.plugins.edulis.blocks.cuttingboard.CBListener
 import co.akoot.plugins.edulis.commands.*
 import co.akoot.plugins.edulis.listeners.*
 import co.akoot.plugins.edulis.listeners.tasks.pauseCovid
@@ -17,6 +17,7 @@ import org.bukkit.plugin.Plugin
 class Edulis : FoxPlugin("edulis") {
 
     companion object {
+        lateinit var instance: Edulis
         lateinit var traderConfig: FoxConfig
         lateinit var smokerConfig: FoxConfig
         lateinit var itemConfig: FoxConfig
@@ -40,6 +41,7 @@ class Edulis : FoxPlugin("edulis") {
     }
 
     override fun load() {
+        instance = this
         logger.info("hello!!!!!!!!")
         loadEverything(this)
         tradeSource.add(traderConfig)
@@ -83,6 +85,6 @@ class Edulis : FoxPlugin("edulis") {
         registerEventListener(PluginEvent())
         registerEventListener(BlockEvent())
         registerEventListener(EntityEvent())
-        registerEventListener(CuttingBoard())
+        registerEventListener(CBListener())
     }
 }
