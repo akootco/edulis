@@ -59,7 +59,7 @@ class CBListener : Listener {
         when (action) {
             PlayerItemFrameChangeEvent.ItemFrameChangeAction.PLACE -> {
                 val offhand = player.inventory.itemInOffHand
-                if (itemStack.isTool && offhand.isEmpty.not()) {
+                if (cuttingBoardRecipes.any { it.tool.test(itemStack)} && offhand.isEmpty.not()) {
                     isCancelled = true
                     itemFrame.addPassenger(spawnItemDisplay(loc, offhand, getDisplayTransform(offhand)))
                     loc.world.playSound(loc, Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 1f ,1f)
