@@ -24,9 +24,12 @@ import org.bukkit.util.Transformation
 import org.joml.AxisAngle4f
 import org.joml.Vector3f
 
-class CuttingBoard : Listener {
+class CBListener : Listener {
 
-    init { createCuttingBoards() }
+    init {
+        createCuttingBoards()
+        createCBRecipes()
+    }
 
     @EventHandler
     fun HangingPlaceEvent.onPlace() {

@@ -4,7 +4,6 @@ import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.util.Text
 import co.akoot.plugins.edulis.Edulis
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
-import co.akoot.plugins.edulis.util.Materials
 import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
 import org.bukkit.Location
@@ -18,14 +17,6 @@ import org.joml.AxisAngle4f
 import org.joml.Vector3f
 
 val cbkey = Edulis.key("cutting_board")
-
-data class CBoardRecipes(
-    val tool: Material,
-    val input: String,
-    val results: MutableSet<ItemStack>
-)
-
-val cuttingBoardRecipes = mutableListOf<CBoardRecipes>()
 
 val ItemStack.isTool: Boolean
     get() = Tag.ITEMS_BREAKS_DECORATED_POTS.isTagged(this.type)
@@ -63,17 +54,20 @@ fun getDisplayTransform(item: ItemStack): Transformation {
 
 fun cutItem(location: Location, item: ItemStack, tool: ItemStack, board: GlowItemFrame): Boolean {
     val recipe = cuttingBoardRecipes.firstOrNull { r ->
-        Materials.getInput(r.input, item.type.name)?.test(item) == true &&
-                r.tool == tool.type // wtf. aint no way
+        r.input.test(item) && r.tool.test(tool) // wtf. aint no way
     }
 
     if (recipe != null) {
-        location.world.playSound(location, Sound.ITEM_SPEAR_WOOD_ATTACK, 0.5f, 2.0f)
-        recipe.results.forEach { location.world.dropItemNaturally(location, it.clone()) }
+        location.world.playSound(location, Sound.ITEM_SPEAR_WOOD_USE, 0.8f, 1.5f)
+        recipe.results.forEach {
+            location.add(0.0,.5,0.0).world.dropItemNaturally(location, it.clone()) }
         return clearBoard(board)
     }
 
-    return giveSlice(item, location) && clearBoard(board)
+    if (tool.isSimilar(customItems["butcher_knife"])) {
+        return giveSlice(item, location) && clearBoard(board)
+    }
+    return false
 }
 
 fun clearBoard(board: GlowItemFrame) : Boolean{
