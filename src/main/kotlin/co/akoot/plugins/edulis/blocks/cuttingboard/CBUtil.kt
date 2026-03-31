@@ -53,6 +53,7 @@ fun getDisplayTransform(item: ItemStack): Transformation {
 }
 
 fun cutItem(location: Location, item: ItemStack, tool: ItemStack, board: GlowItemFrame): Boolean {
+    val fixedLoc = location.add(0.0,.5,0.0)
     val recipe = cuttingBoardRecipes.firstOrNull { r ->
         r.input.test(item) && r.tool.test(tool) // wtf. aint no way
     }
@@ -60,7 +61,7 @@ fun cutItem(location: Location, item: ItemStack, tool: ItemStack, board: GlowIte
     if (recipe != null) {
         location.world.playSound(location, Sound.ITEM_SPEAR_WOOD_USE, 0.8f, 1.5f)
         recipe.results.forEach {
-            location.add(0.0,.5,0.0).world.dropItemNaturally(location, it.clone()) }
+            fixedLoc.world.dropItemNaturally(location, it.clone()) }
         return clearBoard(board)
     }
 
