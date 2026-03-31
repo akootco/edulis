@@ -8,7 +8,6 @@ import co.akoot.plugins.edulis.Edulis
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays
 import co.akoot.plugins.plushies.util.Util
-import co.akoot.plugins.plushies.util.isCustomBlock
 import co.akoot.plugins.plushies.util.spawnItemDisplay
 import io.papermc.paper.event.player.PlayerItemFrameChangeEvent
 import org.bukkit.Sound
@@ -33,6 +32,7 @@ class CBListener : Listener {
 
     @EventHandler
     fun HangingPlaceEvent.onPlace() {
+        if (isCancelled) return
         val item = itemStack ?: return
         val loc = block.location
         val id = item.getPDC<String>(Edulis.foodKey) ?: return
@@ -52,9 +52,9 @@ class CBListener : Listener {
 
     @EventHandler
     fun PlayerItemFrameChangeEvent.onInteract() {
-        val loc = itemFrame.location
-        val itemFrame = itemFrame as GlowItemFrame
+        if (isCancelled) return
         if (!itemFrame.hasPDC(cbkey)) return
+        val loc = itemFrame.location
 
         when (action) {
             PlayerItemFrameChangeEvent.ItemFrameChangeAction.PLACE -> {
@@ -73,7 +73,7 @@ class CBListener : Listener {
 
             PlayerItemFrameChangeEvent.ItemFrameChangeAction.ROTATE -> {
                 isCancelled = true
-                if (!cutItem(loc, itemStack, player.inventory.itemInMainHand, itemFrame))
+                if (!cutItem(loc, itemStack, player.inventory.itemInMainHand, (itemFrame as GlowItemFrame)))
                     return player.sendActionBar(itemStack.effectiveName() + " cannot be cut!")
             }
         }
@@ -84,7 +84,7 @@ class CBListener : Listener {
         if (isCancelled) return
         val loc = entity.location
 
-        if (entity is GlowItemFrame && loc.block.isCustomBlock) {
+        if (entity.hasPDC(cbkey)) {
             loc.world.apply {
                 dropItemNaturally(loc, (entity as GlowItemFrame).item)
                 playSound(loc, "entity.item_frame.remove_item", .5f, 1.0f)
@@ -98,7 +98,8 @@ class CBListener : Listener {
 
     @EventHandler
     fun HangingBreakByEntityEvent.onPlayerBreak() {
-        if (entity !is GlowItemFrame && !entity.location.block.isCustomBlock) return
+        if (isCancelled) return
+        if (!entity.hasPDC(cbkey)) return
         if (remover is Player && (remover as Player).inventory.itemInMainHand.isTool) { isCancelled = true }
     }
 }
