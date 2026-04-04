@@ -70,7 +70,7 @@ class CBListener : Listener {
 
             PlayerItemFrameChangeEvent.ItemFrameChangeAction.ROTATE -> {
                 isCancelled = true
-                if (!cutItem(loc, itemStack, player.inventory.itemInMainHand, (itemFrame as GlowItemFrame)))
+                if (!cutItem(player, loc, itemStack, player.inventory.itemInMainHand, (itemFrame as GlowItemFrame)))
                     return player.sendActionBar(itemStack.effectiveName() + " cannot be cut!")
             }
         }

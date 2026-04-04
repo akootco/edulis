@@ -11,6 +11,7 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.Tag
 import org.bukkit.entity.GlowItemFrame
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Transformation
 import org.joml.AxisAngle4f
@@ -52,21 +53,23 @@ fun getDisplayTransform(item: ItemStack): Transformation {
     return if (item.isTool) asTool else asItem
 }
 
-fun cutItem(location: Location, item: ItemStack, tool: ItemStack, board: GlowItemFrame): Boolean {
+fun cutItem(player: Player, location: Location, item: ItemStack, tool: ItemStack, board: GlowItemFrame): Boolean {
     val fixedLoc = location.add(0.0,.5,0.0)
     val recipe = cuttingBoardRecipes.firstOrNull { r ->
         r.input.test(item) && r.tool.test(tool) // wtf. aint no way
     }
 
     if (recipe != null) {
-        location.world.playSound(location, Sound.ITEM_SPEAR_WOOD_USE, 0.8f, 1.5f)
         recipe.results.forEach {
             fixedLoc.world.dropItemNaturally(location, it.clone()) }
+        tool.damage(1, player)
         return clearBoard(board)
     }
 
     if (tool.isSimilar(customItems["butcher_knife"])) {
-        return giveSlice(item, location) && clearBoard(board)
+        val sliced = giveSlice(item, location)
+        if (sliced) tool.damage(1, player)
+        return sliced && clearBoard(board)
     }
     return false
 }
@@ -74,6 +77,7 @@ fun cutItem(location: Location, item: ItemStack, tool: ItemStack, board: GlowIte
 fun clearBoard(board: GlowItemFrame) : Boolean{
     board.setItem(null)
     board.passengers.firstOrNull()?.remove()
+    board.location.world.playSound(board.location, Sound.ITEM_SPEAR_WOOD_USE, 0.8f, 1.5f)
     return true
 }
 
@@ -92,7 +96,6 @@ fun giveSlice(item: ItemStack, location: Location): Boolean {
         else -> 4
     }
 
-    location.world.playSound(location, Sound.ITEM_SPEAR_WOOD_ATTACK, 0.5f, 2.0f)
     location.world.dropItemNaturally(location.toCenterLocation(), cakeSlice)
 
     return true
