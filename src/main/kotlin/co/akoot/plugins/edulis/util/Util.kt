@@ -12,6 +12,7 @@ import co.akoot.plugins.edulis.Edulis.Companion.itemConfig
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.smithConfig
 import co.akoot.plugins.edulis.Edulis.Companion.smokerConfig
+import co.akoot.plugins.edulis.blocks.cuttingboard.createCBRecipes
 import co.akoot.plugins.edulis.util.CreateRecipes.smeltingRecipes
 import co.akoot.plugins.edulis.util.CreateRecipes.smithingRecipes
 import co.akoot.plugins.edulis.util.Materials.loadItems
@@ -36,6 +37,8 @@ object Util {
         async {
             loadItems(itemConfig)
             loadItems(cakeConfig)
+
+            createCBRecipes()
 
             // okay ig
             val smokerKeys = smokerConfig.getKeys()
