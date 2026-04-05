@@ -3,8 +3,12 @@ package co.akoot.plugins.edulis.blocks.cuttingboard
 import co.akoot.plugins.bluefox.api.FoxConfig
 import co.akoot.plugins.edulis.Edulis
 import co.akoot.plugins.edulis.Edulis.Companion.log
+import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.Recipes.getInput
 import co.akoot.plugins.plushies.util.Recipes.getMaterial
+import co.akoot.plugins.plushies.util.builders.CraftRecipe
+import org.bukkit.Material
+import org.bukkit.Tag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.RecipeChoice
 
@@ -16,6 +20,16 @@ val cuttingBoardRecipes = mutableListOf<CBoardRecipes>()
 private fun erm(recipe: String, item: String) = log.warn("Invalid $item in `$recipe` cutting board recipe.")
 
 fun createCBRecipes() {
+
+    for (material in Tag.PLANKS.values) {
+        val woodType = material.name.removeSuffix("_PLANKS")
+        val name = "${woodType.lowercase()}_cutting_board"
+        val ingredientMaterial = Material.getMaterial("${woodType}_PRESSURE_PLATE") ?: continue
+
+        CraftRecipe.builder(name, customItems[name] ?: continue)
+            .ingredient(ingredientMaterial)
+            .shapeless("edulis")
+    }
     for (r in config.getKeys()) {
         val toolInput = getInput(config.getString("$r.tool") ?: continue) ?: run {
             erm(r, "tool")

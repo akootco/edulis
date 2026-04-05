@@ -38,8 +38,6 @@ object Util {
             loadItems(itemConfig)
             loadItems(cakeConfig)
 
-            createCBRecipes()
-
             // okay ig
             val smokerKeys = smokerConfig.getKeys()
             val smithKeys = smithConfig.getKeys()
@@ -58,6 +56,7 @@ object Util {
                 configRecipes(craftingConfig, "edulis")
                 for (key in smithKeys) smithingRecipes(key)
 
+                createCBRecipes()
                 // remove all flugin schematics
                 val structureManager = Bukkit.getStructureManager()
                 for (structure in structureManager.structures) {
