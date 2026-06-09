@@ -20,16 +20,6 @@ val cuttingBoardRecipes = mutableListOf<CBoardRecipes>()
 private fun erm(recipe: String, item: String) = log.warn("Invalid $item in `$recipe` cutting board recipe.")
 
 fun createCBRecipes() {
-
-    for (material in Tag.PLANKS.values) {
-        val woodType = material.name.removeSuffix("_PLANKS")
-        val name = "${woodType.lowercase()}_cutting_board"
-        val ingredientMaterial = Material.getMaterial("${woodType}_PRESSURE_PLATE") ?: continue
-
-        CraftRecipe.builder(name, customItems[name] ?: continue)
-            .ingredient(ingredientMaterial)
-            .shapeless("edulis")
-    }
     for (r in config.getKeys()) {
         val toolInput = getInput(config.getString("$r.tool") ?: continue) ?: run {
             erm(r, "tool")
@@ -44,6 +34,18 @@ fun createCBRecipes() {
         if (results.isEmpty()) continue
 
         cuttingBoardRecipes.add(CBoardRecipes(toolInput, inputItem, results))
+    }
+}
+
+fun createCBItemRecipe() {
+    for (material in Tag.PLANKS.values) {
+        val woodType = material.name.removeSuffix("_PLANKS")
+        val name = "${woodType.lowercase()}_cutting_board"
+        val ingredientMaterial = Material.getMaterial("${woodType}_PRESSURE_PLATE") ?: continue
+
+        CraftRecipe.builder(name, customItems[name] ?: continue)
+            .ingredient(ingredientMaterial)
+            .shapeless("edulis")
     }
 }
 

@@ -12,6 +12,7 @@ import co.akoot.plugins.edulis.Edulis.Companion.itemConfig
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.smithConfig
 import co.akoot.plugins.edulis.Edulis.Companion.smokerConfig
+import co.akoot.plugins.edulis.blocks.cuttingboard.createCBItemRecipe
 import co.akoot.plugins.edulis.blocks.cuttingboard.createCBRecipes
 import co.akoot.plugins.edulis.util.CreateRecipes.smeltingRecipes
 import co.akoot.plugins.edulis.util.CreateRecipes.smithingRecipes
@@ -56,6 +57,7 @@ object Util {
                 configRecipes(craftingConfig, "edulis")
                 for (key in smithKeys) smithingRecipes(key)
 
+                createCBItemRecipe()
                 createCBRecipes()
                 // remove all flugin schematics
                 val structureManager = Bukkit.getStructureManager()

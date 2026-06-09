@@ -25,8 +25,6 @@ import org.joml.Vector3f
 
 class CBListener : Listener {
 
-    init { createCuttingBoards() }
-
     @EventHandler
     fun HangingPlaceEvent.onPlace() {
         if (isCancelled) return
