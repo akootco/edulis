@@ -4,6 +4,7 @@ import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.util.Text
 import co.akoot.plugins.edulis.Edulis
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
+import co.akoot.plugins.edulis.util.Util.foodid
 import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
 import org.bukkit.Location
@@ -66,7 +67,7 @@ fun cutItem(player: Player, location: Location, item: ItemStack, tool: ItemStack
         return clearBoard(board)
     }
 
-    if (tool.isSimilar(customItems["butcher_knife"])) {
+    if (tool.foodid == "butcher_knife") {
         val sliced = giveSlice(item, location)
         if (sliced) tool.damage(1, player)
         return sliced && clearBoard(board)

@@ -128,7 +128,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                 }
 
                 Material.FLOWER_POT -> {
-                    if (item.isSimilar(customItems["basil"] ?: return)) {
+                    if (item.foodid == "basil") {
                         block.type = Material.POTTED_FERN
                         item.amount -= 1
                     }
@@ -154,7 +154,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                 }
 
                 in Tag.DIRT.values -> {
-                    if (item.isSimilar(customItems["tomato"] ?: return)) {
+                    if (item.foodid == "tomato") {
                         if (blockFace == BlockFace.UP) { // make sure player is clicking top of block
                             // make sure the space above is empty
                             val aboveBlock = block.getRelative(BlockFace.UP).takeIf { it.type.matches(Material.AIR) } ?: return
