@@ -1,6 +1,6 @@
 package co.akoot.plugins.edulis.util
 
-import co.akoot.plugins.bluefox.api.FoxPlugin
+import co.akoot.plugins.edulis.Edulis
 import co.akoot.plugins.edulis.Edulis.Companion.key
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import org.bukkit.Bukkit
@@ -12,9 +12,9 @@ import java.util.*
 
 object Schematics {
 
-    fun registerSchematics(plugin: FoxPlugin) {
+    fun registerSchematics() {
 
-        val directory = File(plugin.dataFolder, "schematics")
+        val directory = File(Edulis.instance.dataFolder, "schematics")
 
         if (!directory.exists()) {
             directory.mkdirs()
@@ -27,10 +27,7 @@ object Schematics {
             val manager = Bukkit.getStructureManager()
             val key = key( file.nameWithoutExtension)
 
-            manager.apply {
-                unregisterStructure(key)
-                registerStructure(key, manager.loadStructure(file))
-            }
+            manager.registerStructure(key, manager.loadStructure(file))
         }
     }
 

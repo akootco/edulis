@@ -1,6 +1,5 @@
 package co.akoot.plugins.edulis.listeners
 
-import co.akoot.plugins.edulis.util.Materials.matches
 import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.isCustomBlock
 import io.papermc.paper.event.entity.EntityInsideBlockEvent
@@ -25,14 +24,14 @@ class EntityEvent : Listener {
         when (val entity = event.rightClicked) {
 
             is Goat -> {
-                when {
-                    item.type.matches(Material.BUCKET) -> {
+                when (item.type) {
+                    Material.BUCKET -> {
                         val milk = customItems["goat_milk"]?: return
                         event.isCancelled = true
                         player.inventory.itemInMainHand.amount -= 1
                         player.give(milk)
                     }
-                    item.type.matches(Material.GLASS_BOTTLE) -> { milkBottle(player, entity) }
+                    Material.GLASS_BOTTLE -> { milkBottle(player, entity) }
                     else -> return
                 }
             }
@@ -42,7 +41,7 @@ class EntityEvent : Listener {
             }
 
             is Parrot -> {
-                if (item.type.matches(Material.BUCKET)) {
+                if (item.type == Material.BUCKET) {
                     val milk = customItems["bird_spit"]?: return
                     event.isCancelled = true
                     player.inventory.itemInMainHand.amount -= 1

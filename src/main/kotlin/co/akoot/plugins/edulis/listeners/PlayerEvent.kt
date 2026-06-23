@@ -11,12 +11,11 @@ import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.dropItems
 import co.akoot.plugins.edulis.listeners.tasks.*
-import co.akoot.plugins.edulis.util.Materials.getMaterial
-import co.akoot.plugins.edulis.util.Materials.matches
 import co.akoot.plugins.edulis.util.Util.foodid
 import co.akoot.plugins.plushies.listeners.tasks.Throwable.Companion.axeKey
 import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.Items.itemKey
+import co.akoot.plugins.plushies.util.Recipes.getMaterial
 import co.akoot.plugins.plushies.util.Recipes.unlockRecipes
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
 import com.dre.brewery.api.events.PlayerPukeEvent
@@ -115,7 +114,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                 Material.POTTED_FERN -> {
                     val basil = customItems["basil"] ?: return
 
-                    if (item.type.matches(Material.SHEARS)) {
+                    if (item.type == Material.SHEARS) {
                         block.world.apply {
                             dropItemNaturally(block.location.add(0.5, 1.0, 0.5), basil)
                             playSound(block.location, Sound.ENTITY_BOGGED_SHEAR, 1.0f, 2.0f)
@@ -157,7 +156,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                     if (item.foodid == "tomato") {
                         if (blockFace == BlockFace.UP) { // make sure player is clicking top of block
                             // make sure the space above is empty
-                            val aboveBlock = block.getRelative(BlockFace.UP).takeIf { it.type.matches(Material.AIR) } ?: return
+                            val aboveBlock = block.getRelative(BlockFace.UP).takeIf { it.type == Material.AIR } ?: return
 
                             isCancelled = true
 

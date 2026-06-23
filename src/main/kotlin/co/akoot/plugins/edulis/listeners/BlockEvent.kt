@@ -12,7 +12,6 @@ import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.leafDrops
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.createDisplay
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.removeDisplay
 import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
-import co.akoot.plugins.edulis.util.Materials.matches
 import co.akoot.plugins.edulis.util.Schematics.paste
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
 import co.akoot.plugins.plushies.util.isCustomBlock
@@ -78,7 +77,7 @@ class BlockEvent : Listener {
             }
 
             is Villager -> {
-                if (block.type.matches(Material.AIR) && block.location.subtract(0.0, 1.0, 0.0).block.type.matches(Material.FARMLAND)) {
+                if (block.type == Material.AIR && block.location.subtract(0.0, 1.0, 0.0).block.type == Material.FARMLAND) {
                     val inventory = (event.entity as Villager).inventory.contents.clone()
                     val item = inventory.filterNotNull().firstOrNull()?.clone() ?: return
                     val id = item.itemMeta.getPDC<String>(foodKey) ?: return

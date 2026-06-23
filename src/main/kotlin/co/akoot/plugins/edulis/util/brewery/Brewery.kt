@@ -1,10 +1,9 @@
 package co.akoot.plugins.edulis.util.brewery
 
-import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.util.Text
 import co.akoot.plugins.edulis.Edulis.Companion.brewConfig
-import co.akoot.plugins.edulis.Edulis.Companion.foodKey
-import co.akoot.plugins.edulis.util.Materials.getMaterial
+import co.akoot.plugins.edulis.util.Util.foodid
+import co.akoot.plugins.plushies.util.Recipes.getMaterial
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
 import com.dre.brewery.BarrelWoodType
 import com.dre.brewery.api.BreweryApi
@@ -18,7 +17,7 @@ import org.bukkit.inventory.ItemStack
 
 class BrewItems : PluginItem() {
     override fun matches(item: ItemStack): Boolean {
-        return item.itemMeta.getPDC<String>(foodKey) == itemId // lol
+        return item.foodid == itemId // lol
     }
 }
 
@@ -103,7 +102,7 @@ private fun createPage(recipe: String): Component? {
                             // set a prefix only if the item is a brewery item, the brewery api is a bit odd innit!
                             val prefix = if (ingredient is PluginItem && ingredient.plugin == "brewery") "brewery:" else ""
                             // set hover event if the item exists
-                            getMaterial("$prefix${ingredient.name}", recipeName = recipe)
+                            getMaterial("$prefix${ingredient.name}")
                                 ?.let { hover(ItemStack(it)) }
                             // amount
                         }).plus(Text(": ${ingredient.amount}\n"))

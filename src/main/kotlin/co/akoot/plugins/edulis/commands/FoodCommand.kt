@@ -3,12 +3,10 @@ package co.akoot.plugins.edulis.commands
 import co.akoot.plugins.bluefox.api.FoxCommand
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.bluefox.extensions.isSurventure
-import co.akoot.plugins.edulis.Edulis.Companion.cakeConfig
-import co.akoot.plugins.edulis.Edulis.Companion.itemConfig
 import co.akoot.plugins.edulis.gui.FoodItemMenu
-import co.akoot.plugins.edulis.util.Materials.loadItems
 import co.akoot.plugins.edulis.util.Util.foodid
 import co.akoot.plugins.edulis.util.Util.isFood
+import co.akoot.plugins.edulis.util.Util.loadItems
 import co.akoot.plugins.plushies.util.Items.customItems
 import org.bukkit.command.CommandSender
 
@@ -27,8 +25,7 @@ class FoodCommand(plugin: FoxPlugin) : FoxCommand(plugin, "food") {
         when (args.getOrNull(0)) {
             "reload" -> {
                 customItems.entries.removeIf { it.value.isFood }
-                loadItems(itemConfig)
-                loadItems(cakeConfig)
+                loadItems()
                 return sendMessage(sender, "Food reloaded")
             }
 

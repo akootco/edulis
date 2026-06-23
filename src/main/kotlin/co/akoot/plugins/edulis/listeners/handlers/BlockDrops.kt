@@ -4,9 +4,8 @@ import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.removePDC
 import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.Edulis.Companion.leafConfig
-import co.akoot.plugins.edulis.util.Materials.getMaterial
-import co.akoot.plugins.edulis.util.Materials.matches
 import co.akoot.plugins.plushies.util.Items.customItems
+import co.akoot.plugins.plushies.util.Recipes.getMaterial
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
 import org.bukkit.Material
 import org.bukkit.Tag
@@ -22,7 +21,7 @@ object BlockDrops {
         val id = block.chunk.getPDC<String>(getBlockPDC(block.location, "edulis"))
             ?: return false
 
-        if (block.type.matches(Material.CAKE)) {
+        if (block.type == Material.CAKE) {
             block.chunk.removePDC(getBlockPDC(block.location, "edulis"))
             return false
         }
@@ -41,7 +40,7 @@ object BlockDrops {
         }
 
         // for sweet berry bush set amount depending on age
-        else if (block.type.matches(Material.SWEET_BERRY_BUSH)) {
+        else if (block.type == Material.SWEET_BERRY_BUSH) {
             val ageable = block.blockData as Ageable
             item.amount = if (ageable.age == 2) 2 else if (ageable.age == 3) 3 else 1
         }

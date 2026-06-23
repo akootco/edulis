@@ -43,7 +43,7 @@ class Edulis : FoxPlugin("edulis") {
     override fun load() {
         instance = this
         logger.info("hello!!!!!!!!")
-        loadEverything(this)
+        loadEverything()
         tradeSource.add(traderConfig)
     }
 
@@ -60,7 +60,6 @@ class Edulis : FoxPlugin("edulis") {
         registerCommand(InfectCommand(this))
         registerCommand(CureCommand(this))
         registerCommand(ImmuneCommand(this))
-        registerCommand(ReloadCommand(this))
         registerCommand(DrinksCommand(this))
         registerCommand(EdibleCommand(this))
         registerCommand(HungryCommand(this))
