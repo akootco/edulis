@@ -3,6 +3,7 @@ package co.akoot.plugins.edulis.commands
 import co.akoot.plugins.bluefox.api.FoxCommand
 import co.akoot.plugins.bluefox.api.FoxPlugin
 import co.akoot.plugins.bluefox.extensions.isSurventure
+import co.akoot.plugins.bluefox.util.async
 import co.akoot.plugins.edulis.gui.FoodItemMenu
 import co.akoot.plugins.edulis.util.Util.foodid
 import co.akoot.plugins.edulis.util.Util.isFood
@@ -24,9 +25,13 @@ class FoodCommand(plugin: FoxPlugin) : FoxCommand(plugin, "food") {
 
         when (args.getOrNull(0)) {
             "reload" -> {
-                customItems.entries.removeIf { it.value.isFood }
-                loadItems()
-                return sendMessage(sender, "Food reloaded")
+                async {
+                    customItems.entries.removeIf { it.value.isFood }
+                    loadItems()
+                    sendMessage(sender, "Food reloaded")
+                }
+
+                return true
             }
 
             else -> {

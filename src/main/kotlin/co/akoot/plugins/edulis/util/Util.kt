@@ -10,7 +10,7 @@ import co.akoot.plugins.edulis.Edulis.Companion.itemConfig
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.smithConfig
 import co.akoot.plugins.edulis.Edulis.Companion.smokerConfig
-import co.akoot.plugins.edulis.blocks.cuttingboard.createCBRecipes
+import co.akoot.plugins.edulis.blocks.cuttingboard.createCuttingBoards
 import co.akoot.plugins.edulis.util.Schematics.registerSchematics
 import co.akoot.plugins.plushies.util.ItemCreator
 import co.akoot.plugins.plushies.util.Items.customItems
@@ -37,7 +37,6 @@ object Util {
         smeltingRecipes(smokerConfig, "edulis")
         smithingRecipes(smithConfig,"edulis" )
         registerSchematics()
-        createCBRecipes()
     }
 
     fun loadItems() {
@@ -47,6 +46,7 @@ object Util {
                     ItemCreator.createItem(config, key, foodKey) ?: continue
             }
         }
+        createCuttingBoards()
     }
 
     fun loadYamlConfig(plugin: FoxPlugin, path: String): FileConfiguration {

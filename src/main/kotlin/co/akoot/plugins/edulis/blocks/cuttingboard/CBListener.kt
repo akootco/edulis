@@ -25,7 +25,7 @@ import org.joml.Vector3f
 
 class CBListener : Listener {
 
-    init { createCuttingBoards() }
+    init { createCBRecipes() }
 
     @EventHandler
     fun HangingPlaceEvent.onPlace() {
