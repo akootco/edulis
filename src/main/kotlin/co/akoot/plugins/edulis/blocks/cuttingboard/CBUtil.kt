@@ -6,6 +6,8 @@ import co.akoot.plugins.edulis.Edulis
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.util.Util.foodid
 import co.akoot.plugins.plushies.util.Items.customItems
+import co.akoot.plugins.plushies.util.Items.getItem
+import co.akoot.plugins.plushies.util.Items.registerItem
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
 import org.bukkit.Location
 import org.bukkit.Material
@@ -29,12 +31,12 @@ fun createCuttingBoards() {
         val id = woodType + "_cutting_board"
         val displayName = woodType.split("_").joinToString(" ") { it.replaceFirstChar(Char::uppercase) }
 
-        customItems[id] = ItemBuilder.builder(Material.GLOW_ITEM_FRAME)
+        registerItem(id, ItemBuilder.builder(Material.GLOW_ITEM_FRAME)
             .itemName(Text("$displayName Cutting Board").component)
             .pdc(cbkey, woodType)
             .pdc(foodKey, id)
             .customModelData(id)
-            .build()
+            .build())
     }
 }
 
@@ -89,7 +91,7 @@ fun giveSlice(item: ItemStack, location: Location): Boolean {
             else -> return false
         }
 
-    val cakeSlice = customItems["${cakeId}_slice"] ?: return false
+    val cakeSlice = getItem("${cakeId}_slice") ?: return false
 
     cakeSlice.amount = when {
         cakeId.endsWith("cake") -> 8

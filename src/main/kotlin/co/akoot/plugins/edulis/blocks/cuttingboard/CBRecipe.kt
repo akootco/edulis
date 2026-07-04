@@ -4,6 +4,7 @@ import co.akoot.plugins.bluefox.api.FoxConfig
 import co.akoot.plugins.edulis.Edulis
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.plushies.util.Items.customItems
+import co.akoot.plugins.plushies.util.Items.getItem
 import co.akoot.plugins.plushies.util.Recipes.getInput
 import co.akoot.plugins.plushies.util.Recipes.getMaterial
 import co.akoot.plugins.plushies.util.builders.CraftRecipe
@@ -26,7 +27,7 @@ fun createCBRecipes() {
         val name = "${woodType.lowercase()}_cutting_board"
         val ingredientMaterial = Material.getMaterial("${woodType}_PRESSURE_PLATE") ?: continue
 
-        CraftRecipe.builder(name, customItems[name] ?: continue)
+        CraftRecipe.builder(name, getItem(name) ?: continue)
             .ingredient(ingredientMaterial)
             .shapeless("edulis")
     }

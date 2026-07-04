@@ -9,6 +9,7 @@ import co.akoot.plugins.edulis.util.Util.foodid
 import co.akoot.plugins.edulis.util.Util.isFood
 import co.akoot.plugins.edulis.util.Util.loadItems
 import co.akoot.plugins.plushies.util.Items.customItems
+import co.akoot.plugins.plushies.util.Items.getItem
 import org.bukkit.command.CommandSender
 
 class FoodCommand(plugin: FoxPlugin) : FoxCommand(plugin, "food") {
@@ -41,7 +42,7 @@ class FoodCommand(plugin: FoxPlugin) : FoxCommand(plugin, "food") {
                 }
 
                 val outputItem = customItems.keys.find { it.equals(args[0], ignoreCase = true) }
-                    ?.let { customItems[it] } ?: run { return sendError(sender, "Invalid item.") }
+                    ?.let { getItem(it) } ?: run { return sendError(sender, "Invalid item.") }
                 val count = args.getOrNull(1)?.toIntOrNull() ?: 1
 
                 if (!p.isSurventure) {

@@ -13,6 +13,7 @@ import co.akoot.plugins.edulis.listeners.handlers.BlockDrops.dropItems
 import co.akoot.plugins.edulis.listeners.tasks.*
 import co.akoot.plugins.edulis.util.Util.foodid
 import co.akoot.plugins.plushies.listeners.tasks.Throwable.Companion.axeKey
+import co.akoot.plugins.plushies.util.Items
 import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.Items.itemKey
 import co.akoot.plugins.plushies.util.Recipes.getMaterial
@@ -112,7 +113,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
             when (block.type) {
                 Material.POTTED_FERN -> {
-                    val basil = customItems["basil"] ?: return
+                    val basil = Items.getItem("basil") ?: return
 
                     if (item.type == Material.SHEARS) {
                         block.world.apply {

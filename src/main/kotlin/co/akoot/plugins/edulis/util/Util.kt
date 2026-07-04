@@ -14,6 +14,7 @@ import co.akoot.plugins.edulis.blocks.cuttingboard.createCuttingBoards
 import co.akoot.plugins.edulis.util.Schematics.registerSchematics
 import co.akoot.plugins.plushies.util.ItemCreator
 import co.akoot.plugins.plushies.util.Items.customItems
+import co.akoot.plugins.plushies.util.Items.registerItem
 import co.akoot.plugins.plushies.util.Recipes.configRecipes
 import co.akoot.plugins.plushies.util.Recipes.smeltingRecipes
 import co.akoot.plugins.plushies.util.Recipes.smithingRecipes
@@ -42,8 +43,7 @@ object Util {
     fun loadItems() {
         for (config in listOf(itemConfig, cakeConfig)) {
             for (key in config.getKeys()) {
-                customItems[key.lowercase()] =
-                    ItemCreator.createItem(config, key, foodKey) ?: continue
+                registerItem(key.lowercase(),ItemCreator.createItem(config, key, foodKey) ?: continue)
             }
         }
         createCuttingBoards()

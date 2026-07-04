@@ -5,6 +5,7 @@ import co.akoot.plugins.bluefox.extensions.removePDC
 import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.Edulis.Companion.leafConfig
 import co.akoot.plugins.plushies.util.Items.customItems
+import co.akoot.plugins.plushies.util.Items.getItem
 import co.akoot.plugins.plushies.util.Recipes.getMaterial
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
 import org.bukkit.Material
@@ -29,7 +30,7 @@ object BlockDrops {
         val loc = block.location
 
         // does the item exist?
-        val item = customItems[id] ?: return false
+        val item = getItem(id) ?: return false
 
         item.amount = amount
 

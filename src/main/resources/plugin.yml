@@ -1,7 +1,7 @@
 name: '${name}'
 version: '${version}'
 main: '${group}.${name}'
-api-version: 1.20
+api-version: '${mcversion}'
 prefix: '${name}'
 authors: [ IndiaPaleAle ]
 description: Food plugin

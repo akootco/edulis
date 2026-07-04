@@ -1,6 +1,7 @@
 package co.akoot.plugins.edulis.listeners
 
 import co.akoot.plugins.plushies.util.Items.customItems
+import co.akoot.plugins.plushies.util.Items.getItem
 import co.akoot.plugins.plushies.util.isCustomBlock
 import io.papermc.paper.event.entity.EntityInsideBlockEvent
 import org.bukkit.Material
@@ -26,7 +27,7 @@ class EntityEvent : Listener {
             is Goat -> {
                 when (item.type) {
                     Material.BUCKET -> {
-                        val milk = customItems["goat_milk"]?: return
+                        val milk = getItem("goat_milk")?: return
                         event.isCancelled = true
                         player.inventory.itemInMainHand.amount -= 1
                         player.give(milk)
@@ -42,7 +43,7 @@ class EntityEvent : Listener {
 
             is Parrot -> {
                 if (item.type == Material.BUCKET) {
-                    val milk = customItems["bird_spit"]?: return
+                    val milk = getItem("bird_spit") ?: return
                     event.isCancelled = true
                     player.inventory.itemInMainHand.amount -= 1
                     entity.location.world.playSound(entity.location, Sound.ENTITY_LLAMA_SPIT, 0.5f, 2f)
@@ -59,7 +60,7 @@ class EntityEvent : Listener {
     }
 
     private fun milkBottle(player: Player, entity: Entity) {
-        val milkBottle = customItems["milk_bottle"] ?: return
+        val milkBottle = getItem("milk_bottle") ?: return
         entity.location.world.playSound(entity.location, Sound.ENTITY_COW_MILK, 0.5f, 2f)
         player.inventory.itemInMainHand.amount -= 1
         player.give(milkBottle.asOne())
