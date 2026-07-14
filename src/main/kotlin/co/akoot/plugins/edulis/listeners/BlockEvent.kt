@@ -13,7 +13,10 @@ import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.createDisplay
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays.removeDisplay
 import co.akoot.plugins.edulis.listeners.tasks.CropDisplay
 import co.akoot.plugins.edulis.util.Schematics.paste
+import co.akoot.plugins.plushies.events.RemoveCustomBlockEvent
+import co.akoot.plugins.plushies.util.Items.getItem
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
+import co.akoot.plugins.plushies.util.id
 import co.akoot.plugins.plushies.util.isCustomBlock
 import co.akoot.plugins.plushies.util.texturedkKey
 import org.bukkit.Material
@@ -158,5 +161,22 @@ class BlockEvent : Listener {
 
         val face = (event.block.blockData as? Directional)?.facing ?: return // where is it looking?
         runLater(1, CropDisplay(event.block.location.add(face.direction).block))
+    }
+
+    @EventHandler
+    fun RemoveCustomBlockEvent.cake() {
+        val cake = block.blockData as? Cake ?: return
+        val location = block.location
+        val id = location.id ?: return
+
+        if (cake.bites == 0) {
+            getItem(id)?.let { block.world.dropItemNaturally(location.toCenterLocation(), it) }
+            return
+        }
+
+        getItem("${id}_slice")?.apply {
+            amount = cake.maximumBites - cake.bites + 1
+            block.world.dropItemNaturally(location.toCenterLocation(), this)
+        }
     }
 }
