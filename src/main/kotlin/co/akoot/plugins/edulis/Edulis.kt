@@ -7,6 +7,7 @@ import co.akoot.plugins.edulis.commands.*
 import co.akoot.plugins.edulis.listeners.*
 import co.akoot.plugins.edulis.listeners.tasks.pauseCovid
 import co.akoot.plugins.edulis.util.Util.loadEverything
+import co.akoot.plugins.edulis.util.brewery.BrewEvents
 import co.akoot.plugins.edulis.util.brewery.DrinksCommand
 import co.akoot.plugins.plushies.Plushies.Companion.tradeSource
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger.logger
@@ -85,5 +86,6 @@ class Edulis : FoxPlugin("edulis") {
         registerEventListener(BlockEvent())
         registerEventListener(EntityEvent())
         registerEventListener(CBListener())
+        registerEventListener(BrewEvents())
     }
 }

@@ -57,33 +57,6 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
     }
 
     @EventHandler
-    fun PlayerPukeEvent.onPuke() {
-        val foods = player.foodEaten
-        if (foods.isEmpty()) return
-
-        isCancelled = true
-        for (i in 0 until count) {
-            runLater(2L * i) {
-                val pukeItem = getMaterial(foods.random())?.clone() ?: return@runLater
-                val loc = player.location.apply {
-                    y += 1.1
-                    pitch = pitch - 10 + Random.nextInt(20)
-                    yaw = yaw - 10 + Random.nextInt(20)
-                }
-
-                pukeItem.setData(DataComponentTypes.MAX_STACK_SIZE,1)
-
-                player.world.dropItem(loc, pukeItem).apply {
-                    velocity = loc.getDirection().multiply(0.5)
-                    owner = UUID.fromString("78277c50-4e17-48bf-af38-7a25143da732") // PENJAMIN
-                    ticksLived = 5600 + (0..50).random()
-                    setMetadata("brewery_puke", FixedMetadataValue(plugin, true))
-                }
-            }
-        }
-    }
-
-    @EventHandler
     fun PlayerDeathEvent.onDeath() {
         pauseCovid(player)
     }
