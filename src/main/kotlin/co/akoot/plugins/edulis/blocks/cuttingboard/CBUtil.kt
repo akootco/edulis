@@ -94,8 +94,8 @@ fun giveSlice(item: ItemStack, location: Location): Boolean {
     val cakeSlice = getItem("${cakeId}_slice") ?: return false
 
     cakeSlice.amount = when {
-        cakeId.endsWith("cake") -> 8
         cakeId == "pizza" -> 12
+        item.type == Material.CAKE -> 8
         else -> 4
     }
 

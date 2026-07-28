@@ -37,6 +37,7 @@ import org.bukkit.event.block.*
 import org.bukkit.event.entity.EntityChangeBlockEvent
 import org.bukkit.event.player.PlayerHarvestBlockEvent
 import org.bukkit.event.world.StructureGrowEvent
+import org.bukkit.inventory.ItemStack
 
 class BlockEvent : Listener {
 
@@ -167,10 +168,12 @@ class BlockEvent : Listener {
     fun RemoveCustomBlockEvent.cake() {
         val cake = block.blockData as? Cake ?: return
         val location = block.location
-        val id = location.id ?: return
+        val id = location.id ?: "cake"
 
         if (cake.bites == 0) {
-            getItem(id)?.let { block.world.dropItemNaturally(location.toCenterLocation(), it) }
+            (getItem(id) ?: ItemStack.of(Material.CAKE)).let {
+                block.world.dropItemNaturally(location.toCenterLocation(), it)
+            }
             return
         }
 
