@@ -13,7 +13,6 @@ import co.akoot.plugins.edulis.Edulis.Companion.smokerConfig
 import co.akoot.plugins.edulis.blocks.cuttingboard.createCuttingBoards
 import co.akoot.plugins.edulis.util.Schematics.registerSchematics
 import co.akoot.plugins.plushies.util.ItemCreator
-import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.Items.registerItem
 import co.akoot.plugins.plushies.util.Recipes.configRecipes
 import co.akoot.plugins.plushies.util.Recipes.smeltingRecipes
@@ -22,7 +21,6 @@ import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.ItemStack
 import java.io.File
-import kotlin.collections.set
 
 object Util {
 
@@ -30,7 +28,7 @@ object Util {
         get() = itemMeta.hasPDC(foodKey)
 
     val ItemStack.foodid: String
-        get() = itemMeta.getPDC<String>(foodKey) ?: type.name
+        get() = itemMeta?.getPDC<String>(foodKey) ?: type.name
 
     fun loadEverything() {
         loadItems()

@@ -1,7 +1,11 @@
 package co.akoot.plugins.edulis.util.brewery
 
+import co.akoot.plugins.bluefox.extensions.getPDC
+import co.akoot.plugins.bluefox.extensions.setPDC
+import co.akoot.plugins.bluefox.util.quote
 import co.akoot.plugins.bluefox.util.runLater
 import co.akoot.plugins.edulis.Edulis
+import co.akoot.plugins.edulis.Edulis.Companion.key
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.listeners.tasks.foodEaten
 import co.akoot.plugins.plushies.util.Recipes.getMaterial
@@ -14,11 +18,21 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.server.PluginEnableEvent
+import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
 import java.util.*
 import kotlin.random.Random
 
 class BrewEvents : Listener {
+
+    private var ItemStack.age: Float?
+        get() = itemMeta?.getPDC(key("aging.time"))
+        set(value) {
+            if (value != null) editMeta {
+                it.setPDC(key("aging.time"), value)
+                it.lore(listOf(quote("Aged for ${value.toInt()} year${if (value == 1f) "" else "s"}")))
+            }
+        }
 
     @EventHandler
     fun onBarrelAccess(event: BarrelAccessEvent) {
@@ -27,12 +41,17 @@ class BrewEvents : Listener {
         barrel.inventory.contents.forEachIndexed { slot, item ->
             if (item == null) return@forEachIndexed
 
-            val recipe = barrelRecipes.firstOrNull { recipe ->
-                recipe.input.test(item) &&
-                        (recipe.barrelType == BarrelWoodType.ANY || recipe.barrelType == barrel.wood)
+            val recipe = barrelRecipes.firstOrNull {
+                it.input.test(item) &&
+                        (it.barrelType == BarrelWoodType.ANY || it.barrelType == barrel.wood)
             } ?: return@forEachIndexed
 
-            barrel.inventory.setItem(slot, recipe.result.clone())
+            val age = (item.age ?: 0f) + barrel.time
+            item.age = age
+
+            if (age >= recipe.age) {
+                barrel.inventory.setItem(slot, recipe.result.clone())
+            }
         }
     }
 
