@@ -9,10 +9,12 @@ import co.akoot.plugins.edulis.listeners.handlers.BlockDrops
 import co.akoot.plugins.edulis.listeners.handlers.ItemDisplays
 import co.akoot.plugins.plushies.util.Util
 import co.akoot.plugins.plushies.util.spawnItemDisplay
+import io.papermc.paper.datacomponent.DataComponentTypes
 import io.papermc.paper.event.player.PlayerItemFrameChangeEvent
 import org.bukkit.Sound
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.GlowItemFrame
+import org.bukkit.entity.ItemDisplay
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -39,12 +41,14 @@ class CBListener : Listener {
 
         entity.apply { setPDC(cbkey, loc) ; isInvisible = true }
         block.chunk.setPDC(Util.getBlockPDC(block.location, "edulis"), id)
-        spawnItemDisplay(loc, item, Transformation(
-            Vector3f(0f,-.13f,0f),
-            AxisAngle4f(),
-            Vector3f(1.501f, 1.501f, 1.501f),
-            AxisAngle4f())
-        )
+        spawnItemDisplay(loc.toCenterLocation(), item) {
+            transformation = Transformation(
+                Vector3f(),
+                AxisAngle4f(),
+                Vector3f(1.5f),
+                AxisAngle4f()
+            )
+        }
     }
 
     @EventHandler
@@ -58,15 +62,28 @@ class CBListener : Listener {
                 val offhand = player.inventory.itemInOffHand
                 if (cuttingBoardRecipes.any { it.tool.test(itemStack)} && offhand.isEmpty.not()) {
                     isCancelled = true
-                    itemFrame.addPassenger(spawnItemDisplay(loc, offhand, getDisplayTransform(offhand)))
+                    itemFrame.addPassenger(spawnItemDisplay(loc, offhand) {
+                        transformation = getDisplayTransform(offhand)
+                        itemDisplayTransform = ItemDisplay.ItemDisplayTransform.FIXED
+                    })
                     loc.world.playSound(loc, Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 1f ,1f)
                     itemFrame.setItem(offhand)
                     offhand.amount -= 1
                 }
-                else itemFrame.addPassenger(spawnItemDisplay(loc, itemStack, getDisplayTransform(itemStack)))
+                else {
+                    itemFrame.addPassenger(spawnItemDisplay(loc, itemStack) {
+                        transformation = getDisplayTransform(itemStack)
+                        itemDisplayTransform = ItemDisplay.ItemDisplayTransform.FIXED
+                    })
+                }
             }
 
-            PlayerItemFrameChangeEvent.ItemFrameChangeAction.REMOVE -> { itemFrame.passengers.firstOrNull()?.remove() }
+            PlayerItemFrameChangeEvent.ItemFrameChangeAction.REMOVE -> {
+                itemFrame.apply {
+                    passengers.firstOrNull()?.remove()
+                    item.resetData(DataComponentTypes.ITEM_MODEL)
+                }
+            }
 
             PlayerItemFrameChangeEvent.ItemFrameChangeAction.ROTATE -> {
                 isCancelled = true

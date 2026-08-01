@@ -42,18 +42,29 @@ fun createCuttingBoards() {
 
 fun getDisplayTransform(item: ItemStack): Transformation {
     val asItem = Transformation(
-        Vector3f(0f, 0f, -0.46f),
+        Vector3f(0f, 0.06f, -0.465f),
         AxisAngle4f(),
-        Vector3f(0.501f, 0.501f, 0.501f),
+        Vector3f(0.501f),
+        AxisAngle4f()
+    )
+    val asBlock = Transformation(
+        Vector3f(0f, 0f, -0.36f),
+        AxisAngle4f(),
+        Vector3f(0.501f),
         AxisAngle4f()
     )
     val asTool = Transformation(
         Vector3f(-.2f, 0f, -0.15f),
         AxisAngle4f(Math.toRadians(-90.0).toFloat(), 1f, 0f, -.2f),
-        Vector3f(.8f, .8f, .8f),
+        Vector3f(.8f),
         AxisAngle4f()
     )
-    return if (item.isTool) asTool else asItem
+
+    return when {
+        item.isTool -> asTool
+        item.type.isBlock -> asBlock
+        else -> asItem
+    }
 }
 
 fun cutItem(player: Player, location: Location, item: ItemStack, tool: ItemStack, board: GlowItemFrame): Boolean {
