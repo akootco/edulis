@@ -10,8 +10,8 @@ import co.akoot.plugins.edulis.Edulis.Companion.itemConfig
 import co.akoot.plugins.edulis.Edulis.Companion.log
 import co.akoot.plugins.edulis.Edulis.Companion.smithConfig
 import co.akoot.plugins.edulis.Edulis.Companion.smokerConfig
+import co.akoot.plugins.edulis.blocks.cuttingboard.cuttingBoardCraftRecipe
 import co.akoot.plugins.edulis.blocks.cuttingboard.createCuttingBoards
-import co.akoot.plugins.edulis.util.Schematics.registerSchematics
 import co.akoot.plugins.plushies.util.ItemCreator
 import co.akoot.plugins.plushies.util.Items.registerItem
 import co.akoot.plugins.plushies.util.Recipes.configRecipes
@@ -30,14 +30,6 @@ object Util {
     val ItemStack.foodid: String
         get() = itemMeta?.getPDC<String>(foodKey) ?: type.name
 
-    fun loadEverything() {
-        loadItems()
-        configRecipes(craftingConfig, "edulis")
-        smeltingRecipes(smokerConfig, "edulis")
-        smithingRecipes(smithConfig,"edulis" )
-        registerSchematics()
-    }
-
     fun loadItems() {
         for (config in listOf(itemConfig, cakeConfig)) {
             for (key in config.getKeys()) {
@@ -45,6 +37,14 @@ object Util {
             }
         }
         createCuttingBoards()
+    }
+
+    fun registerEdulisRecipes() {
+        configRecipes(craftingConfig, "edulis")
+        smeltingRecipes(smokerConfig, "edulis")
+        smithingRecipes(smithConfig,"edulis" )
+
+        cuttingBoardCraftRecipe()
     }
 
     fun loadYamlConfig(plugin: FoxPlugin, path: String): FileConfiguration {

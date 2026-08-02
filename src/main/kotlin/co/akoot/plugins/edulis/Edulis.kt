@@ -6,7 +6,9 @@ import co.akoot.plugins.edulis.blocks.cuttingboard.CBListener
 import co.akoot.plugins.edulis.commands.*
 import co.akoot.plugins.edulis.listeners.*
 import co.akoot.plugins.edulis.listeners.tasks.pauseCovid
-import co.akoot.plugins.edulis.util.Util.loadEverything
+import co.akoot.plugins.edulis.util.Schematics.registerSchematics
+import co.akoot.plugins.edulis.util.Util.loadItems
+import co.akoot.plugins.edulis.util.Util.registerEdulisRecipes
 import co.akoot.plugins.edulis.util.brewery.BrewEvents
 import co.akoot.plugins.edulis.util.brewery.DrinksCommand
 import co.akoot.plugins.plushies.Plushies.Companion.tradeSource
@@ -44,7 +46,11 @@ class Edulis : FoxPlugin("edulis") {
     override fun load() {
         instance = this
         logger.info("hello!!!!!!!!")
-        loadEverything()
+
+        loadItems()
+        registerEdulisRecipes()
+        registerSchematics()
+
         tradeSource.add(traderConfig)
     }
 
