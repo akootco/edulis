@@ -7,7 +7,7 @@ import org.bukkit.event.Listener
 
 class PluginEvent: Listener {
     @EventHandler
-    fun ServerResourcesReloadedEvent.orReload() {
+    fun ServerResourcesReloadedEvent.onReload() {
         registerEdulisRecipes()
     }
 }
