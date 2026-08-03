@@ -28,8 +28,8 @@ class Covid(private val player: Player, private val plugin: FoxPlugin) : BukkitR
                 removePDC(endKey)
             }
 
-            covidTask.remove(player)
-            return cancel() // cancel the task
+            covidTask.remove(player.uniqueId)?.cancel()
+            return
         }
 
         // 50% chance to trigger effect, every 3 minutes

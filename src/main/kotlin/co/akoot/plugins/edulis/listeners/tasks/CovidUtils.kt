@@ -15,8 +15,9 @@ import co.akoot.plugins.edulis.events.CovidContractEvent
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
+import java.util.UUID
 
-val covidTask = mutableMapOf<Player, BukkitTask>()
+val covidTask = mutableMapOf<UUID, BukkitTask>()
 val endKey = NamespacedKey("covid", "end")
 val remainingKey = NamespacedKey("covid", "remaining")
 val caughtKey = NamespacedKey("covid", "experienced")
@@ -69,7 +70,7 @@ fun giveCovid(
 
         setPDC(endKey, endTime)
     }
-    covidTask[player] = Covid(player, plugin).runTaskTimer(plugin, 1L, 100L)
+    covidTask[player.uniqueId] = Covid(player, plugin).runTaskTimer(plugin, 1L, 100L)
     log.info("${player.name} has been infected")
 }
 
@@ -86,7 +87,6 @@ fun pauseCovid(player: Player) {
     player.setPDC(remainingKey, remainingTimeMillis)
     player.saveData()
 
-    covidTask[player]?.cancel()
-    covidTask.remove(player)
+    covidTask.remove(player.uniqueId)?.cancel()
     log.info("${player.name}'s contagion has been paused")
 }
