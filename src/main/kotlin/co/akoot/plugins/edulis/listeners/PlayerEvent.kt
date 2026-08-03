@@ -14,13 +14,9 @@ import co.akoot.plugins.edulis.listeners.tasks.*
 import co.akoot.plugins.edulis.util.Util.foodid
 import co.akoot.plugins.plushies.listeners.tasks.Throwable.Companion.axeKey
 import co.akoot.plugins.plushies.util.Items
-import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.Items.itemKey
-import co.akoot.plugins.plushies.util.Recipes.getMaterial
 import co.akoot.plugins.plushies.util.Recipes.unlockRecipes
 import co.akoot.plugins.plushies.util.Util.getBlockPDC
-import com.dre.brewery.api.events.PlayerPukeEvent
-import io.papermc.paper.datacomponent.DataComponentTypes
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -34,8 +30,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.*
-import org.bukkit.metadata.FixedMetadataValue
-import java.util.*
+import org.bukkit.inventory.EquipmentSlot
 import kotlin.random.Random
 
 class PlayerEvent(private val plugin: FoxPlugin) : Listener {
@@ -79,6 +74,8 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
     @EventHandler
     fun PlayerInteractEvent.playerInteract() {
+        if (hand != EquipmentSlot.HAND) return
+
         val block = clickedBlock ?: return
         val item = player.inventory.itemInMainHand
 
@@ -89,15 +86,12 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                     val basil = Items.getItem("basil") ?: return
 
                     if (item.type == Material.SHEARS) {
+                        isCancelled = true
                         block.world.apply {
                             dropItemNaturally(block.location.add(0.5, 1.0, 0.5), basil)
                             playSound(block.location, Sound.ENTITY_BOGGED_SHEAR, 1.0f, 2.0f)
                         }
-                    } else {
-                        player.give(basil)
-                        block.type = Material.FLOWER_POT
                     }
-                    isCancelled = true
                 }
 
                 Material.FLOWER_POT -> {
@@ -111,7 +105,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                     if (block.chunk.getPDC<String>(getBlockPDC(block.location, "edulis")) == null) return
 
                     val crop = block.state.blockData as? Ageable ?: return
-                    if (crop.age == crop.maximumAge) {
+                    if (crop.age >= crop.maximumAge) {
                         val sound = if (block.type == Material.SWEET_BERRY_BUSH)
                             Sound.BLOCK_SWEET_BERRY_BUSH_PICK_BERRIES else Sound.BLOCK_CROP_BREAK
 
@@ -126,7 +120,7 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
                     runLater(1, CropDisplay(block))
                 }
 
-                in Tag.DIRT.values -> {
+                in Tag.SUPPORTS_VEGETATION.values -> {
                     if (item.foodid == "tomato") {
                         if (blockFace == BlockFace.UP) { // make sure player is clicking top of block
                             // make sure the space above is empty
