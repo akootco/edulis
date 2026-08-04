@@ -74,13 +74,13 @@ class PlayerEvent(private val plugin: FoxPlugin) : Listener {
 
     @EventHandler
     fun PlayerInteractEvent.playerInteract() {
+        if (isCancelled) return
         if (hand != EquipmentSlot.HAND) return
 
         val block = clickedBlock ?: return
         val item = player.inventory.itemInMainHand
 
         if (action == Action.RIGHT_CLICK_BLOCK) {
-
             when (block.type) {
                 Material.POTTED_FERN -> {
                     val basil = Items.getItem("basil") ?: return
