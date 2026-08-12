@@ -1,11 +1,10 @@
 package co.akoot.plugins.edulis.blocks.cuttingboard
 
 import co.akoot.plugins.bluefox.extensions.getPDC
-import co.akoot.plugins.bluefox.util.Text
+import co.akoot.plugins.bluefox.util.text
 import co.akoot.plugins.edulis.Edulis
 import co.akoot.plugins.edulis.Edulis.Companion.foodKey
 import co.akoot.plugins.edulis.util.Util.foodid
-import co.akoot.plugins.plushies.util.Items.customItems
 import co.akoot.plugins.plushies.util.Items.getItem
 import co.akoot.plugins.plushies.util.Items.registerItem
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
@@ -26,17 +25,27 @@ val ItemStack.isTool: Boolean
     get() = Tag.ITEMS_BREAKS_DECORATED_POTS.isTagged(this.type)
 
 fun createCuttingBoards() {
-    Tag.PLANKS.values.forEach { material ->
-        val woodType = material.name.lowercase().removeSuffix("_planks")
-        val id = woodType + "_cutting_board"
-        val displayName = woodType.split("_").joinToString(" ") { it.replaceFirstChar(Char::uppercase) }
+    Tag.PRESSURE_PLATES.values.forEach { material ->
+        val type = material.name.lowercase().removeSuffix("_pressure_plate") + "_cutting_board"
 
-        registerItem(id, ItemBuilder.builder(Material.GLOW_ITEM_FRAME)
-            .itemName(Text("$displayName Cutting Board").component)
-            .pdc(cbkey, woodType)
-            .pdc(foodKey, id)
-            .customModelData(id)
-            .build())
+        val model = type
+            .replace("light_weighted", "gold")
+            .replace("heavy_weighted", "iron")
+
+        val name = model.split("_")
+            .joinToString(" ") {
+                it.replaceFirstChar(Char::uppercase)
+            }.text
+
+        registerItem(
+            type,
+            ItemBuilder.builder(Material.GLOW_ITEM_FRAME)
+                .itemName(name)
+                .pdc(cbkey, type)
+                .pdc(foodKey, type)
+                .customModelData(model)
+                .build()
+        )
     }
 }
 

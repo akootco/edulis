@@ -7,7 +7,6 @@ import co.akoot.plugins.plushies.util.Items.getItem
 import co.akoot.plugins.plushies.util.Recipes.getInput
 import co.akoot.plugins.plushies.util.Recipes.getMaterial
 import co.akoot.plugins.plushies.util.builders.CraftRecipe
-import org.bukkit.Material
 import org.bukkit.Tag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.RecipeChoice
@@ -20,13 +19,12 @@ val cuttingBoardRecipes = mutableListOf<CBoardRecipes>()
 private fun erm(recipe: String, item: String) = log.warn("Invalid $item in `$recipe` cutting board recipe.")
 
 fun cuttingBoardCraftRecipe() {
-    for (material in Tag.PLANKS.values) {
-        val woodType = material.name.removeSuffix("_PLANKS")
+    for (material in Tag.PRESSURE_PLATES.values) {
+        val woodType = material.name.removeSuffix("_PRESSURE_PLATE")
         val name = "${woodType.lowercase()}_cutting_board"
-        val ingredientMaterial = Material.getMaterial("${woodType}_PRESSURE_PLATE") ?: continue
 
         CraftRecipe.builder(name, getItem(name) ?: continue)
-            .ingredient(ingredientMaterial)
+            .ingredient(material)
             .shapeless("edulis")
     }
 }
