@@ -79,13 +79,18 @@ fun getDisplayTransform(item: ItemStack): Transformation {
 fun cutItem(player: Player, location: Location, item: ItemStack, tool: ItemStack, board: GlowItemFrame): Boolean {
     val fixedLoc = location.add(0.0,.5,0.0)
     val recipe = cuttingBoardRecipes.firstOrNull { r ->
-        r.input.test(item) && r.tool.test(tool) // wtf. aint no way
+        val recipeTool = r.tool // yawn smart cast skill issue
+        r.input.test(item) && (recipeTool == null || recipeTool.test(tool))
     }
 
     if (recipe != null) {
         recipe.results.forEach {
             fixedLoc.world.dropItemNaturally(location, it.clone()) }
-        tool.damage(1, player)
+
+        if (recipe.tool != null) {
+            tool.damage(1, player)
+        }
+
         return clearBoard(board)
     }
 

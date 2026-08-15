@@ -27,8 +27,6 @@ import org.joml.Vector3f
 
 class CBListener : Listener {
 
-    init { createCBRecipes() }
-
     @EventHandler
     fun HangingPlaceEvent.onPlace() {
         if (isCancelled) return
@@ -60,7 +58,7 @@ class CBListener : Listener {
         when (action) {
             PlayerItemFrameChangeEvent.ItemFrameChangeAction.PLACE -> {
                 val offhand = player.inventory.itemInOffHand
-                if (cuttingBoardRecipes.any { it.tool.test(itemStack)} && offhand.isEmpty.not()) {
+                if (cuttingBoardRecipes.any { it.tool?.test(itemStack) == true} && offhand.isEmpty.not()) {
                     isCancelled = true
                     itemFrame.addPassenger(spawnItemDisplay(loc, offhand) {
                         transformation = getDisplayTransform(offhand)
