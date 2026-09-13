@@ -12,6 +12,7 @@ import co.akoot.plugins.edulis.util.Util.registerEdulisRecipes
 import co.akoot.plugins.edulis.util.brewery.BrewEvents
 import co.akoot.plugins.edulis.util.brewery.DrinksCommand
 import co.akoot.plugins.plushies.Plushies.Companion.tradeSource
+import co.akoot.plugins.plushies.util.Recipes.recipePdcKeys
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger.logger
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
@@ -51,6 +52,7 @@ class Edulis : FoxPlugin("edulis") {
         registerEdulisRecipes()
         registerSchematics()
 
+        recipePdcKeys += foodKey
         tradeSource.add(traderConfig)
     }
 
