@@ -2,6 +2,7 @@ package co.akoot.plugins.edulis
 
 import co.akoot.plugins.bluefox.api.FoxConfig
 import co.akoot.plugins.bluefox.api.FoxPlugin
+import co.akoot.plugins.edulis.blocks.cookingpot.CookingPot
 import co.akoot.plugins.edulis.blocks.cuttingboard.CBListener
 import co.akoot.plugins.edulis.commands.*
 import co.akoot.plugins.edulis.listeners.*
@@ -12,6 +13,7 @@ import co.akoot.plugins.edulis.util.Util.registerEdulisRecipes
 import co.akoot.plugins.edulis.util.brewery.BrewEvents
 import co.akoot.plugins.edulis.util.brewery.DrinksCommand
 import co.akoot.plugins.plushies.Plushies.Companion.tradeSource
+import co.akoot.plugins.plushies.api.Interactables
 import co.akoot.plugins.plushies.util.Recipes.recipePdcKeys
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger.logger
 import org.bukkit.Bukkit
@@ -52,6 +54,7 @@ class Edulis : FoxPlugin("edulis") {
         registerEdulisRecipes()
         registerSchematics()
 
+        Interactables.register(CookingPot)
         recipePdcKeys += foodKey
         tradeSource.add(traderConfig)
     }
