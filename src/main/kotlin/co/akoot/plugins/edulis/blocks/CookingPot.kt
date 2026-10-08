@@ -1,28 +1,21 @@
-package co.akoot.plugins.edulis.blocks.cookingpot
+package co.akoot.plugins.edulis.blocks
 
 import co.akoot.plugins.bluefox.extensions.getMeta
-import co.akoot.plugins.bluefox.extensions.getPDC
 import co.akoot.plugins.bluefox.extensions.hasPDC
 import co.akoot.plugins.bluefox.extensions.setMeta
-import co.akoot.plugins.bluefox.extensions.setPDC
 import co.akoot.plugins.bluefox.util.text
 import co.akoot.plugins.plushies.Plushies.Companion.key
 import co.akoot.plugins.plushies.api.Interactable
-import co.akoot.plugins.plushies.api.Menu
+import co.akoot.plugins.plushies.api.Storage
 import co.akoot.plugins.plushies.util.builders.CraftRecipe
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
 import io.papermc.paper.datacomponent.DataComponentTypes
 import net.kyori.adventure.text.Component
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.inventory.Inventory
-import org.bukkit.inventory.ItemStack
 import org.bukkit.util.BoundingBox
 import org.joml.Vector3f
 
@@ -71,60 +64,21 @@ object CookingPot : Interactable {
     }
 }
 
-private class CookingPotGUI(private val entity: Entity) : Menu {
-
-    private val inventory = Bukkit.createInventory(this, 27,
-        Component.text("Cooking Pot")
-    )
-
+private class CookingPotGUI(override val entity: Entity) : Storage(
+    Component.text("Cooking Pot"),
+    KEY,
+    3,
+    setOf(1, 2, 3, 10, 11, 12, 23, 25)
+) {
     companion object {
-        private val openSlots = setOf(1, 2, 3, 10, 11, 12, 23, 25)
         private const val KEY = "cook.pot.inv"
-
-        private val filler = ItemBuilder.builder(ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE))
-            .itemName(Component.empty())
-            .itemModel("slot")
-            .hideTooltip()
-            .build()
 
         fun get(entity: Entity): CookingPotGUI {
             return entity.getMeta<CookingPotGUI>(KEY)
                 ?: CookingPotGUI(entity).also {
                     entity.setMeta(KEY, it)
-                    it.load()
+                    it.loadContents()
                 }
         }
     }
-
-    override fun onClick(event: InventoryClickEvent) {
-        event.isCancelled = event.rawSlot !in openSlots
-    }
-
-    override fun onClose(event: InventoryCloseEvent) {
-        if (inventory.viewers.isNotEmpty()) return
-        entity.setPDC(key(KEY), ItemStack.serializeItemsAsBytes(inventory.contents))
-    }
-
-    private fun load() {
-        entity.getPDC<ByteArray>(key(KEY))?.let {
-            inventory.contents = ItemStack.deserializeItemsFromBytes(it)
-        }
-
-        for (slot in 0 until inventory.size) {
-            if (slot !in openSlots) {
-                inventory.setItem(slot, filler)
-            }
-        }
-    }
-
-    fun remove() {
-        inventory.viewers.forEach { it.closeInventory() }
-
-        for (item in inventory.contents.filterNotNull()) {
-            if (item.isSimilar(filler)) continue
-            entity.world.dropItemNaturally(entity.location, item)
-        }
-    }
-
-    override fun getInventory(): Inventory = inventory
 }
