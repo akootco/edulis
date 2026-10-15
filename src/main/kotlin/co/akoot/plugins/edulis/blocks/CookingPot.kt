@@ -7,6 +7,7 @@ import co.akoot.plugins.bluefox.util.text
 import co.akoot.plugins.plushies.Plushies.Companion.key
 import co.akoot.plugins.plushies.api.Interactable
 import co.akoot.plugins.plushies.api.Storage
+import co.akoot.plugins.plushies.api.openMenu
 import co.akoot.plugins.plushies.util.builders.CraftRecipe
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
 import io.papermc.paper.datacomponent.DataComponentTypes
@@ -18,6 +19,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.util.BoundingBox
 import org.joml.Vector3f
+import kotlin.collections.setOf
 
 object CookingPot : Interactable {
 
@@ -40,14 +42,14 @@ object CookingPot : Interactable {
         .pdc(key)
         .build()
 
-    init {
-        CraftRecipe.builder("cooking_pot", item())
-            .ingredient(Material.CAULDRON)
-            .shapeless()
-    }
+//    init {
+//        CraftRecipe.builder("cooking_pot", item())
+//            .ingredient(Material.CAULDRON)
+//            .shapeless("edulis")
+//    }
 
     override fun interact(entity: Entity, player: Player) {
-        player.openInventory(CookingPotGUI.get(entity).inventory)
+        player.openMenu(CookingPotGUI.get(entity))
     }
 
     override fun place(event: PlayerInteractEvent): Boolean {
@@ -65,11 +67,17 @@ object CookingPot : Interactable {
 }
 
 private class CookingPotGUI(override val entity: Entity) : Storage(
-    Component.text("Cooking Pot"),
-    KEY,
-    3,
-    setOf(1, 2, 3, 10, 11, 12, 23, 25)
-) {
+    Component.text("Cooking Pot"), KEY, StorageConfig(rows = 3, openSlots = setOf(1, 2, 3, 10, 11, 12, 23, 25))) {
+    override val openSound = StorageSound(
+        "block.copper_chest.open",
+        2f
+    )
+
+    override val closeSound = StorageSound(
+        "block.copper_chest.close",
+        2f
+    )
+
     companion object {
         private const val KEY = "cook.pot.inv"
 
