@@ -8,7 +8,6 @@ import co.akoot.plugins.plushies.Plushies.Companion.key
 import co.akoot.plugins.plushies.api.Interactable
 import co.akoot.plugins.plushies.api.Storage
 import co.akoot.plugins.plushies.api.openMenu
-import co.akoot.plugins.plushies.util.builders.CraftRecipe
 import co.akoot.plugins.plushies.util.builders.ItemBuilder
 import io.papermc.paper.datacomponent.DataComponentTypes
 import net.kyori.adventure.text.Component
@@ -36,7 +35,7 @@ object CookingPot : Interactable {
     override fun item() = ItemBuilder.builder(Material.POISONOUS_POTATO)
         .itemName("Cooking Pot".text)
         .stackSize(1)
-        .customModelData("cooking_pot")
+        .itemModel("edulis:cooking_pot")
         .unsetData(DataComponentTypes.CONSUMABLE)
         .unsetData(DataComponentTypes.FOOD)
         .pdc(key)

@@ -2,6 +2,7 @@ package co.akoot.plugins.edulis
 
 import co.akoot.plugins.bluefox.api.FoxConfig
 import co.akoot.plugins.bluefox.api.FoxPlugin
+import co.akoot.plugins.edulis.blocks.CookieJar
 import co.akoot.plugins.edulis.blocks.CookingPot
 import co.akoot.plugins.edulis.blocks.cuttingboard.CBListener
 import co.akoot.plugins.edulis.commands.*
@@ -55,6 +56,7 @@ class Edulis : FoxPlugin("edulis") {
         registerSchematics()
 
         Interactables.register(CookingPot)
+        Interactables.register(CookieJar)
         recipePdcKeys += foodKey
         tradeSource.add(traderConfig)
     }
